@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.moviemax.Activity.DetailsActivity;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
 
@@ -51,20 +52,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 .into(holder.ivPoster);
 
         // Set click listener to open movie details
-//        holder.itemView.setOnClickListener(v -> {
-//            Intent intent = new Intent(context, DetailsActivity.class);
-//            intent.putExtra("movie_title", movie.getTitle());
-//            intent.putExtra("movie_genre", movie.getGenre());
-//            intent.putExtra("movie_duration", movie.getDuration());
-//            intent.putExtra("movie_language", movie.getLanguage());
-//            intent.putExtra("movie_director", movie.getDirector());
-//            intent.putExtra("movie_cast", movie.getCast());
-//            intent.putExtra("movie_description", movie.getDescription());
-//            intent.putExtra("movie_poster_url", movie.getPosterUrl());
-//            intent.putExtra("movie_release_date", movie.getReleaseDate());
-//            intent.putExtra("movie_rating", movie.getRating());
-//            context.startActivity(intent);
-//        });
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra("movie_title", movie.getTitle());
+            intent.putExtra("movie_genre", movie.getGenre());
+            intent.putExtra("movie_duration", movie.getDuration());
+            intent.putExtra("movie_language", movie.getLanguage());
+            intent.putExtra("movie_director", movie.getDirector());
+            intent.putExtra("movie_cast", movie.getCast());
+            intent.putExtra("movie_description", movie.getDescription());
+            intent.putExtra("movie_poster_url", movie.getPosterUrl());
+            intent.putExtra("movie_release_date", movie.getReleaseDate());
+            intent.putExtra("movie_rating", movie.getRating());
+            context.startActivity(intent);
+        });
     }
 
     @Override
