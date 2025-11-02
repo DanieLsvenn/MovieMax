@@ -32,5 +32,9 @@ public class ApiService {
 
         return retrofit;
     }
+
+    public static MovieApi getMovieApiService() {
+        return getClient().create(MovieApi.class);
+    }
 }
 
