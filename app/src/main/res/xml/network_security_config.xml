@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<network-security-config>
+    <!-- Cho phép tất cả request HTTP (cleartext) -->
+    <base-config cleartextTrafficPermitted="true" />
 
-</PreferenceScreen>
+    <!-- Nếu chỉ muốn cho phép một domain cụ thể -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">103.200.20.174</domain>
+    </domain-config>
+</network-security-config>
