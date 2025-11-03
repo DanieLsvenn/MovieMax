@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Supabase Image Upload Test"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textAlignment="center"
+            android:layout_marginBottom="24dp" />
+
+        <ImageView
+            android:id="@+id/ivPreview"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="@color/material_dynamic_neutral90"
+            android:scaleType="centerCrop"
+            android:contentDescription="Image Preview"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnSelectImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Image from Gallery"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload to Supabase"
+            android:textSize="16sp"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:layout_marginBottom="12dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select an image to begin"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:textAlignment="center"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvImageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_marginBottom="24dp"
+            android:breakStrategy="simple" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginVertical="16dp" />
+
+        <Button
+            android:id="@+id/btnGoToMovies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Go to Movie List"
+            android:textSize="16sp"
+            android:backgroundTint="@android:color/holo_blue_dark" />
+
+    </LinearLayout>
+</ScrollView>

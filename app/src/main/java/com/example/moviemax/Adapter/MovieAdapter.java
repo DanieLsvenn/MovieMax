@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.moviemax.Activity.DetailsActivity;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
+import com.example.moviemax.Supabase.SupabaseStorageHelper;
 
 import java.util.List;
 
@@ -37,16 +38,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         MovieResponse movie = movies.get(position);
-
         holder.tvTitle.setText(movie.getTitle());
         holder.tvGenre.setText(movie.getGenre());
         holder.tvDuration.setText(movie.getDuration() + " min");
         holder.tvRating.setText(String.valueOf(movie.getRating()));
 
-        // Load poster image with Glide
-        String posterUrl = "http://103.200.20.174:8081/images/" + movie.getPosterUrl();
+        // Load poster image - support both backend and Supabase URLs
+        String posterUrl = movie.getPosterUrl();
+        String fullPosterUrl;
+
+        if (posterUrl.startsWith("http")) {
+            // Already a full URL (Supabase)
+            fullPosterUrl = posterUrl;
+        } else if (posterUrl.startsWith("poster_")) {
+            // Supabase storage filename
+            fullPosterUrl = SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
+        } else {
+            // Backend image path
+            fullPosterUrl = "http://103.200.20.174:8081/images/" + posterUrl;
+        }
+
         Glide.with(context)
-                .load(posterUrl)
+                .load(fullPosterUrl)
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
                 .into(holder.ivPoster);

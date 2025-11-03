@@ -35,6 +35,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".Activity.ImageUploadTestActivity"
+            android:exported="false"
+            android:label="Test Image Upload" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true" />
     </application>

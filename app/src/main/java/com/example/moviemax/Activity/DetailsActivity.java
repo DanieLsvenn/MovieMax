@@ -10,12 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.moviemax.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DetailsActivity extends AppCompatActivity {
     private ImageView ivMoviePoster;
     private TextView tvMovieTitle, tvMovieGenre, tvMovieDuration, tvMovieLanguage;
     private TextView tvMovieDirector, tvMovieCast, tvMovieReleaseDate, tvMovieDescription, tvMovieRating;
     private ImageButton btnBack;
+    private FloatingActionButton fabUploadTest; // For FAB option
+    // private Button btnTestUpload; // For Button option - uncomment if using Option B
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +42,28 @@ public class DetailsActivity extends AppCompatActivity {
         tvMovieDescription = findViewById(R.id.tvMovieDescription);
         tvMovieRating = findViewById(R.id.tvMovieRating);
         btnBack = findViewById(R.id.btnBack);
+
+        // Initialize upload test button (FAB option)
+        fabUploadTest = findViewById(R.id.fabUploadTest);
+
+        // OR for Button option, uncomment this:
+        // btnTestUpload = findViewById(R.id.btnTestUpload);
     }
 
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
+
+        // FAB click listener
+        fabUploadTest.setOnClickListener(v -> {
+            Intent intent = new Intent(DetailsActivity.this, ImageUploadTestActivity.class);
+            startActivity(intent);
+        });
+
+        // OR for Button option, uncomment this:
+        // btnTestUpload.setOnClickListener(v -> {
+        //     Intent intent = new Intent(DetailsActivity.this, ImageUploadTestActivity.class);
+        //     startActivity(intent);
+        // });
     }
 
     private void loadMovieDetails() {
