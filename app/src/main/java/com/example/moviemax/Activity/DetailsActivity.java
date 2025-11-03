@@ -2,6 +2,7 @@ package com.example.moviemax.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.moviemax.R;
+import com.example.moviemax.Supabase.SupabaseStorageHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DetailsActivity extends AppCompatActivity {
@@ -91,14 +93,25 @@ public class DetailsActivity extends AppCompatActivity {
         tvMovieDescription.setText(description != null ? description : "No description available");
         tvMovieRating.setText(String.valueOf(rating));
 
-        // Load poster image
+        // Load poster image - UPDATED TO SUPPORT SUPABASE
         if (posterUrl != null && !posterUrl.isEmpty()) {
-            String fullPosterUrl = "http://103.200.20.174:8081/images/" + posterUrl;
+            String fullPosterUrl = getFullPosterUrl(posterUrl);
             Glide.with(this)
                     .load(fullPosterUrl)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivMoviePoster);
+        }
+    }
+
+    private String getFullPosterUrl(String posterUrl) {
+        Log.d("getFullPosterUrl", posterUrl);
+        if (posterUrl.startsWith("http")) {
+            // Already a full URL (Supabase full URL)
+            return posterUrl;
+        } else {
+            // Supabase storage filename pattern
+            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
         }
     }
 }
