@@ -29,8 +29,8 @@
 
             <ImageButton
                 android:id="@+id/arrowBtn"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:src="@drawable/ic_arrow_down"
                 app:tint="@android:color/black" />
@@ -45,12 +45,11 @@
             android:background="#F7F7F7"
             android:padding="8dp">
 
-            <ListView
-                android:id="@+id/cinemaListView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCinemas"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:dividerHeight="1dp"
-                android:divider="#CCC" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"/>
         </LinearLayout>
 
         <!-- Action Buttons above Detail View -->

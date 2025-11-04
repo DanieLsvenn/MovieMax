@@ -8,7 +8,6 @@ public class CinemaResponse {
 
     private  String address; 
 
-
     private  String phone;
 
     public CinemaResponse(){}
