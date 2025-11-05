@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.ShowTimeActivity"
+            android:name=".Activity.HomeActivity"
             android:exported="true" />
 
         <activity
@@ -40,7 +40,7 @@
             android:label="Test Image Upload" />
 
         <activity
-            android:name=".Activity.HomeActivity"
+            android:name=".Activity.ShowTimeActivity"
             android:exported="true" />
 
         <activity
