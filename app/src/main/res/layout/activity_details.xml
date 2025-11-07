@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< Updated upstream
     android:fillViewport="true">
+=======
+    android:background="@color/netflix_black">
+>>>>>>> Stashed changes
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,6 +23,7 @@
             android:padding="16dp"
             android:gravity="center_vertical">
 
+<<<<<<< Updated upstream
             <ImageButton
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
@@ -98,21 +103,204 @@
                     android:text="/10"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
+=======
+            <!-- Hero Section with Poster Background -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp">
 
-            </LinearLayout>
+                <!-- Background Poster (Blurred) -->
+                <ImageView
+                    android:id="@+id/ivMovieBackdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:alpha="0.3"
+                    android:contentDescription="Movie Backdrop" />
 
+                <!-- Gradient Overlay -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/hero_gradient_overlay" />
+
+                <!-- Header with back button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/circular_button_bg"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
+                        android:contentDescription="Back"
+                        app:tint="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Hero Content -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+>>>>>>> Stashed changes
+
+                    <!-- Movie Poster -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="140dp"
+                        android:layout_height="200dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="12dp">
+
+<<<<<<< Updated upstream
             <!-- Genre -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="8dp">
+=======
+                        <ImageView
+                            android:id="@+id/ivMoviePoster"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/netflix_medium_gray"
+                            android:contentDescription="Movie Poster" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Movie Title and Basic Info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:id="@+id/tvMovieTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Movie Title"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/netflix_white"
+                            android:maxLines="3"
+                            android:ellipsize="end"
+                            android:shadowColor="@color/netflix_black"
+                            android:shadowDx="2"
+                            android:shadowDy="2"
+                            android:shadowRadius="4" />
+
+                        <!-- Rating -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="★"
+                                android:textColor="@color/rating_gold"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/tvMovieRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8.5"
+                                android:textSize="18sp"
+                                android:textColor="@color/netflix_white"
+                                android:textStyle="bold"
+                                android:layout_marginStart="4dp"
+                                android:shadowColor="@color/netflix_black"
+                                android:shadowDx="1"
+                                android:shadowDy="1"
+                                android:shadowRadius="2" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="/10"
+                                android:textSize="16sp"
+                                android:textColor="@color/netflix_light_gray"
+                                android:shadowColor="@color/netflix_black"
+                                android:shadowDx="1"
+                                android:shadowDy="1"
+                                android:shadowRadius="2" />
+
+                        </LinearLayout>
+
+                        <!-- Genre and Duration -->
+                        <TextView
+                            android:id="@+id/tvMovieGenreAndDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Action • 120 min"
+                            android:textSize="14sp"
+                            android:textColor="@color/netflix_light_gray"
+                            android:layout_marginTop="4dp"
+                            android:shadowColor="@color/netflix_black"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="2" />
+
+                        <!-- Play Button -->
+                        <Button
+                            android:id="@+id/btnPlay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginTop="16dp"
+                            android:text="▶ Play"
+                            android:textColor="@color/netflix_black"
+                            android:backgroundTint="@color/netflix_white"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:paddingHorizontal="16dp"
+                            app:cornerRadius="4dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <!-- Movie Details Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Description Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Overview"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/netflix_white"
+                    android:layout_marginBottom="8dp" />
+>>>>>>> Stashed changes
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Genre: "
                     android:textSize="16sp"
+<<<<<<< Updated upstream
                     android:textStyle="bold"
                     android:textColor="@android:color/black" />
 
@@ -124,6 +312,330 @@
                     android:text="Action, Drama"
                     android:textSize="16sp"
                     android:textColor="@android:color/darker_gray" />
+=======
+                    android:textColor="@color/netflix_light_gray"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="24dp" />
+
+                <!-- Movie Details Grid -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Details"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/netflix_white"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Genre -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Genre"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_light_gray" />
+
+                    <TextView
+                        android:id="@+id/tvMovieGenre"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Action, Drama"
+                        android:textSize="14sp"
+                        android:textColor="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Duration -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Duration"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_light_gray" />
+
+                    <TextView
+                        android:id="@+id/tvMovieDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="120 minutes"
+                        android:textSize="14sp"
+                        android:textColor="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Language -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Language"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_light_gray" />
+
+                    <TextView
+                        android:id="@+id/tvMovieLanguage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="English"
+                        android:textSize="14sp"
+                        android:textColor="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Director -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Director"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_light_gray" />
+
+                    <TextView
+                        android:id="@+id/tvMovieDirector"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Director Name"
+                        android:textSize="14sp"
+                        android:textColor="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Cast -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Cast"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_light_gray" />
+
+                    <TextView
+                        android:id="@+id/tvMovieCast"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Actor 1, Actor 2, Actor 3"
+                        android:textSize="14sp"
+                        android:textColor="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Release Date -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="24dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Released"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_light_gray" />
+
+                    <TextView
+                        android:id="@+id/tvMovieReleaseDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="2025-10-19"
+                        android:textSize="14sp"
+                        android:textColor="@color/netflix_white" />
+
+                </LinearLayout>
+
+                <!-- Showtimes Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Showtimes Today"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/netflix_white"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewShowtimes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    android:clipToPadding="false"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Theater & Format Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/theater_info_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🎭 Available Formats"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/netflix_white"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Format Options -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2D"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/netflix_white"
+                            android:background="@drawable/format_option_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3D"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/netflix_white"
+                            android:background="@drawable/format_option_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="IMAX"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/netflix_black"
+                            android:background="@drawable/premium_format_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4DX"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/netflix_black"
+                            android:background="@drawable/premium_format_bg"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp" />
+
+                    </LinearLayout>
+
+                    <!-- Pricing Info -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💰 Tickets from "
+                            android:textSize="14sp"
+                            android:textColor="@color/netflix_light_gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$12.99"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/netflix_red" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎟️ Special Offers Available"
+                            android:textSize="12sp"
+                            android:textColor="@color/rating_gold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Similar Movies Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="You Might Also Like"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/netflix_white"
+                    android:layout_marginBottom="16dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSimilarMovies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    android:clipToPadding="false" />
+
+                <!-- Bottom Spacing -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp" />
+>>>>>>> Stashed changes
 
             </LinearLayout>
 
@@ -281,4 +793,47 @@
 
     </LinearLayout>
 
+<<<<<<< Updated upstream
 </ScrollView>
+=======
+    <!-- Booking Actions Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:background="@color/netflix_dark_gray"
+        android:elevation="12dp"
+        android:padding="16dp">
+
+        <!-- Add to Wishlist Button -->
+        <Button
+            android:id="@+id/btnWishlist"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="♡ Wishlist"
+            android:textColor="@color/netflix_white"
+            android:textSize="14sp"
+            android:background="@drawable/wishlist_button_bg"
+            app:cornerRadius="8dp" />
+
+        <!-- Book Tickets Button -->
+        <Button
+            android:id="@+id/btnBookTickets"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2"
+            android:layout_marginStart="8dp"
+            android:text="🎫 Book Tickets"
+            android:textColor="@color/netflix_white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/netflix_red"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+>>>>>>> Stashed changes

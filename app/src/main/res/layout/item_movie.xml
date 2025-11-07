@@ -1,75 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="140dp"
+    android:layout_height="220dp"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/card_background"
+    android:foreground="?android:attr/selectableItemBackground">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
+        <!-- Movie Poster (Netflix-style aspect ratio) -->
         <ImageView
             android:id="@+id/ivMoviePoster"
-            android:layout_width="80dp"
-            android:layout_height="120dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
             android:scaleType="centerCrop"
-            android:background="@color/material_dynamic_neutral90"
+            android:background="@color/netflix_medium_gray"
             android:contentDescription="Movie Poster" />
 
+        <!-- Rating Badge -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:background="@drawable/rating_badge_bg"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="★"
+                android:textColor="@color/rating_gold"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tvMovieRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8.5"
+                android:textColor="@color/netflix_white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp" />
+
+        </LinearLayout>
+
+        <!-- Movie Info Overlay -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/gradient_overlay"
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/tvMovieTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Movie Title"
-                android:textSize="18sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
+                android:textColor="@color/netflix_white"
                 android:maxLines="2"
-                android:ellipsize="end" />
-
-            <TextView
-                android:id="@+id/tvMovieGenre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Genre"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginTop="4dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Duration: "
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieDuration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="120 min"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black" />
-
-            </LinearLayout>
+                android:ellipsize="end"
+                android:shadowColor="@color/netflix_black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,32 +85,29 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvMovieGenre"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Rating: "
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black" />
+                    android:layout_weight="1"
+                    android:text="Action"
+                    android:textSize="10sp"
+                    android:textColor="@color/netflix_light_gray"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
 
                 <TextView
-                    android:id="@+id/tvMovieRating"
+                    android:id="@+id/tvMovieDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="8.5"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/holo_orange_dark"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="/10"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black" />
+                    android:text="120m"
+                    android:textSize="10sp"
+                    android:textColor="@color/netflix_light_gray"
+                    android:layout_marginStart="4dp" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </androidx.cardview.widget.CardView>

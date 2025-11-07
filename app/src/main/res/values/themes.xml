@@ -1,9 +1,37 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Netflix-like Dark Theme -->
     <style name="Base.Theme.MovieMax" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/netflix_red</item>
+        <item name="colorOnPrimary">@color/netflix_white</item>
+        <item name="colorSecondary">@color/netflix_medium_gray</item>
+        <item name="colorOnSecondary">@color/netflix_white</item>
+        <item name="android:windowBackground">@color/netflix_black</item>
+        <item name="android:colorBackground">@color/netflix_black</item>
+        <item name="colorSurface">@color/netflix_dark_gray</item>
+        <item name="colorOnSurface">@color/netflix_white</item>
+        <item name="android:textColor">@color/netflix_white</item>
+        <item name="android:textColorPrimary">@color/netflix_white</item>
+        <item name="android:textColorSecondary">@color/netflix_light_gray</item>
+        <item name="android:statusBarColor">@color/netflix_black</item>
+        <item name="android:navigationBarColor">@color/netflix_black</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.MovieMax" parent="Base.Theme.MovieMax" />
+    
+    <!-- Search EditText Style -->
+    <style name="SearchEditTextStyle">
+        <item name="android:background">@color/search_background</item>
+        <item name="android:textColor">@color/netflix_white</item>
+        <item name="android:textColorHint">@color/netflix_light_gray</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    <!-- Netflix Button Style -->
+    <style name="NetflixButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/netflix_red</item>
+        <item name="android:textColor">@color/netflix_white</item>
+        <item name="cornerRadius">4dp</item>
+    </style>
 </resources>
