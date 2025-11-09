@@ -25,7 +25,7 @@
                 android:id="@+id/btnDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Details" />
+                android:text="See Details" />
 
             <ImageButton
                 android:id="@+id/arrowBtn"
@@ -60,11 +60,19 @@
             android:gravity="end"
             android:layout_marginTop="16dp">
 
+
+            <Button
+                android:id="@+id/btnCreate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create New" />
+
             <Button
                 android:id="@+id/btnEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit" />
+                android:text="Edit"
+                android:layout_marginStart="8dp"/>
 
             <Button
                 android:id="@+id/btnDelete"

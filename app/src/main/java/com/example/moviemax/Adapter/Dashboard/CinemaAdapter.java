@@ -1,4 +1,4 @@
-package com.example.moviemax.Adapter;
+package com.example.moviemax.Adapter.Dashboard;
 
 import android.content.Context;
 import android.view.LayoutInflater;

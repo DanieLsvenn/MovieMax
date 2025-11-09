@@ -19,28 +19,33 @@
         <!-- Activity khởi động -->
         <activity
             android:name=".Activity.HomeActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".Activity.ShowTimeActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".Activity.DetailsActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".Activity.ImageUploadTestActivity"
             android:exported="false"
-            android:label="Test Image Upload"/>
+            android:label="Test Image Upload" />
 
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true" />
+
+        <activity
+            android:name=".Activity.DashboardActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,8 +54,7 @@
 
         <activity
             android:name=".RegisterActivity"
-            android:exported="false"/>
-
+            android:exported="false" />
     </application>
 
 </manifest>
