@@ -1,109 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< Updated upstream
-    android:fillViewport="true">
-=======
     android:background="@color/netflix_black">
->>>>>>> Stashed changes
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Header with back button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical">
 
-<<<<<<< Updated upstream
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:contentDescription="Back" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Movie Details"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginStart="16dp" />
-
-        </LinearLayout>
-
-        <!-- Movie poster -->
-        <ImageView
-            android:id="@+id/ivMoviePoster"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"
-            android:scaleType="centerCrop"
-            android:background="@color/material_dynamic_neutral90"
-            android:contentDescription="Movie Poster" />
-
-        <!-- Movie details -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Title -->
-            <TextView
-                android:id="@+id/tvMovieTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Movie Title"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="8dp"
-                android:textAlignment="center" />
-
-            <!-- Rating -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⭐ "
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/tvMovieRating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="8.5"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/holo_orange_dark"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="/10"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/black" />
-=======
             <!-- Hero Section with Poster Background -->
             <FrameLayout
                 android:layout_width="match_parent"
@@ -151,7 +64,6 @@
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:gravity="center_vertical">
->>>>>>> Stashed changes
 
                     <!-- Movie Poster -->
                     <androidx.cardview.widget.CardView
@@ -160,14 +72,6 @@
                         app:cardCornerRadius="8dp"
                         app:cardElevation="12dp">
 
-<<<<<<< Updated upstream
-            <!-- Genre -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-=======
                         <ImageView
                             android:id="@+id/ivMoviePoster"
                             android:layout_width="match_parent"
@@ -293,26 +197,13 @@
                     android:textStyle="bold"
                     android:textColor="@color/netflix_white"
                     android:layout_marginBottom="8dp" />
->>>>>>> Stashed changes
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvMovieDescription"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Genre: "
+                    android:text="Movie description will be loaded here..."
                     android:textSize="16sp"
-<<<<<<< Updated upstream
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieGenre"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Action, Drama"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-=======
                     android:textColor="@color/netflix_light_gray"
                     android:lineSpacingExtra="4dp"
                     android:layout_marginBottom="24dp" />
@@ -635,167 +526,13 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="100dp" />
->>>>>>> Stashed changes
 
             </LinearLayout>
-
-            <!-- Duration -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Duration: "
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieDuration"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="120 minutes"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-
-            </LinearLayout>
-
-            <!-- Language -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Language: "
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieLanguage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="English"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-
-            </LinearLayout>
-
-            <!-- Director -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Director: "
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieDirector"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Director Name"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-
-            </LinearLayout>
-
-            <!-- Cast -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cast: "
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieCast"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Actor 1, Actor 2, Actor 3"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-
-            </LinearLayout>
-
-            <!-- Release Date -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Release Date: "
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tvMovieReleaseDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2025-10-19"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-
-            </LinearLayout>
-
-            <!-- Description -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Description:"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/tvMovieDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Movie description goes here..."
-                android:textSize="16sp"
-                android:textColor="@android:color/darker_gray"
-                android:lineSpacingExtra="4dp"
-                android:justificationMode="inter_word" />
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-<<<<<<< Updated upstream
-</ScrollView>
-=======
     <!-- Booking Actions Bar -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -805,19 +542,6 @@
         android:background="@color/netflix_dark_gray"
         android:elevation="12dp"
         android:padding="16dp">
-
-        <!-- Add to Wishlist Button -->
-        <Button
-            android:id="@+id/btnWishlist"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="♡ Wishlist"
-            android:textColor="@color/netflix_white"
-            android:textSize="14sp"
-            android:background="@drawable/wishlist_button_bg"
-            app:cornerRadius="8dp" />
 
         <!-- Book Tickets Button -->
         <Button
@@ -835,5 +559,28 @@
 
     </LinearLayout>
 
+    <!-- Format Selection -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/netflix_black"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvShowtimes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSimilarMovies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
->>>>>>> Stashed changes

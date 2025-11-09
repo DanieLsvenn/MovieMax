@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.moviemax.Activity.DetailsActivity;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
-import com.example.moviemax.Supabase.SupabaseStorageHelper;
+//import com.example.moviemax.Supabase.SupabaseStorageHelper;
 
 import java.util.List;
 
@@ -55,21 +55,21 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
 
         // Load poster and background images
         String posterUrl = movie.getPosterUrl();
-        String fullPosterUrl = getFullPosterUrl(posterUrl);
-
-        // Load poster
-        Glide.with(context)
-                .load(fullPosterUrl)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
-                .into(holder.ivPoster);
-
-        // Load background (same image)
-        Glide.with(context)
-                .load(fullPosterUrl)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
-                .into(holder.ivBackground);
+//        String fullPosterUrl = getFullPosterUrl(posterUrl);
+//
+//        // Load poster
+//        Glide.with(context)
+//                .load(fullPosterUrl)
+//                .placeholder(R.drawable.ic_launcher_background)
+//                .error(R.drawable.ic_launcher_background)
+//                .into(holder.ivPoster);
+//
+//        // Load background (same image)
+//        Glide.with(context)
+//                .load(fullPosterUrl)
+//                .placeholder(R.drawable.ic_launcher_background)
+//                .error(R.drawable.ic_launcher_background)
+//                .into(holder.ivBackground);
 
         // Book Now button click
         holder.btnBookNow.setOnClickListener(v -> {
@@ -101,15 +101,15 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         notifyDataSetChanged();
     }
 
-    private String getFullPosterUrl(String posterUrl) {
-        if (posterUrl.startsWith("http")) {
-            return posterUrl;
-        } else if (posterUrl.startsWith("poster_")) {
-            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
-        } else {
-            return "http://103.200.20.174:8081/images/" + posterUrl;
-        }
-    }
+//    private String getFullPosterUrl(String posterUrl) {
+//        if (posterUrl.startsWith("http")) {
+//            return posterUrl;
+//        } else if (posterUrl.startsWith("poster_")) {
+//            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
+//        } else {
+//            return "http://103.200.20.174:8081/images/" + posterUrl;
+//        }
+//    }
 
     static class BannerViewHolder extends RecyclerView.ViewHolder {
         ImageView ivBackground, ivPoster;
