@@ -3,24 +3,44 @@ package com.example.moviemax.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.moviemax.Adapter.MovieAdapter;
+import com.example.moviemax.Adapter.SimpleShowtimeAdapter;
 import com.example.moviemax.R;
 import com.example.moviemax.Supabase.SupabaseStorageHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+//import com.example.moviemax.Supabase.SupabaseStorageHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+// import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class DetailsActivity extends AppCompatActivity {
-    private ImageView ivMoviePoster;
+    private ImageView ivMoviePoster, ivMovieBackdrop;
     private TextView tvMovieTitle, tvMovieGenre, tvMovieDuration, tvMovieLanguage;
     private TextView tvMovieDirector, tvMovieCast, tvMovieReleaseDate, tvMovieDescription, tvMovieRating;
+    private TextView tvMovieGenreAndDuration;
     private ImageButton btnBack;
     private FloatingActionButton fabUploadTest; // For FAB option
     // private Button btnTestUpload; // For Button option - uncomment if using Option B
+    private Button btnPlay, btnBookTickets;
+    private RecyclerView recyclerViewShowtimes, recyclerViewSimilarMovies;
+    private SimpleShowtimeAdapter showtimeAdapter;
+    private MovieAdapter similarMoviesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +48,22 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         initViews();
+        setupRecyclerViews();
         setupClickListeners();
         loadMovieDetails();
+        loadShowtimes();
+        loadSimilarMovies();
     }
 
     private void initViews() {
+        // Hero section
         ivMoviePoster = findViewById(R.id.ivMoviePoster);
+        ivMovieBackdrop = findViewById(R.id.ivMovieBackdrop);
         tvMovieTitle = findViewById(R.id.tvMovieTitle);
+        tvMovieRating = findViewById(R.id.tvMovieRating);
+        tvMovieGenreAndDuration = findViewById(R.id.tvMovieGenreAndDuration);
+
+        // Details section
         tvMovieGenre = findViewById(R.id.tvMovieGenre);
         tvMovieDuration = findViewById(R.id.tvMovieDuration);
         tvMovieLanguage = findViewById(R.id.tvMovieLanguage);
@@ -42,7 +71,8 @@ public class DetailsActivity extends AppCompatActivity {
         tvMovieCast = findViewById(R.id.tvMovieCast);
         tvMovieReleaseDate = findViewById(R.id.tvMovieReleaseDate);
         tvMovieDescription = findViewById(R.id.tvMovieDescription);
-        tvMovieRating = findViewById(R.id.tvMovieRating);
+
+        // Buttons
         btnBack = findViewById(R.id.btnBack);
 
         // Initialize upload test button (FAB option)
@@ -50,6 +80,24 @@ public class DetailsActivity extends AppCompatActivity {
 
         // OR for Button option, uncomment this:
         // btnTestUpload = findViewById(R.id.btnTestUpload);
+        btnPlay = findViewById(R.id.btnPlay);
+        btnBookTickets = findViewById(R.id.btnBookTickets);
+
+        // RecyclerViews
+        recyclerViewShowtimes = findViewById(R.id.recyclerViewShowtimes);
+        recyclerViewSimilarMovies = findViewById(R.id.recyclerViewSimilarMovies);
+    }
+
+    private void setupRecyclerViews() {
+        // Showtimes RecyclerView
+        showtimeAdapter = new SimpleShowtimeAdapter(this, new ArrayList<>());
+        recyclerViewShowtimes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewShowtimes.setAdapter(showtimeAdapter);
+
+        // Similar Movies RecyclerView
+        similarMoviesAdapter = new MovieAdapter(this, new ArrayList<>());
+        recyclerViewSimilarMovies.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewSimilarMovies.setAdapter(similarMoviesAdapter);
     }
 
     private void setupClickListeners() {
@@ -66,6 +114,17 @@ public class DetailsActivity extends AppCompatActivity {
         //     Intent intent = new Intent(DetailsActivity.this, ImageUploadTestActivity.class);
         //     startActivity(intent);
         // });
+        btnPlay.setOnClickListener(v -> {
+            // Placeholder for play functionality
+            Toast.makeText(this, "Play functionality coming soon!", Toast.LENGTH_SHORT).show();
+        });
+
+        btnBookTickets.setOnClickListener(v -> {
+            // Navigate to ShowTimeActivity or booking functionality
+            Intent intent = new Intent(DetailsActivity.this, ShowTimeActivity.class);
+            // Pass movie data if needed
+            startActivity(intent);
+        });
     }
 
     private void loadMovieDetails() {
@@ -82,8 +141,15 @@ public class DetailsActivity extends AppCompatActivity {
         String posterUrl = intent.getStringExtra("movie_poster_url");
         double rating = intent.getDoubleExtra("movie_rating", 0.0);
 
-        // Set the data to views
+        // Set the data to hero section views
         tvMovieTitle.setText(title != null ? title : "Unknown Title");
+        tvMovieRating.setText(String.valueOf(rating));
+
+        // Combine genre and duration for hero section
+        String genreAndDuration = (genre != null ? genre : "Unknown Genre") + " • " + duration + " min";
+        tvMovieGenreAndDuration.setText(genreAndDuration);
+
+        // Set the data to details section views
         tvMovieGenre.setText(genre != null ? genre : "Unknown Genre");
         tvMovieDuration.setText(duration + " minutes");
         tvMovieLanguage.setText(language != null ? language : "Unknown Language");
@@ -91,17 +157,25 @@ public class DetailsActivity extends AppCompatActivity {
         tvMovieCast.setText(cast != null ? cast : "Unknown Cast");
         tvMovieReleaseDate.setText(releaseDate != null ? releaseDate : "Unknown Date");
         tvMovieDescription.setText(description != null ? description : "No description available");
-        tvMovieRating.setText(String.valueOf(rating));
 
         // Load poster image - UPDATED TO SUPPORT SUPABASE
-        if (posterUrl != null && !posterUrl.isEmpty()) {
-            String fullPosterUrl = getFullPosterUrl(posterUrl);
-            Glide.with(this)
-                    .load(fullPosterUrl)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
-                    .into(ivMoviePoster);
-        }
+       if (posterUrl != null && !posterUrl.isEmpty()) {
+           String fullPosterUrl = getFullPosterUrl(posterUrl);
+
+           // Load main poster
+           Glide.with(this)
+                   .load(fullPosterUrl)
+                   .placeholder(R.drawable.ic_launcher_background)
+                   .error(R.drawable.ic_launcher_background)
+                   .into(ivMoviePoster);
+
+           // Load backdrop (same image but with reduced opacity handled by layout)
+           Glide.with(this)
+                   .load(fullPosterUrl)
+                   .placeholder(R.drawable.ic_launcher_background)
+                   .error(R.drawable.ic_launcher_background)
+                   .into(ivMovieBackdrop);
+       }
     }
 
     private String getFullPosterUrl(String posterUrl) {
@@ -113,5 +187,24 @@ public class DetailsActivity extends AppCompatActivity {
             // Supabase storage filename pattern
             return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
         }
+    }
+
+    private void loadShowtimes() {
+        // Sample showtime data - in a real app, this would come from API
+        List<SimpleShowtimeAdapter.ShowtimeData> showtimes = Arrays.asList(
+                new SimpleShowtimeAdapter.ShowtimeData("10:30 AM", "Screen 1", "$12.99"),
+                new SimpleShowtimeAdapter.ShowtimeData("1:15 PM", "Screen 2", "$14.99"),
+                new SimpleShowtimeAdapter.ShowtimeData("4:00 PM", "IMAX", "$18.99"),
+                new SimpleShowtimeAdapter.ShowtimeData("7:30 PM", "Screen 1", "$16.99"),
+                new SimpleShowtimeAdapter.ShowtimeData("10:15 PM", "Screen 3", "$14.99")
+        );
+
+        showtimeAdapter.updateShowtimes(showtimes);
+    }
+
+    private void loadSimilarMovies() {
+        // In a real app, you'd call API to get similar movies
+        // For now, we'll just show placeholder message
+        Toast.makeText(this, "Similar movies will be loaded from API", Toast.LENGTH_SHORT).show();
     }
 }
