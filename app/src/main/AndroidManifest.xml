@@ -19,24 +19,24 @@
         <!-- Activity khởi động -->
         <activity
             android:name=".Activity.HomeActivity"
-            android:exported="true" />
+            android:exported="false"/>
 
         <activity
             android:name=".Activity.ShowTimeActivity"
-            android:exported="true" />
+            android:exported="false"/>
 
         <activity
             android:name=".Activity.DetailsActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
         <activity
             android:name=".Activity.ImageUploadTestActivity"
             android:exported="false"
-            android:label="Test Image Upload" />
+            android:label="Test Image Upload"/>
 
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="false"/>
 
         <activity
             android:name=".LoginActivity"
@@ -49,7 +49,7 @@
 
         <activity
             android:name=".RegisterActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
     </application>
 

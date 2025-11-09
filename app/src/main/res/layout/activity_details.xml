@@ -556,8 +556,7 @@
             android:textStyle="bold"
             app:backgroundTint="@color/netflix_red"
             app:cornerRadius="8dp" />
-
-    </ScrollView>
+    </LinearLayout>
 
     <!-- Floating Action Button for Image Upload Test -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
