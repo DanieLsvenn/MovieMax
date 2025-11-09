@@ -13,7 +13,7 @@ import com.example.moviemax.Api.MovieApi;
 import com.example.moviemax.Api.ShowTimeApi;
 
 import com.example.moviemax.Model.DateItemModel.DateItem;
-import com.example.moviemax.Model.MovieDTO.MovieResponse;
+import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 import com.example.moviemax.R;
 import java.text.SimpleDateFormat;
@@ -57,7 +57,7 @@ public class ShowTimeActivity extends AppCompatActivity {
     List<ShowTimeResponse> showTimeList = new ArrayList<>();
     List<ShowTimeResponse> allShowTimes = new ArrayList<>();
     private String selectedDate = "";
-    private long movieId = -1; // ID phim được truyền từ MainActivity (nếu có)
+    private int movieId = -1; // ID phim được truyền từ MainActivity (nếu có)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class ShowTimeActivity extends AppCompatActivity {
         // Nhận movieId từ Intent (nếu có)
         Intent intent = getIntent();
         if (intent.hasExtra("MOVIE_ID")) {
-            movieId = intent.getLongExtra("MOVIE_ID", -1);
+            movieId = intent.getIntExtra("MOVIE_ID", -1);
             Log.d("ShowTimeActivity", "Received Movie ID: " + movieId);
         }
 

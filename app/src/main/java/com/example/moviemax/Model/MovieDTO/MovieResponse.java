@@ -1,7 +1,7 @@
-package com.example.moviemax.Model.MovieDTO;
+package com.example.moviemax.Model.MovieDto;
 
 public class MovieResponse {
-    private long id;
+    private int id;
     private String title;
     private String genre;
     private int duration;
@@ -14,8 +14,8 @@ public class MovieResponse {
     private double rating;
 
     // getter/setter đầy đủ
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

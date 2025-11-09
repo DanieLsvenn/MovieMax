@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moviemax.data.ApiClient;
 import com.example.moviemax.data.ApiService;
-import com.example.moviemax.model.LoginRequest;
-import com.example.moviemax.model.LoginResponse;
+import com.example.moviemax.Model.LoginRequest;
+import com.example.moviemax.Model.LoginResponse;
 import com.example.moviemax.utils.SessionManager;
 
 import retrofit2.Call;

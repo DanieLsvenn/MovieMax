@@ -54,7 +54,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         }
 
         // Load poster and background images
-        String posterUrl = movie.getPosterUrl();
+//        String posterUrl = movie.getPosterUrl();
 //        String fullPosterUrl = getFullPosterUrl(posterUrl);
 //
 //        // Load poster
@@ -81,7 +81,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
             intent.putExtra("movie_director", movie.getDirector());
             intent.putExtra("movie_cast", movie.getCast());
             intent.putExtra("movie_description", movie.getDescription());
-            intent.putExtra("movie_poster_url", movie.getPosterUrl());
+//            intent.putExtra("movie_poster_url", movie.getPosterUrl());
             intent.putExtra("movie_release_date", movie.getReleaseDate());
             intent.putExtra("movie_rating", movie.getRating());
             context.startActivity(intent);

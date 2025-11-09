@@ -165,7 +165,7 @@ public class MovieFragment extends Fragment {
         etDirector.setText(selectedMovie.getDirector());
         etCast.setText(selectedMovie.getCast());
         etDescription.setText(selectedMovie.getDescription());
-        etPosterUrl.setText(selectedMovie.getPosterUrl());
+//        etPosterUrl.setText(selectedMovie.getPosterUrl());
         etReleaseDate.setText(selectedMovie.getReleaseDate());
         etRating.setText(String.valueOf(selectedMovie.getRating()));
 //        etShowtimeIds.setText(selectedMovie.getShowtimeIds());

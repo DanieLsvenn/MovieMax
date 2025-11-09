@@ -6,7 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ApiService {
     // Biến static để giữ instance duy nhất của Retrofit (Singleton Pattern)
     private static Retrofit retrofit = null;
-    private static final String BASE_URL = "http://103.200.20.174:8081";
+    private static final String BASE_URL = "http://103.200.20.174:8081/api/";
 
     public static Retrofit getClient() {
         // Chỉ khởi tạo khi instance chưa tồn tại

@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moviemax.data.ApiClient;
 import com.example.moviemax.data.ApiService;
-import com.example.moviemax.model.RegisterRequest;
-import com.example.moviemax.model.LoginResponse;
+import com.example.moviemax.Model.RegisterRequest;
+import com.example.moviemax.Model.LoginResponse;
 
 import java.util.Calendar;
 import java.util.Locale;

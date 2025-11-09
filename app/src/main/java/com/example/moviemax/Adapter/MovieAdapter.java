@@ -44,25 +44,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.tvRating.setText(String.valueOf(movie.getRating()));
 
         // Load poster image - support both backend and Supabase URLs
-        String posterUrl = movie.getPosterUrl();
-        String fullPosterUrl;
-
-        if (posterUrl.startsWith("http")) {
-            // Already a full URL (Supabase)
-            fullPosterUrl = posterUrl;
-        } else if (posterUrl.startsWith("poster_")) {
-            // Supabase storage filename
-            fullPosterUrl = SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
-        } else {
-            // Backend image path
-            fullPosterUrl = "http://103.200.20.174:8081/images/" + posterUrl;
-        }
-
-        Glide.with(context)
-                .load(fullPosterUrl)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
-                .into(holder.ivPoster);
+//        String posterUrl = movie.getPosterUrl();
+//        String fullPosterUrl;
+//
+//        if (posterUrl.startsWith("http")) {
+//            // Already a full URL (Supabase)
+//            fullPosterUrl = posterUrl;
+//        } else if (posterUrl.startsWith("poster_")) {
+//            // Supabase storage filename
+//            fullPosterUrl = SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
+//        } else {
+//            // Backend image path
+//            fullPosterUrl = "http://103.200.20.174:8081/images/" + posterUrl;
+//        }
+//
+//        Glide.with(context)
+//                .load(fullPosterUrl)
+//                .placeholder(R.drawable.ic_launcher_background)
+//                .error(R.drawable.ic_launcher_background)
+//                .into(holder.ivPoster);
 
         // Set click listener to open movie details
         holder.itemView.setOnClickListener(v -> {
@@ -74,7 +74,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             intent.putExtra("movie_director", movie.getDirector());
             intent.putExtra("movie_cast", movie.getCast());
             intent.putExtra("movie_description", movie.getDescription());
-            intent.putExtra("movie_poster_url", movie.getPosterUrl());
+//            intent.putExtra("movie_poster_url", movie.getPosterUrl());
             intent.putExtra("movie_release_date", movie.getReleaseDate());
             intent.putExtra("movie_rating", movie.getRating());
             context.startActivity(intent);

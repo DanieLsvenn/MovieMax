@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.MovieApi;
-import com.example.moviemax.Model.MovieDTO.MovieResponse;
+import com.example.moviemax.Model.MovieDto.MovieResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

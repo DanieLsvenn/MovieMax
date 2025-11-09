@@ -1,4 +1,4 @@
-package com.example.moviemax.model;
+package com.example.moviemax.Model;
 
 public class RegisterRequest {
     private String email;

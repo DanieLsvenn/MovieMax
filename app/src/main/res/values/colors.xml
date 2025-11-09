@@ -29,7 +29,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Payment colors -->
-    <color name="card_background">#1A1A1A</color>
     <color name="selected_payment">#2A2A2A</color>
     <color name="primary_red">#FF5252</color>
     <color name="primary_orange">#FF9800</color>
