@@ -57,7 +57,7 @@ public class ShowTimeActivity extends AppCompatActivity {
     List<ShowTimeResponse> showTimeList = new ArrayList<>();
     List<ShowTimeResponse> allShowTimes = new ArrayList<>();
     private String selectedDate = "";
-    private int movieId = -1; // ID phim được truyền từ MainActivity (nếu có)
+    private int movieId = 8; // ID phim được truyền từ MainActivity (nếu có)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

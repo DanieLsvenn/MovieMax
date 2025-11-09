@@ -1,7 +1,7 @@
 package com.example.moviemax.data;
 
-import com.example.moviemax.Model.LoginRequest;
-import com.example.moviemax.Model.LoginResponse;
+import com.example.moviemax.Model.LoginDto.LoginRequest;
+import com.example.moviemax.Model.LoginDto.LoginResponse;
 import com.example.moviemax.Model.RegisterRequest;
 
 import retrofit2.Call;

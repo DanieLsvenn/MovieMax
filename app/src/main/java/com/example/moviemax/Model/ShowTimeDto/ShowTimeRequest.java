@@ -3,16 +3,15 @@ package com.example.moviemax.Model.ShowTimeDto;
 public class ShowTimeRequest {
     private String startTime;
 
-    private  double price;
+    private double price;
 
-    private   long movieId;
+    private long movieId;
 
     private long roomId;
 
     public ShowTimeRequest(){
 
     }
-
 
     public ShowTimeRequest(String startTime,double price, long movieId,long roomId){
         this.startTime = startTime;

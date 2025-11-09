@@ -1,4 +1,4 @@
-package com.example.moviemax.Model;
+package com.example.moviemax.Model.LoginDto;
 
 public class LoginRequest {
     private String username;

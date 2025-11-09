@@ -16,7 +16,46 @@
         android:theme="@style/Theme.MovieMax"
         android:usesCleartextTraffic="true">
 
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+        </activity>
 
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activity.HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activity.DetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activity.ShowTimeActivity"
+            android:exported="true" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".Activity.BookingActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".Activity.FoodActivity"
+            android:exported="false" />
+
+        <!-- Payment -->
         <activity
             android:name=".Activity.PaymentActivity"
             android:exported="true"
@@ -25,77 +64,55 @@
             <!-- Deep link cho MoMo callback -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="moviemax"
                     android:host="payment"
-                    android:pathPrefix="/momo" />
+                    android:pathPrefix="/momo"
+                    android:scheme="moviemax" />
             </intent-filter>
 
             <!-- Deep link cho ZaloPay callback -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="moviemax"
                     android:host="payment"
-                    android:pathPrefix="/zalopay" />
+                    android:pathPrefix="/zalopay"
+                    android:scheme="moviemax" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".Activity.TicketDetailActivity"
-            android:exported="true"
-            android:launchMode="singleTop"/>
-
+        <!-- Booking success -->
         <activity
             android:name=".Activity.BookingSuccessActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <!-- Activity khởi động -->
-        <activity android:name=".Activity.FoodActivity"/>
-        <activity android:name=".Activity.BookingActivity" />
-        <activity
-            android:name=".Activity.HomeActivity"
-            android:exported="false" />
+        <!-- Booking failed -->
 
+        <!-- After booking, show ticket -->
         <activity
-            android:name=".Activity.ShowTimeActivity"
-            android:exported="false" />
+            android:name=".Activity.TicketDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
 
+        <!-- Staff/admin dashboard -->
         <activity
-            android:name=".Activity.DetailsActivity"
-            android:exported="false" />
+            android:name=".Activity.DashboardActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
+        <!-- Testing -->
         <activity
             android:name=".Activity.ImageUploadTestActivity"
             android:exported="false"
             android:label="Test Image Upload" />
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true" />
-
-        <activity
-            android:name=".Activity.DashboardActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
     </application>
-
 </manifest>
