@@ -18,7 +18,7 @@ public class ShowTimeResponse {
     private  String roomName;
 
     public ShowTimeResponse(){
-        
+
     }
 
     public int getId() {
@@ -84,4 +84,6 @@ public class ShowTimeResponse {
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
+
+
 }

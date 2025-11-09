@@ -1,15 +1,18 @@
 package com.example.moviemax.Model.BookingDto;
 
+import com.example.moviemax.Model.FoodDto.FoodItemRequest;
+
 import java.util.List;
 
 public class BookingRequest {
 
     private long accountId;
 
-
     private long showtimeId;
 
     private List<Long> seatIds;
+
+    private  List<FoodItemRequest> foodItems;
 
     public BookingRequest() {}
 
@@ -17,6 +20,21 @@ public class BookingRequest {
         this.accountId = accountId;
         this.showtimeId = showtimeId;
         this.seatIds = seatIds;
+    }
+
+    public BookingRequest(long accountId, long showtimeId, List<Long> seatIds, List<FoodItemRequest> foodItems) {
+        this.accountId = accountId;
+        this.showtimeId = showtimeId;
+        this.seatIds = seatIds;
+        this.foodItems = foodItems;
+    }
+
+    public List<FoodItemRequest> getFoodItems() {
+        return foodItems;
+    }
+
+    public void setFoodItems(List<FoodItemRequest> foodItems) {
+        this.foodItems = foodItems;
     }
 
     public long getAccountId() {

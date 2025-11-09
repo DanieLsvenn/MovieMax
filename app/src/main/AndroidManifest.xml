@@ -16,7 +16,48 @@
         android:theme="@style/Theme.MovieMax"
         android:usesCleartextTraffic="true">
 
+
+        <activity
+            android:name=".Activity.PaymentActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+
+            <!-- Deep link cho MoMo callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="moviemax"
+                    android:host="payment"
+                    android:pathPrefix="/momo" />
+            </intent-filter>
+
+            <!-- Deep link cho ZaloPay callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="moviemax"
+                    android:host="payment"
+                    android:pathPrefix="/zalopay" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".Activity.TicketDetailActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+
+        <activity
+            android:name=".Activity.BookingSuccessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- Activity khởi động -->
+        <activity android:name=".Activity.FoodActivity"/>
+        <activity android:name=".Activity.BookingActivity" />
         <activity
             android:name=".Activity.HomeActivity"
             android:exported="false" />
