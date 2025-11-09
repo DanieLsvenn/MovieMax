@@ -14,20 +14,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.moviemax.Activity.DashboardActivity;
-import com.example.moviemax.Activity.ShowTimeActivity;
-import com.example.moviemax.Adapter.CinemaAdapter;
+import com.example.moviemax.Adapter.Dashboard.CinemaAdapter;
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.CinemaApi;
 import com.example.moviemax.Model.CinemaDto.CinemaRequest;
 import com.example.moviemax.Model.CinemaDto.CinemaResponse;
-import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 import com.example.moviemax.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;

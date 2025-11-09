@@ -44,15 +44,22 @@ public class SidebarFragment extends Fragment {
         LinearLayout btnStaff = view.findViewById(R.id.btnStaff);
         LinearLayout btnSettings = view.findViewById(R.id.btnSettings);
         LinearLayout btnCinemas = view.findViewById(R.id.btnCinemas);
+        LinearLayout btnRooms = view.findViewById(R.id.btnRooms);
+
 
         btnDashboard.setOnClickListener(v -> showToast("Dashboard"));
-        btnMovies.setOnClickListener(v -> showToast("Movies"));
+        btnMovies.setOnClickListener(v -> {
+            if (listener != null) listener.onSidebarItemSelected("Movies");
+        });
         btnSchedules.setOnClickListener(v -> showToast("Schedules"));
         btnStaff.setOnClickListener(v -> showToast("Staff"));
         btnSettings.setOnClickListener(v -> showToast("Settings"));
 
         btnCinemas.setOnClickListener(v -> {
-            if (listener != null) listener.onSidebarItemSelected("cinemas");
+            if (listener != null) listener.onSidebarItemSelected("Cinemas");
+        });
+        btnRooms.setOnClickListener(v -> {
+            if (listener != null) listener.onSidebarItemSelected("Rooms");
         });
 
         return view;

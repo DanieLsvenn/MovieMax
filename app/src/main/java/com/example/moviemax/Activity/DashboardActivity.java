@@ -11,6 +11,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.example.moviemax.Fragment.MovieFragment;
+import com.example.moviemax.Fragment.RoomFragment;
 import com.example.moviemax.R;
 import com.example.moviemax.Fragment.CinemaFragment;
 import com.example.moviemax.Fragment.SidebarFragment;
@@ -63,10 +65,15 @@ public class DashboardActivity extends AppCompatActivity implements SidebarFragm
         Fragment fragmentToLoad = null;
 
         switch (item) {
-            case "cinemas":
+            case "Cinemas":
                 fragmentToLoad = new CinemaFragment();
                 break;
-            // you can add more: movies, users, etc.
+            case "Movies":
+                fragmentToLoad = new MovieFragment();
+                break;
+            case "Rooms":
+                fragmentToLoad = new RoomFragment();
+                break;
         }
 
         if (fragmentToLoad != null) {

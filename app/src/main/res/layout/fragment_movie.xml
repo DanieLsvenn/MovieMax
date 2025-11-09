@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollViewMovies"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:divider="?android:attr/dividerHorizontal"
+        android:showDividers="middle">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:id="@+id/listHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_section_header"
+            android:elevation="2dp">
+
+            <Button
+                android:id="@+id/btnDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Details"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white" />
+
+            <ImageButton
+                android:id="@+id/arrowBtn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_arrow_down"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Toggle list"
+                app:tint="@android:color/black" />
+        </LinearLayout>
+
+        <!-- MOVIE LIST -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/listContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMovies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- CRUD BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp">
+
+            <Button
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <!-- MOVIE DETAILS -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/detailsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Movie Details"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:enabled="false" />
+
+                <EditText
+                    android:id="@+id/etGenre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Genre"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Duration (minutes)"
+                    android:inputType="number"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etLanguage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Language"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etDirector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Director"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etCast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Cast"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etPosterUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Poster URL"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etReleaseDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Release Date (yyyy-MM-dd)"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:id="@+id/etRating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Rating (0–10)"
+                    android:inputType="numberDecimal"
+                    android:enabled="false"
+                    android:layout_marginTop="8dp" />
+
+<!--                <EditText-->
+<!--                    android:id="@+id/etShowtimeIds"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:hint="Showtime IDs (comma-separated)"-->
+<!--                    android:enabled="false"-->
+<!--                    android:layout_marginTop="8dp" />-->
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- SAVE BUTTON -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:enabled="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/teal_700"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp" />
+
+    </LinearLayout>
+</ScrollView>
