@@ -1,12 +1,8 @@
 package com.example.moviemax;
 
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,5 +10,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TextView tvInfo = findViewById(R.id.tvInfo);
+
+        String fullName = getIntent().getStringExtra("fullName");
+        String email = getIntent().getStringExtra("email");
+
+        tvInfo.setText("🎬 Welcome " + fullName + "\n📧 " + email);
     }
 }
