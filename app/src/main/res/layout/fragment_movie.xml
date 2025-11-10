@@ -12,33 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- DASHBOARD HEADER -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/gradient_header"
-            android:padding="24dp"
-            android:elevation="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cinema Management"
-                android:textColor="@android:color/white"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Movies Administration Panel"
-                android:textColor="#E0E0E0"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,47 +87,44 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="end"
+                        android:gravity="center"
                         android:padding="16dp"
                         android:background="#FAFAFA">
 
                         <Button
                             android:id="@+id/btnAdd"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="48dp"
-                            android:text="+ Add Movie"
+                            android:text="+ Add"
                             android:textAllCaps="false"
-                            android:paddingStart="24dp"
-                            android:paddingEnd="24dp"
                             android:backgroundTint="#43A047"
                             android:textColor="@android:color/white"
-                            app:cornerRadius="8dp" />
+                            app:cornerRadius="8dp"
+                            android:layout_weight="2"/>
 
                         <Button
                             android:id="@+id/btnEdit"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:text="Edit"
                             android:textAllCaps="false"
-                            android:paddingStart="24dp"
-                            android:paddingEnd="24dp"
                             android:layout_marginStart="8dp"
                             android:backgroundTint="#5E35B1"
                             android:textColor="@android:color/white"
-                            app:cornerRadius="8dp" />
+                            app:cornerRadius="8dp"
+                            android:layout_weight="2"/>
 
                         <Button
                             android:id="@+id/btnDelete"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:text="Delete"
                             android:textAllCaps="false"
-                            android:paddingStart="24dp"
-                            android:paddingEnd="24dp"
                             android:layout_marginStart="8dp"
                             android:backgroundTint="#E53935"
                             android:textColor="@android:color/white"
-                            app:cornerRadius="8dp" />
+                            app:cornerRadius="8dp"
+                            android:layout_weight="2" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -198,6 +168,70 @@
                             android:layout_marginStart="12dp" />
                     </LinearLayout>
 
+                    <!-- POSTER IMAGE SECTION -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Movie Poster"
+                        android:textColor="#5E35B1"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FAFAFA">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/ivPosterPreview"
+                                android:layout_width="200dp"
+                                android:layout_height="280dp"
+                                android:scaleType="centerCrop"
+                                android:background="@color/material_dynamic_neutral90"
+                                android:contentDescription="Poster Preview"
+                                android:layout_marginBottom="12dp" />
+
+                            <Button
+                                android:id="@+id/btnSelectPoster"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:text="📷 Select Poster Image"
+                                android:textAllCaps="false"
+                                android:textSize="14sp"
+                                android:backgroundTint="#2196F3"
+                                android:textColor="@android:color/white"
+                                app:cornerRadius="8dp"
+                                android:layout_marginBottom="8dp" />
+
+                            <ProgressBar
+                                android:id="@+id/posterUploadProgress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:id="@+id/tvPosterStatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="No poster selected"
+                                android:textSize="12sp"
+                                android:textColor="@android:color/darker_gray"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
                     <!-- Basic Information -->
                     <TextView
                         android:layout_width="wrap_content"
@@ -206,7 +240,8 @@
                         android:textColor="#5E35B1"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginTop="8dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -434,11 +469,12 @@
                             android:textColorHint="#9E9E9E"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Hidden Poster URL field (auto-filled) -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:hint="Poster URL"
+                        android:hint="Poster URL (Auto-filled)"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxStrokeColor="@color/textinput_stroke_colors"
                         app:hintTextColor="@color/textinput_hint_colors"
@@ -452,8 +488,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:enabled="false"
-                            android:textColor="#212121"
-                            android:textColorHint="#9E9E9E"/>
+                            android:textColor="#757575"
+                            android:textColorHint="#9E9E9E"
+                            android:textSize="12sp"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <Button

@@ -9,7 +9,7 @@ public class MovieResponse {
     private String director;
     private String cast;
     private String description;
-    private String posterPath;
+    private String posterUrl;
     private String releaseDate;
     private double rating;
 
@@ -38,8 +38,8 @@ public class MovieResponse {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public String getPosterPath() { return posterPath; }
-    public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
+    public String getPosterUrl() { return posterUrl; }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
 
     public String getReleaseDate() { return releaseDate; }
     public void setReleaseDate(String releaseDate) { this.releaseDate = releaseDate; }
