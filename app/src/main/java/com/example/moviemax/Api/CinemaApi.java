@@ -3,6 +3,7 @@ package com.example.moviemax.Api;
 
 import com.example.moviemax.Model.CinemaDto.CinemaRequest;
 import com.example.moviemax.Model.CinemaDto.CinemaResponse;
+import com.example.moviemax.Model.RoomDto.RoomResponse;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ import retrofit2.http.Path;
 public interface CinemaApi {
     @GET("cinemas")
     Call<List<CinemaResponse>> getCinemas();
+
+    @GET("cinemas/{cinemaId}/rooms")
+    Call<List<RoomResponse>> getRoomsByCinema(@Path("cinemaId") Integer cinemaId);
 
     @PUT("cinemas/{id}")
     Call<CinemaResponse> updateCinema(@Path("id") Integer id, @Body CinemaRequest cinema);

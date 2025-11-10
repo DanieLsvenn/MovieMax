@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.moviemax.Activity.DetailsActivity;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
+import com.example.moviemax.Supabase.SupabaseStorageHelper;
 //import com.example.moviemax.Supabase.SupabaseStorageHelper;
 
 import java.util.List;
@@ -53,23 +54,14 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
             holder.tvFormatBadge.setVisibility(View.GONE);
         }
 
-        // Load poster and background images
-//        String posterUrl = movie.getPosterUrl();
-//        String fullPosterUrl = getFullPosterUrl(posterUrl);
-//
-//        // Load poster
-//        Glide.with(context)
-//                .load(fullPosterUrl)
-//                .placeholder(R.drawable.ic_launcher_background)
-//                .error(R.drawable.ic_launcher_background)
-//                .into(holder.ivPoster);
-//
-//        // Load background (same image)
-//        Glide.with(context)
-//                .load(fullPosterUrl)
-//                .placeholder(R.drawable.ic_launcher_background)
-//                .error(R.drawable.ic_launcher_background)
-//                .into(holder.ivBackground);
+        String posterUrl = movie.getPosterUrl();
+        String fullPosterUrl = getFullPosterUrl(posterUrl);
+
+        Glide.with(context)
+                .load(fullPosterUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_background)
+                .into(holder.ivPoster);
 
         // Book Now button click
         holder.btnBookNow.setOnClickListener(v -> {
@@ -81,7 +73,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
             intent.putExtra("movie_director", movie.getDirector());
             intent.putExtra("movie_cast", movie.getCast());
             intent.putExtra("movie_description", movie.getDescription());
-//            intent.putExtra("movie_poster_url", movie.getPosterUrl());
+            intent.putExtra("movie_poster_url", fullPosterUrl);
             intent.putExtra("movie_release_date", movie.getReleaseDate());
             intent.putExtra("movie_rating", movie.getRating());
             context.startActivity(intent);
@@ -101,16 +93,6 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         notifyDataSetChanged();
     }
 
-//    private String getFullPosterUrl(String posterUrl) {
-//        if (posterUrl.startsWith("http")) {
-//            return posterUrl;
-//        } else if (posterUrl.startsWith("poster_")) {
-//            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
-//        } else {
-//            return "http://103.200.20.174:8081/images/" + posterUrl;
-//        }
-//    }
-
     static class BannerViewHolder extends RecyclerView.ViewHolder {
         ImageView ivBackground, ivPoster;
         TextView tvTitle, tvGenre, tvRating, tvFormatBadge;
@@ -125,6 +107,16 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
             tvRating = itemView.findViewById(R.id.tvBannerRating);
             tvFormatBadge = itemView.findViewById(R.id.tvFormatBadge);
             btnBookNow = itemView.findViewById(R.id.btnBannerBookNow);
+        }
+    }
+
+    private String getFullPosterUrl(String posterUrl) {
+        if (posterUrl.startsWith("http")) {
+            // Already a full URL
+            return posterUrl;
+        } else {
+            // Convert filename to Supabase public URL
+            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
         }
     }
 }
