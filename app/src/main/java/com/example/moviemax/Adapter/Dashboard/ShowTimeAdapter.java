@@ -54,6 +54,10 @@ public class ShowTimeAdapter extends RecyclerView.Adapter<ShowTimeAdapter.ShowTi
         holder.tvRoomName.setText(showTime.getRoomName());
         holder.tvPrice.setText(String.format("$%.2f", showTime.getPrice()));
 
+//        // 🧠 Scale the whole card down to 90%
+//        holder.itemView.setScaleX(1.1f);
+//        holder.itemView.setScaleY(1.1f);
+
         // Toggle action layout visibility when card is long pressed
         holder.cardView.setOnLongClickListener(v -> {
             if (holder.layoutActions.getVisibility() == View.GONE) {

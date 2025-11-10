@@ -3,6 +3,8 @@ package com.example.moviemax.Fragment;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -24,16 +26,23 @@ import com.example.moviemax.Adapter.Dashboard.ShowTimeAdapter;
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.CinemaApi;
 import com.example.moviemax.Api.MovieApi;
+import com.example.moviemax.Api.ShowTimeApi;
 import com.example.moviemax.Helper.KeyboardInsetsHelper;
 import com.example.moviemax.Model.CinemaDto.CinemaResponse;
 import com.example.moviemax.Model.MovieDto.MovieRequest;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
+import com.example.moviemax.Model.RoomDto.RoomResponse;
+import com.example.moviemax.Model.ShowTimeDto.ShowTimeRequest;
 import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.Supabase.SupabaseStorageHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,7 +59,7 @@ public class MovieFragment extends Fragment {
 
     private CardView detailsContainer;
     private ImageButton arrowBtn;
-    private Button btnDetails, btnEdit, btnDelete, btnAdd, btnSave;
+    private Button btnDetails, btnEdit, btnDelete, btnAdd, btnSave, btnAddShowtime;
 
     private EditText etTitle, etGenre, etDuration, etLanguage, etDirector,
             etCast, etDescription, etPosterUrl, etReleaseDate, etRating,
@@ -69,6 +78,10 @@ public class MovieFragment extends Fragment {
     private boolean listVisible = true;
     private String mode = "";
     private MovieResponse selectedMovie;
+    private CinemaResponse selectedCinema;
+    private RoomResponse selectedRoom;
+
+    private final Calendar selectedShowTimeCalendar = Calendar.getInstance();
 
     @Nullable
     @Override
@@ -102,6 +115,7 @@ public class MovieFragment extends Fragment {
         btnEdit = view.findViewById(R.id.btnEdit);
         btnDelete = view.findViewById(R.id.btnDelete);
         btnSave = view.findViewById(R.id.btnSave);
+        btnAddShowtime = view.findViewById(R.id.btnAddShowtime);
 
         etTitle = view.findViewById(R.id.etTitle);
         etGenre = view.findViewById(R.id.etGenre);
@@ -114,9 +128,14 @@ public class MovieFragment extends Fragment {
         etReleaseDate = view.findViewById(R.id.etReleaseDate);
         etRating = view.findViewById(R.id.etRating);
         etShowtimeStart = view.findViewById(R.id.etShowtimeStart);
+
+        etShowtimeStart.setFocusable(false);
+        etShowtimeStart.setOnClickListener(v -> showDateTimePicker());
+
         etShowtimePrice = view.findViewById(R.id.etShowtimePrice);
 
         spinnerCinema = view.findViewById(R.id.spinnerCinema);
+        spinnerRoom = view.findViewById(R.id.spinnerRoom);
 
         // Image upload views
         ivPosterPreview = view.findViewById(R.id.ivPosterPreview);
@@ -158,6 +177,11 @@ public class MovieFragment extends Fragment {
         btnDelete.setOnClickListener(v -> onDelete());
         btnSave.setOnClickListener(v -> onConfirm());
         btnSelectPoster.setOnClickListener(v -> openImagePicker());
+        btnAddShowtime.setOnClickListener(v -> onAddShowTime());
+
+        disableDetails();
+
+        return view;
     }
 
     private void openImagePicker() {
@@ -238,7 +262,94 @@ public class MovieFragment extends Fragment {
         });
     }
 
-    private void reloadCinemaList() {
+    private void showDateTimePicker() {
+        Calendar currentDate = Calendar.getInstance();
+
+        // 1. Show Date Picker
+        new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
+            selectedShowTimeCalendar.set(Calendar.YEAR, year);
+            selectedShowTimeCalendar.set(Calendar.MONTH, month);
+            selectedShowTimeCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            // 2. After selecting date, show Time Picker
+            new TimePickerDialog(requireContext(), (timeView, hourOfDay, minute) -> {
+                selectedShowTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                selectedShowTimeCalendar.set(Calendar.MINUTE, minute);
+                selectedShowTimeCalendar.set(Calendar.SECOND, 0);
+                selectedShowTimeCalendar.set(Calendar.MILLISECOND, 0);
+
+                // 3. Format the selected date and time and update the EditText
+                // Format to ISO 8601 UTC string: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                etShowtimeStart.setText(sdf.format(selectedShowTimeCalendar.getTime()));
+
+            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show(); // true for 24-hour view
+
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+
+    private void onAddShowTime() {
+        ShowTimeRequest showTimeRequest = new ShowTimeRequest();
+
+        String startTimeString = etShowtimeStart.getText().toString();
+        if (startTimeString.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a start time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // The text from the EditText is now already in the correct format
+        showTimeRequest.setStartTime(startTimeString);
+
+        String priceString = etShowtimePrice.getText().toString();
+        if (priceString.isEmpty()) {
+            Toast.makeText(requireContext(), "Price cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Add a try-catch block for robust parsing
+        double price;
+        try {
+            price = Double.parseDouble(priceString);
+        } catch (NumberFormatException e) {
+            Toast.makeText(requireContext(), "Invalid price format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showTimeRequest.setPrice(price);
+
+        // Validate that a movie and room are selected
+        if (selectedMovie == null || selectedRoom == null) {
+            Toast.makeText(requireContext(), "Please select a movie and a room", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showTimeRequest.setMovieId(selectedMovie.getId());
+        showTimeRequest.setRoomId(selectedRoom.getId());
+
+        ShowTimeApi api = ApiService.getClient().create(ShowTimeApi.class);
+        api.createShowTime(showTimeRequest).enqueue(new Callback<ShowTimeResponse>() {
+            @Override
+            public void onResponse(Call<ShowTimeResponse> call, Response<ShowTimeResponse> response) {
+                Toast.makeText(requireContext(),
+                        response.isSuccessful() ? "Showtime created!" : "Create failed",
+                        Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()) {
+                    fetchAllShowTime(); // Refresh the showtime list
+                    // Clear fields
+                    etShowtimeStart.setText("");
+                    etShowtimePrice.setText("");
+                    // spiners already cleared on selection change
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShowTimeResponse> call, Throwable t) {
+                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void reloadCinemaList(){
         CinemaApi api = ApiService.getClient().create(CinemaApi.class);
         api.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
@@ -259,6 +370,28 @@ public class MovieFragment extends Fragment {
                             cinemaNames
                     );
                     spinnerCinema.setAdapter(adapter);
+
+                    // Set click listener for the AutoCompleteTextView
+                    spinnerCinema.setOnItemClickListener((parent, view, position, id) -> {
+                        // Get the selected cinema name from the adapter
+                        String selectedCinemaName = adapter.getItem(position);
+
+                        // Find the corresponding CinemaResponse object
+                        for (CinemaResponse cinema : cinemaList) {
+                            if (cinema.getName().equals(selectedCinemaName)) {
+                                selectedCinema = cinema;
+                                break;
+                            }
+                        }
+
+                        // Now that a cinema is selected, you can load the rooms for it
+                        if (selectedCinema != null) {
+                            reloadRoomList();
+                        }
+                    });
+
+                    // Also, to make it behave like a dropdown, show the list on click
+                    spinnerCinema.setOnClickListener(v -> spinnerCinema.showDropDown());
                 } else {
                     Toast.makeText(requireActivity(), "Failed to load cinemas", Toast.LENGTH_SHORT).show();
                 }
@@ -266,6 +399,66 @@ public class MovieFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<CinemaResponse>> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage(), t);
+                Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void reloadRoomList(){
+        // Ensure a cinema has been selected before fetching rooms
+        if (selectedCinema == null) {
+            // Clear the room spinner if no cinema is selected
+            spinnerRoom.setAdapter(null);
+            spinnerRoom.setText("", false); // Clear text without filtering
+            return;
+        }
+
+        // Unselect current spinner and remove selected room
+        spinnerRoom.setText("", false);
+        selectedRoom = null;
+
+        CinemaApi api = ApiService.getClient().create(CinemaApi.class);
+        api.getRoomsByCinema(selectedCinema.getId()).enqueue(new Callback<List<RoomResponse>>() {
+            @Override
+            public void onResponse(Call<List<RoomResponse>> call, Response<List<RoomResponse>> response) {
+                Log.d("API_RESPONSE", "Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    List<RoomResponse> roomList = response.body();
+                    // Populate the spinner with room names
+                    List<String> roomNames = new ArrayList<>();
+                    for (RoomResponse room : roomList) {
+                        roomNames.add(room.getName());
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            roomNames
+                    );
+                    spinnerRoom.setAdapter(adapter);
+
+                    // Set an OnItemClickListener to handle when a user selects a room
+                    spinnerRoom.setOnItemClickListener((parent, view, position, id) -> {
+                        String selectedRoomName = adapter.getItem(position);
+                         for (RoomResponse room : roomList) {
+                             if (room.getName().equals(selectedRoomName)) {
+                                 selectedRoom = room; // Assuming you have a 'selectedRoom' variable
+                                 break;
+                             }
+                         }
+                        Toast.makeText(getContext(), "Selected room: " + selectedRoomName, Toast.LENGTH_SHORT).show();
+                    });
+
+                    // Make it behave like a dropdown by showing the list on click
+                    spinnerRoom.setOnClickListener(v -> spinnerRoom.showDropDown());
+
+                } else {
+                    Toast.makeText(requireActivity(), "Failed to load rooms", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RoomResponse>> call, Throwable t) {
                 Log.e("API_ERROR", t.getMessage(), t);
                 Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
