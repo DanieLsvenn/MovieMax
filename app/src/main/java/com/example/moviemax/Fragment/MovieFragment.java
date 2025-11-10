@@ -14,11 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviemax.Adapter.Dashboard.MovieAdapter;
+import com.example.moviemax.Adapter.Dashboard.ShowTimeAdapter;
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.MovieApi;
 import com.example.moviemax.Helper.KeyboardInsetsHelper;
+import com.example.moviemax.Model.CinemaDto.CinemaResponse;
 import com.example.moviemax.Model.MovieDto.MovieRequest;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
+import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 import com.example.moviemax.R;
 
 import java.util.ArrayList;
@@ -30,16 +33,21 @@ import retrofit2.Response;
 
 public class MovieFragment extends Fragment {
 
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewMovies, recyclerViewShowtimes;
     private MovieAdapter adapter;
-    private List<MovieResponse> movieList = new ArrayList<>();
+    private ShowTimeAdapter showTimeAdapter;
 
-    private CardView listContainer, detailsContainer;
+    private List<MovieResponse> movieList = new ArrayList<>();
+    private List<CinemaResponse> cinemaList = new ArrayList<>();
+
+    private CardView  detailsContainer;
     private ImageButton arrowBtn;
     private Button btnDetails, btnEdit, btnDelete, btnAdd, btnSave;
 
     private EditText etTitle, etGenre, etDuration, etLanguage, etDirector,
-            etCast, etDescription, etPosterUrl, etReleaseDate, etRating, etShowtimeIds;
+            etCast, etDescription, etPosterUrl, etReleaseDate, etRating,
+            etShowtimeStart, etShowtimePrice;
+    private Spinner spinnerCinema, spinnerRoom;
 
     private boolean listVisible = true;
     private String mode = "";
@@ -52,11 +60,12 @@ public class MovieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
 
         // Views
-        listContainer = view.findViewById(R.id.listContainer);
+//        listContainer = view.findViewById(R.id.listContainer);
         detailsContainer = view.findViewById(R.id.detailsContainer);
-        recyclerView = view.findViewById(R.id.recyclerViewMovies);
+        recyclerViewMovies = view.findViewById(R.id.recyclerViewMovies);
+        recyclerViewShowtimes = view.findViewById(R.id.recyclerViewShowtimes);
         arrowBtn = view.findViewById(R.id.arrowBtn);
-        btnDetails = view.findViewById(R.id.btnDetails);
+//        btnDetails = view.findViewById(R.id.btnDetails);
         btnAdd = view.findViewById(R.id.btnAdd);
         btnEdit = view.findViewById(R.id.btnEdit);
         btnDelete = view.findViewById(R.id.btnDelete);
@@ -72,22 +81,24 @@ public class MovieFragment extends Fragment {
         etPosterUrl = view.findViewById(R.id.etPosterUrl);
         etReleaseDate = view.findViewById(R.id.etReleaseDate);
         etRating = view.findViewById(R.id.etRating);
-//        etShowtimeIds = view.findViewById(R.id.etShowtimeIds);
+        etShowtimeStart = view.findViewById(R.id.etShowtimeStart);
+        etShowtimePrice = view.findViewById(R.id.etShowtimePrice);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerViewMovies.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerViewShowtimes.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         adapter = new MovieAdapter(requireContext(), movieList, movie -> {
             selectedMovie = movie;
             adapter.setSelectedMovie(movie);
             displayDetails();
         });
-        recyclerView.setAdapter(adapter);
+        recyclerViewMovies.setAdapter(adapter);
 
         reloadList();
 
         // Events
         arrowBtn.setOnClickListener(v -> toggleList());
-        btnDetails.setOnClickListener(v -> toggleList());
+//        btnDetails.setOnClickListener(v -> toggleList());
         btnEdit.setOnClickListener(v -> onEditBtnClick());
         btnAdd.setOnClickListener(v -> onCreateBtnClick());
         btnDelete.setOnClickListener(v -> onDelete());
@@ -131,19 +142,20 @@ public class MovieFragment extends Fragment {
 
     private void toggleList() {
         listVisible = !listVisible;
-        listContainer.setVisibility(listVisible ? View.VISIBLE : View.GONE);
+//        listContainer.setVisibility(listVisible ? View.VISIBLE : View.GONE);
+        recyclerViewMovies.setVisibility(listVisible ? View.VISIBLE : View.GONE);
         arrowBtn.setImageResource(listVisible ? R.drawable.ic_arrow_down : R.drawable.ic_arrow_up);
     }
 
     private void disableList() {
         listVisible = false;
-        listContainer.setVisibility(View.GONE);
+        recyclerViewMovies.setVisibility(View.GONE);
         arrowBtn.setImageResource(R.drawable.ic_arrow_up);
     }
 
     private void enableList() {
         listVisible = true;
-        listContainer.setVisibility(View.VISIBLE);
+        recyclerViewMovies.setVisibility(View.VISIBLE);
         arrowBtn.setImageResource(R.drawable.ic_arrow_down);
     }
 
@@ -170,9 +182,52 @@ public class MovieFragment extends Fragment {
         etRating.setText(String.valueOf(selectedMovie.getRating()));
 //        etShowtimeIds.setText(selectedMovie.getShowtimeIds());
 
+        // fetch all showtimes and populate the spinner
+        fetchAllShowTime();
+
         enableEditing(false);
         enableDetails();
         disableList();
+    }
+
+    private void fetchAllShowTime() {
+        List<ShowTimeResponse> showTimeList = new ArrayList<>();
+
+        showTimeAdapter = new ShowTimeAdapter(getContext(), showTimeList, new ShowTimeAdapter.OnShowTimeActionListener() {
+            @Override
+            public void onEdit(ShowTimeResponse showTime) {
+                // TODO: handle edit logic
+            }
+
+            @Override
+            public void onDelete(ShowTimeResponse showTime) {
+                // TODO: handle delete logic
+            }
+        });
+
+        recyclerViewShowtimes.setAdapter(showTimeAdapter);
+
+        // API call
+        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        api.getShowtimesByMovie(selectedMovie.getId()).enqueue(new Callback<List<ShowTimeResponse>>() {
+            @Override
+            public void onResponse(Call<List<ShowTimeResponse>> call, Response<List<ShowTimeResponse>> response) {
+                Log.d("API_RESPONSE", "Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    showTimeList.clear();
+                    showTimeList.addAll(response.body());
+                    showTimeAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(requireActivity(), "Failed to load movie's showtimes", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ShowTimeResponse>> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage(), t);
+                Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void enableEditing(boolean enabled) {

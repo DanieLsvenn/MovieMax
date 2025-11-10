@@ -44,4 +44,7 @@
     <color name="green">#4CAF50</color>
     <color name="red">#F44336</color>
     <color name="orange">#FF9800</color>
+
+    <color name="textinput_stroke_colors">#FF6F00</color>
+    <color name="textinput_hint_colors">#FF6F00</color>
 </resources>

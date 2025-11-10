@@ -44,13 +44,11 @@
         <activity
             android:name=".Activity.ShowTimeActivity"
             android:exported="false" >
-
-
         </activity>
 
         <activity
             android:name=".Activity.BookingActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".Activity.FoodActivity"
@@ -106,8 +104,13 @@
         <!-- Staff/admin dashboard -->
         <activity
             android:name=".Activity.DashboardActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <!-- Profile -->
         <activity
