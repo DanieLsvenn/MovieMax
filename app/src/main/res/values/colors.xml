@@ -35,4 +35,7 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#9E9E9E</color>
     <color name="text_tertiary">#B0B0B0</color>
+
+    <color name="textinput_stroke_colors">#FF6F00</color>
+    <color name="textinput_hint_colors">#FF6F00</color>
 </resources>

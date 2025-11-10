@@ -2,6 +2,7 @@ package com.example.moviemax.Api;
 
 import com.example.moviemax.Model.MovieDto.MovieRequest;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
+import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public interface MovieApi {
     
     @GET("movies")
     Call<List<MovieResponse>> searchMovies(@Query("title") String title);
+
+    @GET("movies/{movieId}/showtimes")
+    Call<List<ShowTimeResponse>> getShowtimesByMovie(@Path("movieId") int movieId);
 
     @POST("movies")
     Call<MovieResponse> createMovie(@Body MovieRequest movie);
