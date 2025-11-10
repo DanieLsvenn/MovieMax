@@ -180,8 +180,6 @@ public class MovieFragment extends Fragment {
         btnAddShowtime.setOnClickListener(v -> onAddShowTime());
 
         disableDetails();
-
-        return view;
     }
 
     private void openImagePicker() {
