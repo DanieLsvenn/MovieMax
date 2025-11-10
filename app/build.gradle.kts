@@ -59,6 +59,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0") // Add this for Supabase REST API
+    implementation("de.hdodenhof:circleimageview:3.1.0") // Circle ImageView for profile photos
 
     implementation("com.google.firebase:firebase-auth:23.1.0")
     implementation("com.google.firebase:firebase-analytics:22.1.0")

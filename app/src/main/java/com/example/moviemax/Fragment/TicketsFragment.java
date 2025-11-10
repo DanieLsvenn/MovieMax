@@ -27,7 +27,7 @@ import com.example.moviemax.Model.BookingDto.BookingResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.data.ApiClient;
 import com.example.moviemax.data.ApiService;
-import com.example.moviemax.utils.SessionManager;
+import com.example.moviemax.Utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;

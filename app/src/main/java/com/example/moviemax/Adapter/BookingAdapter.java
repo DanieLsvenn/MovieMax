@@ -113,7 +113,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
             case "success":
             case "confirmed":
             case "active":
-                colorResId = R.color.green;
+                colorResId = R.color.text_primary; // Changed from green to white
                 break;
             case "cancelled":
             case "failed":

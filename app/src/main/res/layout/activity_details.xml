@@ -388,7 +388,7 @@
             android:layout_height="48dp"
             android:layout_weight="2"
             android:layout_marginStart="8dp"
-            android:text="🎫 Book Tickets"
+            android:text="Book Tickets"
             android:textColor="@color/netflix_white"
             android:textSize="16sp"
             android:textStyle="bold"

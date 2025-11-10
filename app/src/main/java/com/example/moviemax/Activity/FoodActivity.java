@@ -21,7 +21,7 @@ import com.example.moviemax.Model.BookingDto.BookingResponse;
 import com.example.moviemax.Model.FoodDto.FoodItemRequest;
 import com.example.moviemax.Model.FoodDto.FoodItemsResponse;
 import com.example.moviemax.R;
-import com.example.moviemax.utils.SessionManager;
+import com.example.moviemax.Utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

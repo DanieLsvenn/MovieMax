@@ -15,7 +15,7 @@ import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.SeatApi;
 import com.example.moviemax.Model.SeatDto.SeatResponse;
 import com.example.moviemax.R;
-import com.example.moviemax.utils.SessionManager;
+import com.example.moviemax.Utils.SessionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

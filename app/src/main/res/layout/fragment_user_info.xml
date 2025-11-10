@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/background_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +43,7 @@
                     android:text="Loading..."
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_primary"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
@@ -51,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:text="Loading..."
                     android:textSize="16sp"
-                    android:textColor="@color/gray" />
+                    android:textColor="@color/text_secondary" />
 
             </LinearLayout>
 
@@ -63,7 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/background_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,7 +79,7 @@
                     android:text="Personal Information"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_primary"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Full Name -->
@@ -91,6 +93,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_person"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -105,7 +108,7 @@
                             android:layout_height="wrap_content"
                             android:text="Full Name"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvFullName"
@@ -113,7 +116,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 
@@ -130,6 +133,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_gender"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -144,7 +148,7 @@
                             android:layout_height="wrap_content"
                             android:text="Gender"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvGender"
@@ -152,7 +156,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 
@@ -169,6 +173,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_phone"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -183,7 +188,7 @@
                             android:layout_height="wrap_content"
                             android:text="Phone"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvPhone"
@@ -191,7 +196,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 
@@ -208,6 +213,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_calendar"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -222,7 +228,7 @@
                             android:layout_height="wrap_content"
                             android:text="Date of Birth"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvDateOfBirth"
@@ -230,7 +236,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 
@@ -246,7 +252,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/background_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -260,7 +267,7 @@
                     android:text="Account Information"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_primary"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Username -->
@@ -274,6 +281,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_username"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -288,7 +296,7 @@
                             android:layout_height="wrap_content"
                             android:text="Username"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvUsername"
@@ -296,7 +304,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 
@@ -313,6 +321,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_role"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -327,7 +336,7 @@
                             android:layout_height="wrap_content"
                             android:text="Role"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvRole"
@@ -335,7 +344,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 
@@ -351,6 +360,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_calendar"
+                        android:tint="@color/text_secondary"
                         android:layout_marginEnd="12dp"
                         android:layout_gravity="center_vertical" />
 
@@ -365,7 +375,7 @@
                             android:layout_height="wrap_content"
                             android:text="Member Since"
                             android:textSize="12sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/text_secondary" />
 
                         <TextView
                             android:id="@+id/tvMemberSince"
@@ -373,7 +383,7 @@
                             android:layout_height="wrap_content"
                             android:text="Loading..."
                             android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/text_primary" />
 
                     </LinearLayout>
 

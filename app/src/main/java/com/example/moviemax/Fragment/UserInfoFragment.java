@@ -17,9 +17,8 @@ import com.example.moviemax.Model.AccountDto.AccountResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.data.ApiClient;
 import com.example.moviemax.data.ApiService;
-import com.example.moviemax.utils.SessionManager;
+import com.example.moviemax.Utils.SessionManager;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

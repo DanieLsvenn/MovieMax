@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="redPrimary">#D32F2F</color>
-    <color name="redAccent">#FF5252</color>
-    <color name="darkBg">#121212</color>
-    <color name="whiteText">#FFFFFF</color>
-    <!-- Netflix-like Color Scheme -->
+    <!-- Netflix-Inspired Design System -->
+    <color name="primary_netflix_red">#E50914</color>
+    <color name="primary_netflix_dark_red">#B20710</color>
+    <color name="primary_netflix_light_red">#FF1E2D</color>
+    
+    <!-- Background Colors -->
+    <color name="background_primary">#000000</color>
+    <color name="background_secondary">#141414</color>
+    <color name="background_tertiary">#221F1F</color>
+    <color name="background_card">#1F1F1F</color>
+    <color name="background_elevated">#2D2D2D</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3B3B3</color>
+    <color name="text_tertiary">#808080</color>
+    <color name="text_disabled">#565656</color>
+    
+    <!-- Status Colors -->
+    <color name="success">#46D369</color>
+    <color name="warning">#F79E1B</color>
+    <color name="error">#F40612</color>
+    <color name="info">#0099E5</color>
+    
+    <!-- Interactive Elements -->
+    <color name="interactive_primary">#E50914</color>
+    <color name="interactive_secondary">#46D369</color>
+    <color name="interactive_disabled">#565656</color>
+    <color name="ripple_effect">#33FFFFFF</color>
+    
+    <!-- Legacy Netflix Colors (for compatibility) -->
     <color name="netflix_black">#000000</color>
     <color name="netflix_dark_gray">#141414</color>
     <color name="netflix_medium_gray">#2F2F2F</color>
@@ -12,11 +38,11 @@
     <color name="netflix_red">#E50914</color>
     <color name="netflix_white">#FFFFFF</color>
     
-    <!-- Additional Colors -->
+    <!-- Additional UI Colors -->
     <color name="overlay_black">#80000000</color>
     <color name="overlay_dark">#CC000000</color>
-    <color name="card_background">#1F1F1F</color>
-    <color name="search_background">#333333</color>
+    <color name="card_background">@color/background_card</color>
+    <color name="search_background">@color/background_elevated</color>
     <color name="rating_gold">#FFD700</color>
     
     <!-- Traditional Material Colors (keeping for compatibility) -->
@@ -25,26 +51,30 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="black">@color/background_primary</color>
+    <color name="white">@color/text_primary</color>
 
+    <!-- Legacy color aliases for backward compatibility -->
+    <color name="redPrimary">@color/primary_netflix_red</color>
+    <color name="redAccent">@color/primary_netflix_light_red</color>
+    <color name="darkBg">@color/background_secondary</color>
+    <color name="whiteText">@color/text_primary</color>
+    
     <!-- Payment colors -->
-    <color name="selected_payment">#2A2A2A</color>
-    <color name="primary_red">#FF5252</color>
-    <color name="primary_orange">#FF9800</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#9E9E9E</color>
-    <color name="text_tertiary">#B0B0B0</color>
+    <color name="selected_payment">@color/background_elevated</color>
+    <color name="primary_red">@color/primary_netflix_red</color>
+    <color name="primary_orange">@color/warning</color>
     
     <!-- Profile Activity colors -->
-    <color name="primary_color">#E50914</color>
-    <color name="background_color">#F5F5F5</color>
-    <color name="gray">#757575</color>
-    <color name="light_gray">#BDBDBD</color>
-    <color name="green">#4CAF50</color>
-    <color name="red">#F44336</color>
-    <color name="orange">#FF9800</color>
+    <color name="primary_color">@color/primary_netflix_red</color>
+    <color name="background_color">@color/background_primary</color>
+    <color name="gray">@color/text_tertiary</color>
+    <color name="light_gray">@color/text_secondary</color>
+    <color name="green">@color/success</color>
+    <color name="red">@color/error</color>
+    <color name="orange">@color/warning</color>
 
-    <color name="textinput_stroke_colors">#FF6F00</color>
-    <color name="textinput_hint_colors">#FF6F00</color>
+    <color name="textinput_stroke_colors">@color/primary_netflix_red</color>
+    <color name="textinput_hint_colors">@color/primary_netflix_red</color>
+    <color name="error_text">@color/error</color>
 </resources>

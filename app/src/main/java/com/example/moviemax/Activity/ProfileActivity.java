@@ -14,11 +14,13 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.moviemax.Adapter.ProfilePagerAdapter;
 import com.example.moviemax.LoginActivity;
 import com.example.moviemax.R;
-import com.example.moviemax.utils.SessionManager;
+import com.example.moviemax.Utils.SessionManager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final int EDIT_PROFILE_REQUEST_CODE = 100;
+    
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private ProfilePagerAdapter pagerAdapter;
@@ -71,9 +73,8 @@ public class ProfileActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         btnEditProfile.setOnClickListener(v -> {
-            // TODO: Navigate to edit profile activity
-            // Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+            startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE);
         });
         
         btnLogout.setOnClickListener(v -> showLogoutDialog());
@@ -111,6 +112,17 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
         // Refresh data when returning to the activity
         refreshCurrentTab();
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (requestCode == EDIT_PROFILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Profile was updated successfully, refresh the profile tab
+            refreshCurrentTab();
+            Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+        }
     }
     
     private void showLogoutDialog() {

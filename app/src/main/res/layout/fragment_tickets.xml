@@ -1,142 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background_color">
+    android:background="@color/background_primary">
 
-    <!-- Refresh Button -->
+    <!-- Header -->
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="16dp"
-        android:gravity="end">
+        android:background="@color/background_primary"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="My Tickets"
+            style="@style/TextHeading" />
 
         <Button
             android:id="@+id/btnRefresh"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:text="Refresh"
-            android:drawableStart="@drawable/ic_refresh"
-            android:drawablePadding="8dp"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textSize="12sp"
+            android:minWidth="0dp"
+            android:paddingHorizontal="16dp"
+            style="@style/ButtonSecondary" />
 
     </LinearLayout>
 
-    <!-- Loading Indicator -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:visibility="gone" />
-
-    <!-- Error Message -->
+    <!-- Content Container -->
     <LinearLayout
-        android:id="@+id/errorLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
-        android:visibility="gone">
+        android:layout_marginTop="72dp">
 
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_error"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/tvError"
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Error loading tickets"
-            android:textColor="@color/red"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp" />
+            android:layout_gravity="center"
+            android:layout_marginTop="64dp"
+            android:indeterminateTint="@color/primary_netflix_red"
+            android:visibility="gone" />
 
-        <Button
-            android:id="@+id/btnRetry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Retry"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
-
-    </LinearLayout>
-
-    <!-- Empty State -->
-    <LinearLayout
-        android:id="@+id/emptyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/ic_empty_tickets"
-            android:layout_marginBottom="24dp"
-            android:alpha="0.6" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Tickets Yet"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/gray"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start booking movies to see your tickets here"
-            android:textSize="14sp"
-            android:textColor="@color/light_gray"
-            android:gravity="center"
-            android:layout_marginBottom="24dp" />
-
-        <Button
-            android:id="@+id/btnBrowseMovies"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Browse Movies"
-            style="@style/Widget.Material3.Button" />
-
-    </LinearLayout>
-
-    <!-- Tickets List with Pull to Refresh -->
-    <FrameLayout
-        android:id="@+id/ticketsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+        <!-- Error State -->
+        <LinearLayout
+            android:id="@+id/errorLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewTickets"
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="⚠️"
+                android:textSize="48sp"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Oops! Something went wrong"
+                style="@style/TextSubheading"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unable to load your tickets"
+                style="@style/TextCaption"
+                android:textAlignment="center"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/btnRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try Again"
+                style="@style/ButtonPrimary" />
+
+        </LinearLayout>
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/emptyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:text="🎟️"
+                android:textSize="80sp"
+                android:gravity="center"
+                android:layout_marginBottom="24dp"
+                android:alpha="0.6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Tickets Yet"
+                style="@style/TextHeading"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start booking movies to see your tickets here"
+                style="@style/TextCaption"
+                android:textAlignment="center"
+                android:layout_marginBottom="32dp"
+                android:lineSpacingMultiplier="1.3" />
+
+            <Button
+                android:id="@+id/btnBrowseMovies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browse Movies"
+                style="@style/ButtonPrimary" />
+
+        </LinearLayout>
+
+        <!-- Tickets List -->
+        <FrameLayout
+            android:id="@+id/ticketsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp" />
+                app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/background_secondary">
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewTickets"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="80dp"
+                    android:paddingHorizontal="16dp"
+                    android:scrollbars="none" />
 
-    </FrameLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

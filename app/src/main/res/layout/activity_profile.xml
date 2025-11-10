@@ -22,6 +22,7 @@
             android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back"
+            android:tint="@color/text_primary"
             android:contentDescription="Back" />
 
         <TextView
@@ -42,6 +43,7 @@
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_logout"
+            android:tint="@color/text_primary"
             android:contentDescription="Logout" />
 
         <ImageButton
@@ -53,6 +55,7 @@
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_edit"
+            android:tint="@color/text_primary"
             android:contentDescription="Edit Profile" />
 
     </RelativeLayout>
@@ -62,10 +65,10 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/background_secondary"
         app:tabMode="fixed"
         app:tabGravity="fill"
-        app:tabTextColor="@color/gray"
+        app:tabTextColor="@color/text_secondary"
         app:tabSelectedTextColor="@color/primary_color"
         app:tabIndicatorColor="@color/primary_color"
         app:tabIndicatorHeight="3dp" />

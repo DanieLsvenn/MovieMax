@@ -13,7 +13,7 @@ import com.example.moviemax.data.ApiClient;
 import com.example.moviemax.data.ApiService;
 import com.example.moviemax.Model.LoginDto.LoginRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
-import com.example.moviemax.utils.SessionManager;
+import com.example.moviemax.Utils.SessionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;

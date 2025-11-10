@@ -169,7 +169,7 @@ public class TicketDetailActivity extends AppCompatActivity implements OnMapRead
             
             // Set color based on status
             if ("CONFIRMED".equalsIgnoreCase(status) || "SUCCESS".equalsIgnoreCase(status)) {
-                tvStatus.setTextColor(getResources().getColor(android.R.color.holo_green_light));
+                tvStatus.setTextColor(getResources().getColor(R.color.text_primary)); // Changed from green to white
             } else if ("PENDING".equalsIgnoreCase(status)) {
                 tvStatus.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
             } else if ("CANCELLED".equalsIgnoreCase(status) || "FAILED".equalsIgnoreCase(status)) {
