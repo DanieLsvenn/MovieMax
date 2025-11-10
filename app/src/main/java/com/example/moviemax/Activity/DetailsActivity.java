@@ -11,21 +11,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.moviemax.Adapter.MovieAdapter;
-import com.example.moviemax.Adapter.SimpleShowtimeAdapter;
 import com.example.moviemax.R;
 import com.example.moviemax.Supabase.SupabaseStorageHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 //import com.example.moviemax.Supabase.SupabaseStorageHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 // import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -37,10 +30,7 @@ public class DetailsActivity extends AppCompatActivity {
     private ImageButton btnBack;
     private FloatingActionButton fabUploadTest; // For FAB option
     // private Button btnTestUpload; // For Button option - uncomment if using Option B
-    private Button btnPlay, btnBookTickets;
-    private RecyclerView recyclerViewShowtimes, recyclerViewSimilarMovies;
-    private SimpleShowtimeAdapter showtimeAdapter;
-    private MovieAdapter similarMoviesAdapter;
+    private Button btnBookTickets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +38,8 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         initViews();
-        setupRecyclerViews();
         setupClickListeners();
         loadMovieDetails();
-        loadShowtimes();
-        loadSimilarMovies();
     }
 
     private void initViews() {
@@ -80,24 +67,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         // OR for Button option, uncomment this:
         // btnTestUpload = findViewById(R.id.btnTestUpload);
-        btnPlay = findViewById(R.id.btnPlay);
         btnBookTickets = findViewById(R.id.btnBookTickets);
-
-        // RecyclerViews
-        recyclerViewShowtimes = findViewById(R.id.recyclerViewShowtimes);
-        recyclerViewSimilarMovies = findViewById(R.id.recyclerViewSimilarMovies);
-    }
-
-    private void setupRecyclerViews() {
-        // Showtimes RecyclerView
-        showtimeAdapter = new SimpleShowtimeAdapter(this, new ArrayList<>());
-        recyclerViewShowtimes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewShowtimes.setAdapter(showtimeAdapter);
-
-        // Similar Movies RecyclerView
-        similarMoviesAdapter = new MovieAdapter(this, new ArrayList<>());
-        recyclerViewSimilarMovies.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewSimilarMovies.setAdapter(similarMoviesAdapter);
     }
 
     private void setupClickListeners() {
@@ -114,22 +84,22 @@ public class DetailsActivity extends AppCompatActivity {
         //     Intent intent = new Intent(DetailsActivity.this, ImageUploadTestActivity.class);
         //     startActivity(intent);
         // });
-        btnPlay.setOnClickListener(v -> {
-            // Placeholder for play functionality
-            Toast.makeText(this, "Play functionality coming soon!", Toast.LENGTH_SHORT).show();
-        });
 
         btnBookTickets.setOnClickListener(v -> {
-            // Navigate to ShowTimeActivity or booking functionality
-            Intent intent = new Intent(DetailsActivity.this, ShowTimeActivity.class);
-            // Pass movie data if needed
-            startActivity(intent);
+            // Navigate to ShowTimeActivity with movie ID
+            Intent bookingIntent = new Intent(DetailsActivity.this, ShowTimeActivity.class);
+            int movieId = getIntent().getIntExtra("movie_id", -1);
+            if (movieId != -1) {
+                bookingIntent.putExtra("MOVIE_ID", movieId);
+            }
+            startActivity(bookingIntent);
         });
     }
 
     private void loadMovieDetails() {
         Intent intent = getIntent();
 
+        int movieId = intent.getIntExtra("movie_id", -1);
         String title = intent.getStringExtra("movie_title");
         String genre = intent.getStringExtra("movie_genre");
         int duration = intent.getIntExtra("movie_duration", 0);
@@ -189,22 +159,5 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void loadShowtimes() {
-        // Sample showtime data - in a real app, this would come from API
-        List<SimpleShowtimeAdapter.ShowtimeData> showtimes = Arrays.asList(
-                new SimpleShowtimeAdapter.ShowtimeData("10:30 AM", "Screen 1", "$12.99"),
-                new SimpleShowtimeAdapter.ShowtimeData("1:15 PM", "Screen 2", "$14.99"),
-                new SimpleShowtimeAdapter.ShowtimeData("4:00 PM", "IMAX", "$18.99"),
-                new SimpleShowtimeAdapter.ShowtimeData("7:30 PM", "Screen 1", "$16.99"),
-                new SimpleShowtimeAdapter.ShowtimeData("10:15 PM", "Screen 3", "$14.99")
-        );
 
-        showtimeAdapter.updateShowtimes(showtimes);
-    }
-
-    private void loadSimilarMovies() {
-        // In a real app, you'd call API to get similar movies
-        // For now, we'll just show placeholder message
-        Toast.makeText(this, "Similar movies will be loaded from API", Toast.LENGTH_SHORT).show();
-    }
 }

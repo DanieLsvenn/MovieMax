@@ -45,28 +45,31 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         // Load poster image - support both backend and Supabase URLs
 //        String posterUrl = movie.getPosterUrl();
-//        String fullPosterUrl;
+//        if (posterUrl != null && !posterUrl.isEmpty()) {
+//            String fullPosterUrl;
 //
-//        if (posterUrl.startsWith("http")) {
-//            // Already a full URL (Supabase)
-//            fullPosterUrl = posterUrl;
-//        } else if (posterUrl.startsWith("poster_")) {
-//            // Supabase storage filename
-//            fullPosterUrl = SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
-//        } else {
-//            // Backend image path
-//            fullPosterUrl = "http://103.200.20.174:8081/images/" + posterUrl;
+//            if (posterUrl.startsWith("http")) {
+//                // Already a full URL (Supabase)
+//                fullPosterUrl = posterUrl;
+//            } else if (posterUrl.startsWith("poster_")) {
+//                // Supabase storage filename
+//                fullPosterUrl = SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
+//            } else {
+//                // Backend image path
+//                fullPosterUrl = "http://103.200.20.174:8081/images/" + posterUrl;
+//            }
+//
+//            Glide.with(context)
+//                    .load(fullPosterUrl)
+//                    .placeholder(R.drawable.ic_launcher_background)
+//                    .error(R.drawable.ic_launcher_background)
+//                    .into(holder.ivPoster);
 //        }
-//
-//        Glide.with(context)
-//                .load(fullPosterUrl)
-//                .placeholder(R.drawable.ic_launcher_background)
-//                .error(R.drawable.ic_launcher_background)
-//                .into(holder.ivPoster);
 
         // Set click listener to open movie details
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra("movie_id", movie.getId());
             intent.putExtra("movie_title", movie.getTitle());
             intent.putExtra("movie_genre", movie.getGenre());
             intent.putExtra("movie_duration", movie.getDuration());

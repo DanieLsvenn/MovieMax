@@ -81,17 +81,17 @@ public class ShowTimeActivity extends AppCompatActivity {
         // Setup Showtime RecyclerView với click listener
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ShowTimeAdapter(this, showTimeList, showtime -> {
-            // Khi click vào showtime (hoặc nút time), chuyển sang BookingActivity
-            Intent bookingIntent = new Intent(ShowTimeActivity.this, BookingActivity.class);
-            bookingIntent.putExtra("SHOWTIME_ID", (long) showtime.getId());
-            bookingIntent.putExtra("MOVIE_TITLE", showtime.getMovieTitle());
-            bookingIntent.putExtra("CINEMA_NAME", showtime.getCinemaName());
-            bookingIntent.putExtra("ROOM_NAME", showtime.getRoomName());
-            bookingIntent.putExtra("START_TIME", showtime.getStartTime());
-            bookingIntent.putExtra("PRICE", showtime.getPrice());
-            startActivity(bookingIntent);
+            // NEW FLOW: Go to FoodActivity first, then BookingActivity
+            Intent foodIntent = new Intent(ShowTimeActivity.this, FoodActivity.class);
+            foodIntent.putExtra("SHOWTIME_ID", (long) showtime.getId());
+            foodIntent.putExtra("MOVIE_TITLE", showtime.getMovieTitle());
+            foodIntent.putExtra("CINEMA_NAME", showtime.getCinemaName());
+            foodIntent.putExtra("ROOM_NAME", showtime.getRoomName());
+            foodIntent.putExtra("START_TIME", showtime.getStartTime());
+            foodIntent.putExtra("PRICE", showtime.getPrice());
+            startActivity(foodIntent);
 
-            Log.d("ShowTimeActivity", "Navigate to BookingActivity with showtime ID: " + showtime.getId());
+            Log.d("ShowTimeActivity", "Navigate to FoodActivity with showtime ID: " + showtime.getId());
         });
         recyclerView.setAdapter(adapter);
 

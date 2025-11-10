@@ -16,6 +16,9 @@ import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.BookingApi;
 import com.example.moviemax.Api.SeatApi;
 import com.example.moviemax.Helper.PaymentHelper;
+import com.example.moviemax.Model.BookingDto.BookingRequest;
+import com.example.moviemax.Model.BookingDto.BookingResponse;
+import com.example.moviemax.Model.FoodDto.FoodItemRequest;
 import com.example.moviemax.R;
 
 import java.text.SimpleDateFormat;
@@ -24,6 +27,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,11 +51,18 @@ public class PaymentActivity extends AppCompatActivity {
     private Button btnConfirmPayment;
 
     // Booking Data
-    private long bookingId;
+    private long bookingId = -1; // -1 means no booking created yet
     private double totalAmount;
     private String movieTitle, cinemaName, roomName, startTime, seatNumbers;
     private int seatCount;
     private ArrayList<Integer> selectedSeatIds;
+
+    // New flow data (when booking not created yet)
+    private boolean isNewFlow = false;
+    private long accountId = -1;
+    private long showtimeId = -1;
+    private ArrayList<Long> seatIdsLong;
+    private ArrayList<FoodItemRequest> foodItems;
 
     // Payment
     private String selectedPaymentMethod = "";
@@ -101,7 +115,11 @@ public class PaymentActivity extends AppCompatActivity {
      */
     private void getIntentData() {
         Intent intent = getIntent();
+        
+        // Try to get existing booking ID (old flow)
         bookingId = intent.getLongExtra("BOOKING_ID", -1);
+        
+        // Get common data
         totalAmount = intent.getDoubleExtra("TOTAL_AMOUNT", 0);
         movieTitle = intent.getStringExtra("MOVIE_TITLE");
         cinemaName = intent.getStringExtra("CINEMA_NAME");
@@ -110,11 +128,34 @@ public class PaymentActivity extends AppCompatActivity {
         seatCount = intent.getIntExtra("SEAT_COUNT", 0);
         seatNumbers = intent.getStringExtra("SEAT_NUMBERS");
         selectedSeatIds = intent.getIntegerArrayListExtra("SELECTED_SEAT_IDS");
+        
+        // New flow data (when booking not created yet)
+        isNewFlow = intent.getBooleanExtra("NEW_FLOW", false);
+        accountId = intent.getLongExtra("ACCOUNT_ID", -1);
+        showtimeId = intent.getLongExtra("SHOWTIME_ID", -1);
+        seatIdsLong = (ArrayList<Long>) intent.getSerializableExtra("SEAT_IDS");
+        foodItems = (ArrayList<FoodItemRequest>) intent.getSerializableExtra("SELECTED_FOOD_ITEMS");
+        
+        // For new flow, calculate seatCount and totalAmount if not provided
+        if (isNewFlow) {
+            if (seatCount == 0 && seatIdsLong != null) {
+                seatCount = seatIdsLong.size();
+            }
+            
+            // If totalAmount is 0 but we have the raw data, it should be passed correctly from BookingActivity/FoodActivity
+            // The totalAmount should already be calculated in the previous activity
+        }
 
         Log.d(TAG, "=== PAYMENT ACTIVITY DATA ===");
+        Log.d(TAG, "Flow: " + (isNewFlow ? "NEW FLOW" : "OLD FLOW"));
         Log.d(TAG, "BookingId: " + bookingId);
+        Log.d(TAG, "AccountId: " + accountId);
+        Log.d(TAG, "ShowtimeId: " + showtimeId);
         Log.d(TAG, "TotalAmount: " + totalAmount);
+        Log.d(TAG, "SeatCount: " + seatCount);
         Log.d(TAG, "SeatIds: " + (selectedSeatIds != null ? selectedSeatIds.toString() : "null"));
+        Log.d(TAG, "SeatIdsLong: " + (seatIdsLong != null ? seatIdsLong.toString() : "null"));
+        Log.d(TAG, "FoodItems: " + (foodItems != null ? foodItems.size() : 0));
     }
 
     /**
@@ -191,8 +232,16 @@ public class PaymentActivity extends AppCompatActivity {
             return;
         }
 
-        if (bookingId == -1) {
+        // For old flow, we need existing bookingId
+        // For new flow, we'll create booking after payment succeeds
+        if (!isNewFlow && bookingId == -1) {
             Toast.makeText(this, "Không tìm thấy thông tin đặt vé", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // For new flow, validate we have the necessary data to create booking later
+        if (isNewFlow && (accountId == -1 || showtimeId == -1 || seatIdsLong == null || seatIdsLong.isEmpty())) {
+            Toast.makeText(this, "Thiếu thông tin đặt vé", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -270,14 +319,29 @@ public class PaymentActivity extends AppCompatActivity {
      * For cash payment, immediately update booking status
      */
     private void processCashPayment() {
-        Log.d(TAG, "🔄 Processing Cash payment for booking: " + bookingId);
+        Log.d(TAG, "🔄 Processing Cash payment");
 
-        updateBookingAndSeatStatuses(true, () -> {
-            Toast.makeText(PaymentActivity.this,
-                    "Đặt vé thành công! Vui lòng thanh toán tại quầy",
-                    Toast.LENGTH_LONG).show();
-            goToBookingSuccess();
-        });
+        // NEW FLOW: Create booking first, then update status
+        if (bookingId == -1) {
+            Log.d(TAG, "🆕 NEW FLOW: Creating booking for cash payment");
+            createBookingAfterPayment(() -> {
+                updateBookingAndSeatStatuses(true, () -> {
+                    Toast.makeText(PaymentActivity.this,
+                            "Đặt vé thành công! Vui lòng thanh toán tại quầy",
+                            Toast.LENGTH_LONG).show();
+                    goToBookingSuccess();
+                });
+            });
+        } else {
+            // OLD FLOW: Just update existing booking status
+            Log.d(TAG, "🔄 OLD FLOW: Updating existing booking for cash payment");
+            updateBookingAndSeatStatuses(true, () -> {
+                Toast.makeText(PaymentActivity.this,
+                        "Đặt vé thành công! Vui lòng thanh toán tại quầy",
+                        Toast.LENGTH_LONG).show();
+                goToBookingSuccess();
+            });
+        }
     }
 
     /**
@@ -377,22 +441,43 @@ public class PaymentActivity extends AppCompatActivity {
         if (isSuccess) {
             Log.d(TAG, "✅ " + paymentMethod + " payment successful!");
 
-            updateBookingAndSeatStatuses(true, () -> {
-                Toast.makeText(this,
-                        "Thanh toán " + paymentMethod + " thành công!",
-                        Toast.LENGTH_SHORT).show();
-                goToBookingSuccess();
-            });
+            // NEW FLOW: Create booking first, then update status
+            if (bookingId == -1) {
+                Log.d(TAG, "🆕 NEW FLOW: Creating booking after successful payment");
+                createBookingAfterPayment(() -> {
+                    updateBookingAndSeatStatuses(true, () -> {
+                        Toast.makeText(this,
+                                "Thanh toán " + paymentMethod + " thành công!",
+                                Toast.LENGTH_SHORT).show();
+                        goToBookingSuccess();
+                    });
+                });
+            } else {
+                // OLD FLOW: Just update existing booking status
+                Log.d(TAG, "🔄 OLD FLOW: Updating existing booking status");
+                updateBookingAndSeatStatuses(true, () -> {
+                    Toast.makeText(this,
+                            "Thanh toán " + paymentMethod + " thành công!",
+                            Toast.LENGTH_SHORT).show();
+                    goToBookingSuccess();
+                });
+            }
 
         } else {
             Log.w(TAG, "❌ " + paymentMethod + " payment failed!");
 
-            updateBookingAndSeatStatuses(false, null);
+            // For failed payments, just free up seats (no booking to cancel in new flow)
+            if (bookingId != -1) {
+                updateBookingAndSeatStatuses(false, null);
+            } else {
+                // In new flow, just show error message (no booking to cancel)
+                Log.d(TAG, "🆕 NEW FLOW: Payment failed, no booking to cancel");
+            }
 
             runOnUiThread(() -> {
                 String errorMsg = message != null ? message : "Thanh toán thất bại";
                 Toast.makeText(this,
-                        paymentMethod + ": " + errorMsg + ". Ghế đã được giải phóng.",
+                        paymentMethod + ": " + errorMsg,
                         Toast.LENGTH_LONG).show();
 
                 btnConfirmPayment.setEnabled(true);
@@ -400,6 +485,78 @@ public class PaymentActivity extends AppCompatActivity {
                 selectedPaymentMethod = "";
             });
         }
+    }
+
+    /**
+     * Create booking after successful payment (new flow)
+     */
+    private void createBookingAfterPayment(Runnable onComplete) {
+        Log.d(TAG, "=== CREATING BOOKING AFTER PAYMENT ===");
+        
+        if (accountId == -1 || showtimeId == -1 || seatIdsLong == null) {
+            Log.e(TAG, "❌ Missing data for booking creation");
+            Toast.makeText(this, "Lỗi: Thiếu dữ liệu đặt vé", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create booking request
+        BookingRequest request = new BookingRequest();
+        request.setAccountId(accountId);
+        request.setShowtimeId(showtimeId);
+        request.setSeatIds(seatIdsLong);
+        request.setFoodItems(foodItems != null ? foodItems : new ArrayList<>());
+
+        Log.d(TAG, "Creating booking with:");
+        Log.d(TAG, "- AccountId: " + accountId);
+        Log.d(TAG, "- ShowtimeId: " + showtimeId);
+        Log.d(TAG, "- SeatIds: " + seatIdsLong);
+        Log.d(TAG, "- FoodItems: " + (foodItems != null ? foodItems.size() : 0));
+
+        bookingApi.createBooking(request).enqueue(new Callback<BookingResponse>() {
+            @Override
+            public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    BookingResponse booking = response.body();
+                    bookingId = booking.getId();
+                    
+                    Log.d(TAG, "✅ Booking created successfully with ID: " + bookingId);
+                    
+                    // Update booking details from API response
+                    seatCount = booking.getSeatCount();
+                    totalAmount = booking.getTotalAmount();
+                    seatNumbers = booking.getSeatNumbers();
+                    movieTitle = booking.getMovieTitle();
+                    cinemaName = booking.getCinemaName();
+                    roomName = booking.getRoomName();
+                    
+                    Log.d(TAG, "📊 Updated booking details:");
+                    Log.d(TAG, "- Seat Count: " + seatCount);
+                    Log.d(TAG, "- Total Amount: " + totalAmount);
+                    Log.d(TAG, "- Seat Numbers: " + seatNumbers);
+                    
+                    // Convert seatIdsLong to selectedSeatIds for compatibility
+                    selectedSeatIds = new ArrayList<>();
+                    for (Long seatId : seatIdsLong) {
+                        selectedSeatIds.add(seatId.intValue());
+                    }
+                    
+                    if (onComplete != null) {
+                        onComplete.run();
+                    }
+                } else {
+                    Log.e(TAG, "❌ Failed to create booking: " + response.code());
+                    Toast.makeText(PaymentActivity.this, 
+                            "Lỗi tạo booking: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookingResponse> call, Throwable t) {
+                Log.e(TAG, "❌ Error creating booking: " + t.getMessage());
+                Toast.makeText(PaymentActivity.this, 
+                        "Lỗi kết nối khi tạo booking", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -416,7 +573,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
 
         // 1. Update booking status
-        String bookingStatus = isSuccess ? "SUCCESS" : "FAILED";
+        String bookingStatus = isSuccess ? "SUCCESS" : "CANCELLED";
         bookingApi.updateBookingStatus(bookingId, bookingStatus).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -464,6 +621,12 @@ public class PaymentActivity extends AppCompatActivity {
      * Navigate to booking success screen
      */
     private void goToBookingSuccess() {
+        Log.d(TAG, "🎉 Navigating to BookingSuccessActivity with:");
+        Log.d(TAG, "- Booking ID: " + bookingId);
+        Log.d(TAG, "- Seat Count: " + seatCount);
+        Log.d(TAG, "- Total Amount: " + totalAmount);
+        Log.d(TAG, "- Movie Title: " + movieTitle);
+        
         Intent intent = new Intent(PaymentActivity.this, BookingSuccessActivity.class);
         intent.putExtra("BOOKING_ID", bookingId);
         intent.putExtra("MOVIE_TITLE", movieTitle);
@@ -477,6 +640,26 @@ public class PaymentActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "🔙 User pressed back");
+        
+        if (bookingId != -1) {
+            // OLD FLOW: Cancel existing booking
+            Log.d(TAG, "� OLD FLOW: Cancelling existing booking #" + bookingId);
+            Toast.makeText(this, "Booking cancelled. Seats have been released.", Toast.LENGTH_SHORT).show();
+            
+            updateBookingAndSeatStatuses(false, () -> {
+                super.onBackPressed();
+            });
+        } else {
+            // NEW FLOW: No booking created yet, just go back
+            Log.d(TAG, "🆕 NEW FLOW: No booking to cancel, going back");
+            Toast.makeText(this, "Payment cancelled.", Toast.LENGTH_SHORT).show();
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -19,6 +19,10 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -39,12 +43,9 @@
 
         <activity
             android:name=".Activity.ShowTimeActivity"
-            android:exported="true" >
+            android:exported="false" >
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity
@@ -107,6 +108,12 @@
             android:name=".Activity.DashboardActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Profile -->
+        <activity
+            android:name=".Activity.ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- Testing -->
         <activity

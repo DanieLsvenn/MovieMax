@@ -21,6 +21,7 @@ import com.example.moviemax.Model.BookingDto.BookingResponse;
 import com.example.moviemax.Model.FoodDto.FoodItemRequest;
 import com.example.moviemax.Model.FoodDto.FoodItemsResponse;
 import com.example.moviemax.R;
+import com.example.moviemax.utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,16 +42,20 @@ public class FoodActivity extends AppCompatActivity {
 
     private FoodAdapter foodAdapter;
     private List<FoodItemsResponse> foodList = new ArrayList<>();
+    private SessionManager sessionManager;
 
-    // Dữ liệu từ BookingActivity
-    private long accountId;
+    // Dữ liệu từ ShowTimeActivity (new flow) hoặc BookingActivity (old flow)
+    private long accountId = -1;
     private long showtimeId;
-    private ArrayList<Long> seatIds;
+    private ArrayList<Long> seatIds; // null in new flow until seats are selected
     private double seatPrice;
     private String movieTitle, cinemaName, roomName, startTime;
 
     private double seatTotal = 0;
     private int foodTotal = 0;
+    
+    // New flow indicator
+    private boolean isNewFlow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,48 +79,76 @@ public class FoodActivity extends AppCompatActivity {
         tvSkipFood = findViewById(R.id.tvSkipFood);
 
         rvFoods.setLayoutManager(new LinearLayoutManager(this));
+        
+        // Initialize SessionManager for new flow
+        sessionManager = new SessionManager(this);
     }
 
     private void getIntentData() {
         Intent intent = getIntent();
-        accountId = intent.getLongExtra("ACCOUNT_ID", -1);
+        
+        // Get common data
         showtimeId = intent.getLongExtra("SHOWTIME_ID", -1);
-        seatIds = (ArrayList<Long>) intent.getSerializableExtra("SEAT_IDS");
-        seatPrice = intent.getDoubleExtra("SEAT_PRICE", 50000);
         movieTitle = intent.getStringExtra("MOVIE_TITLE");
         cinemaName = intent.getStringExtra("CINEMA_NAME");
         roomName = intent.getStringExtra("ROOM_NAME");
         startTime = intent.getStringExtra("START_TIME");
-
-        Log.d("FoodActivity", "AccountId: " + accountId);
+        seatPrice = intent.getDoubleExtra("PRICE", 50000); // PRICE from ShowTimeActivity
+        
+        // Try to get seat data (old flow from BookingActivity)
+        accountId = intent.getLongExtra("ACCOUNT_ID", -1);
+        seatIds = (ArrayList<Long>) intent.getSerializableExtra("SEAT_IDS");
+        
+        // Determine which flow we're in
+        isNewFlow = (accountId == -1 || seatIds == null);
+        
+        Log.d("FoodActivity", "=== FLOW DETECTION ===");
+        Log.d("FoodActivity", "Flow: " + (isNewFlow ? "NEW (ShowTime -> Food -> Seats)" : "OLD (ShowTime -> Seats -> Food)"));
         Log.d("FoodActivity", "ShowtimeId: " + showtimeId);
+        Log.d("FoodActivity", "AccountId: " + accountId);
         Log.d("FoodActivity", "SeatIds: " + seatIds + " (count: " + (seatIds != null ? seatIds.size() : 0) + ")");
         Log.d("FoodActivity", "SeatPrice: " + seatPrice);
     }
 
     private void calculateSeatTotal() {
-        if (seatIds != null) {
+        if (seatIds != null && !seatIds.isEmpty()) {
             seatTotal = seatIds.size() * seatPrice;
             tvSeatTotal.setText(formatPrice(seatTotal));
-            updateGrandTotal();
-
             Log.d("PRICE_DEBUG", "Seat total calculated: " + seatTotal +
                     " (" + seatIds.size() + " seats × " + seatPrice + ")");
+        } else {
+            // New flow: no seats selected yet
+            seatTotal = 0;
+            tvSeatTotal.setText("Chọn ghế sau");
+            Log.d("PRICE_DEBUG", "No seats selected yet (new flow)");
         }
+        updateGrandTotal();
     }
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
 
         btnConfirmFoods.setOnClickListener(v -> {
-            if (validateData()) {
-                createBooking();
+            if (isNewFlow) {
+                // NEW FLOW: Go to seat selection
+                goToSeatSelection();
+            } else {
+                // OLD FLOW: Go to payment
+                if (validateData()) {
+                    goToPaymentWithoutBooking();
+                }
             }
         });
 
         tvSkipFood.setOnClickListener(v -> {
-            if (validateData()) {
-                createBooking();
+            if (isNewFlow) {
+                // NEW FLOW: Go to seat selection (no food)
+                goToSeatSelection();
+            } else {
+                // OLD FLOW: Go to payment (no food)
+                if (validateData()) {
+                    goToPaymentWithoutBooking();
+                }
             }
         });
     }
@@ -349,7 +382,129 @@ public class FoodActivity extends AppCompatActivity {
         }
     }
 
+    private void goToSeatSelection() {
+        Log.d("FoodActivity", "=== goToSeatSelection() START (NEW FLOW) ===");
+
+        // Get account ID from session
+        long sessionAccountId = sessionManager.getAccountId();
+        if (sessionAccountId == -1) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get selected food items from adapter
+        Map<Integer, Integer> selectedQuantities = foodAdapter != null ? foodAdapter.getSelectedQuantities() : new HashMap<>();
+        if (selectedQuantities == null) {
+            selectedQuantities = new HashMap<>();
+        }
+
+        // Create food items list to pass to BookingActivity
+        List<FoodItemRequest> selectedFoodItems = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : selectedQuantities.entrySet()) {
+            if (entry.getValue() != null && entry.getValue() > 0) {
+                FoodItemRequest item = new FoodItemRequest();
+                item.setFoodId(entry.getKey());
+                item.setQuantity(entry.getValue());
+                selectedFoodItems.add(item);
+            }
+        }
+
+        Intent intent = new Intent(FoodActivity.this, BookingActivity.class);
+        
+        // Pass showtime and movie data
+        intent.putExtra("SHOWTIME_ID", showtimeId);
+        intent.putExtra("MOVIE_TITLE", movieTitle);
+        intent.putExtra("CINEMA_NAME", cinemaName);
+        intent.putExtra("ROOM_NAME", roomName);
+        intent.putExtra("START_TIME", startTime);
+        intent.putExtra("PRICE", seatPrice);
+        
+        // Pass account and food data for new flow
+        intent.putExtra("ACCOUNT_ID", sessionAccountId);
+        intent.putExtra("SELECTED_FOOD_ITEMS", new ArrayList<>(selectedFoodItems));
+        intent.putExtra("FOOD_TOTAL", foodTotal);
+        intent.putExtra("NEW_FLOW", true); // Flag to indicate new flow
+
+        Log.d("FoodActivity", "Going to BookingActivity with:");
+        Log.d("FoodActivity", "- AccountId: " + sessionAccountId);
+        Log.d("FoodActivity", "- ShowtimeId: " + showtimeId);
+        Log.d("FoodActivity", "- Food items: " + selectedFoodItems.size());
+        Log.d("FoodActivity", "- Food total: " + foodTotal);
+
+        try {
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            Log.e("FoodActivity", "Failed to start BookingActivity", e);
+            Toast.makeText(this, "Lỗi: Không thể mở trang chọn ghế", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void goToPaymentWithoutBooking() {
+        Log.d("BOOKING_DEBUG", "=== goToPaymentWithoutBooking() START ===");
+
+        // Calculate totals
+        double grandTotal = seatTotal + foodTotal;
+
+        // Get selected food items from adapter
+        Map<Integer, Integer> selectedQuantities = foodAdapter != null ? foodAdapter.getSelectedQuantities() : new HashMap<>();
+        if (selectedQuantities == null) {
+            selectedQuantities = new HashMap<>();
+        }
+
+        // Create food items list for payment
+        List<FoodItemRequest> foodItems = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : selectedQuantities.entrySet()) {
+            if (entry.getValue() != null && entry.getValue() > 0) {
+                FoodItemRequest item = new FoodItemRequest();
+                item.setFoodId(entry.getKey());
+                item.setQuantity(entry.getValue());
+                foodItems.add(item);
+            }
+        }
+
+        Intent intent = new Intent(FoodActivity.this, PaymentActivity.class);
+
+        // Pass all necessary data for payment to create booking
+        intent.putExtra("ACCOUNT_ID", accountId);
+        intent.putExtra("SHOWTIME_ID", showtimeId);
+        intent.putExtra("SEAT_IDS", seatIds);
+        intent.putExtra("TOTAL_AMOUNT", grandTotal);
+        intent.putExtra("MOVIE_TITLE", movieTitle);
+        intent.putExtra("CINEMA_NAME", cinemaName);
+        intent.putExtra("ROOM_NAME", roomName);
+        intent.putExtra("START_TIME", startTime);
+        intent.putExtra("SEAT_COUNT", seatIds.size());
+        intent.putExtra("SEAT_NUMBERS", generateSeatNumbers());
+        
+        // Pass food items as a serializable list
+        intent.putExtra("FOOD_ITEMS", new ArrayList<>(foodItems));
+
+        Log.d("BOOKING_DEBUG", "Starting PaymentActivity with data:");
+        Log.d("BOOKING_DEBUG", "- Total Amount: " + grandTotal);
+        Log.d("BOOKING_DEBUG", "- Seat Count: " + seatIds.size());
+        Log.d("BOOKING_DEBUG", "- Food Items Count: " + foodItems.size());
+
+        try {
+            startActivity(intent);
+            Log.d("BOOKING_DEBUG", "PaymentActivity started successfully");
+            finish();
+        } catch (Exception e) {
+            Log.e("BOOKING_ERROR", "Failed to start PaymentActivity", e);
+            Toast.makeText(this, "Lỗi: Không thể mở trang thanh toán", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String generateSeatNumbers() {
+        StringBuilder seatNumbers = new StringBuilder();
+        for (int i = 0; i < seatIds.size(); i++) {
+            if (i > 0) seatNumbers.append(", ");
+            seatNumbers.append("A").append(seatIds.get(i)); // Simple seat numbering
+        }
+        return seatNumbers.toString();
+    }
+
     private String formatPrice(double price) {
-        return String.format(Locale.getDefault(), "%,.0f VNĐ", price);
+        return String.format(Locale.getDefault(), "%,.0fđ", price);
     }
 }

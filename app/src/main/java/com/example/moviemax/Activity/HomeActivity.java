@@ -1,5 +1,6 @@
 package com.example.moviemax.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -43,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     private List<MovieResponse> movieList, searchResultsList, comingSoonList, premiumList, featuredList;
     
     // Search UI components
-    private ImageView btnSearch, btnClearSearch;
+    private ImageView btnSearch, btnClearSearch, btnProfile;
     private LinearLayout searchContainer, moviesContainer, searchResultsContainer;
     private EditText etSearch;
     private Handler searchHandler;
@@ -82,6 +83,7 @@ public class HomeActivity extends AppCompatActivity {
         // Search components
         btnSearch = findViewById(R.id.btnSearch);
         btnClearSearch = findViewById(R.id.btnClearSearch);
+        btnProfile = findViewById(R.id.btnProfile);
         searchContainer = findViewById(R.id.searchContainer);
         moviesContainer = findViewById(R.id.moviesContainer);
         searchResultsContainer = findViewById(R.id.searchResultsContainer);
@@ -134,6 +136,9 @@ public class HomeActivity extends AppCompatActivity {
     private void setupSearchFunctionality() {
         // Search button click
         btnSearch.setOnClickListener(v -> toggleSearchBar());
+        
+        // Profile button click
+        btnProfile.setOnClickListener(v -> openProfile());
         
         // Clear search button click
         btnClearSearch.setOnClickListener(v -> clearSearch());
@@ -376,5 +381,10 @@ public class HomeActivity extends AppCompatActivity {
         tvError.setText(message);
         tvError.setVisibility(View.VISIBLE);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    
+    private void openProfile() {
+        Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+        startActivity(intent);
     }
 }

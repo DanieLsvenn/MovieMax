@@ -2,7 +2,7 @@ package com.example.moviemax.Model.FoodDto;
 
 import java.io.Serializable;
 
-public class FoodItemRequest {
+public class FoodItemRequest implements Serializable {
     private int foodId;
     private int quantity;
 

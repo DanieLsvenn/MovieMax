@@ -54,6 +54,13 @@ public class BookingSuccessActivity extends AppCompatActivity {
         startTime = intent.getStringExtra("START_TIME");
         seatCount = intent.getIntExtra("SEAT_COUNT", 0);
         totalAmount = intent.getDoubleExtra("TOTAL_AMOUNT", 0);
+        
+        // Debug logging
+        android.util.Log.d("BookingSuccessActivity", "📥 Received intent data:");
+        android.util.Log.d("BookingSuccessActivity", "- Booking ID: " + bookingId);
+        android.util.Log.d("BookingSuccessActivity", "- Seat Count: " + seatCount);
+        android.util.Log.d("BookingSuccessActivity", "- Total Amount: " + totalAmount);
+        android.util.Log.d("BookingSuccessActivity", "- Movie Title: " + movieTitle);
     }
 
     private void displayBookingInfo() {
@@ -70,7 +77,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
     private void setupListeners() {
         btnBackToHome.setOnClickListener(v -> {
             // Quay về màn hình chính
-            Intent intent = new Intent(BookingSuccessActivity.this, MainActivity.class);
+            Intent intent = new Intent(BookingSuccessActivity.this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

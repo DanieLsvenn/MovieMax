@@ -15,6 +15,7 @@ import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.SeatApi;
 import com.example.moviemax.Model.SeatDto.SeatResponse;
 import com.example.moviemax.R;
+import com.example.moviemax.utils.SessionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,11 +43,17 @@ public class BookingActivity extends AppCompatActivity {
     private long showtimeId;
     private long accountId;
     private double seatPrice;
+    private SessionManager sessionManager;
 
     private String movieTitle;
     private String cinemaName;
     private String roomName;
     private String startTime;
+    
+    // New flow variables
+    private boolean isNewFlow = false;
+    private ArrayList<?> selectedFoodItems;
+    private double foodTotal = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,9 @@ public class BookingActivity extends AppCompatActivity {
         txtTotalPrice = findViewById(R.id.txtTotalPrice);
         btnBook = findViewById(R.id.btnBook);
 
+        // Initialize SessionManager
+        sessionManager = new SessionManager(this);
+
         // Get data from Intent
         showtimeId = getIntent().getLongExtra("SHOWTIME_ID", -1);
         movieTitle = getIntent().getStringExtra("MOVIE_TITLE");
@@ -69,7 +79,20 @@ public class BookingActivity extends AppCompatActivity {
         startTime = getIntent().getStringExtra("START_TIME");
         seatPrice = getIntent().getDoubleExtra("PRICE", 50000);
 
-        accountId = 3; // Use actual account from SharedPreferences in production
+        // Check if this is new flow (Food -> Seat -> Payment)
+        isNewFlow = getIntent().getBooleanExtra("NEW_FLOW", false);
+        if (isNewFlow) {
+            // Get account ID from intent (new flow)
+            accountId = getIntent().getLongExtra("ACCOUNT_ID", -1);
+            selectedFoodItems = (ArrayList<?>) getIntent().getSerializableExtra("SELECTED_FOOD_ITEMS");
+            foodTotal = getIntent().getDoubleExtra("FOOD_TOTAL", 0.0);
+            
+            Log.d("BookingActivity", "New flow detected with food items: " + 
+                  (selectedFoodItems != null ? selectedFoodItems.size() : 0));
+        } else {
+            // Get accountId from SessionManager (old flow)
+            accountId = sessionManager.getAccountId();
+        }
 
         // Display information
         txtMovieTitle.setText(movieTitle != null ? movieTitle : "Movie Title");
@@ -82,8 +105,12 @@ public class BookingActivity extends AppCompatActivity {
         // Load seats from API
         loadSeats();
 
-        // Navigate to food selection
-        btnBook.setOnClickListener(v -> goToFoodSelection());
+        // Set button click based on flow
+        if (isNewFlow) {
+            btnBook.setOnClickListener(v -> goToPayment());
+        } else {
+            btnBook.setOnClickListener(v -> goToFoodSelection());
+        }
     }
 
     private String formatTime(String startTime) {
@@ -286,6 +313,69 @@ public class BookingActivity extends AppCompatActivity {
         intent.putExtra("CINEMA_NAME", cinemaName);
         intent.putExtra("ROOM_NAME", roomName);
         intent.putExtra("START_TIME", startTime);
+
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToPayment() {
+        if (selectedSeats.isEmpty()) {
+            Toast.makeText(this, "Vui lòng chọn ghế", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (accountId == -1) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create list of seat IDs for new flow
+        ArrayList<Long> seatIds = new ArrayList<>();
+        for (SeatResponse seat : selectedSeats) {
+            seatIds.add((long) seat.getId());
+        }
+
+        // Calculate totals for the new flow
+        int seatCount = selectedSeats.size();
+        double seatTotal = seatCount * seatPrice;
+        double totalAmount = seatTotal + foodTotal;
+        
+        // Generate seat numbers string
+        StringBuilder seatNumbers = new StringBuilder();
+        for (int i = 0; i < selectedSeats.size(); i++) {
+            seatNumbers.append(selectedSeats.get(i).getSeatNumber());
+            if (i < selectedSeats.size() - 1) {
+                seatNumbers.append(", ");
+            }
+        }
+        
+        // Navigate to PaymentActivity with all data (new flow)
+        Intent intent = new Intent(BookingActivity.this, PaymentActivity.class);
+        intent.putExtra("ACCOUNT_ID", accountId);
+        intent.putExtra("SHOWTIME_ID", showtimeId);
+        intent.putExtra("SEAT_IDS", seatIds);
+        intent.putExtra("SEAT_PRICE", seatPrice);
+        intent.putExtra("SEAT_COUNT", seatCount);
+        intent.putExtra("SEAT_NUMBERS", seatNumbers.toString());
+        intent.putExtra("TOTAL_AMOUNT", totalAmount);
+        intent.putExtra("MOVIE_TITLE", movieTitle);
+        intent.putExtra("CINEMA_NAME", cinemaName);
+        intent.putExtra("ROOM_NAME", roomName);
+        intent.putExtra("START_TIME", startTime);
+        
+        // Pass food data for new flow
+        intent.putExtra("SELECTED_FOOD_ITEMS", selectedFoodItems);
+        intent.putExtra("FOOD_TOTAL", foodTotal);
+        intent.putExtra("NEW_FLOW", true);
+
+        Log.d("BookingActivity", "Going to PaymentActivity (new flow) with:");
+        Log.d("BookingActivity", "- Seats: " + selectedSeats.size());
+        Log.d("BookingActivity", "- Seat Count: " + seatCount);
+        Log.d("BookingActivity", "- Seat Numbers: " + seatNumbers.toString());
+        Log.d("BookingActivity", "- Seat Total: " + seatTotal);
+        Log.d("BookingActivity", "- Food items: " + (selectedFoodItems != null ? selectedFoodItems.size() : 0));
+        Log.d("BookingActivity", "- Food total: " + foodTotal);
+        Log.d("BookingActivity", "- Total Amount: " + totalAmount);
 
         startActivity(intent);
         finish();

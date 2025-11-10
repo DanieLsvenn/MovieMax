@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.moviemax.Activity.HomeActivity;
 import com.example.moviemax.data.ApiClient;
 import com.example.moviemax.data.ApiService;
 import com.example.moviemax.Model.LoginDto.LoginRequest;
@@ -60,10 +61,11 @@ public class LoginActivity extends AppCompatActivity {
                     sessionManager.saveAuthToken(res.getToken());
                     sessionManager.saveUserName(res.getFullName());
                     sessionManager.saveUserEmail(res.getEmail());
+                    sessionManager.saveAccountId(res.getId());
 
                     Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     intent.putExtra("fullName", res.getFullName());
                     intent.putExtra("email", res.getEmail());
                     startActivity(intent);

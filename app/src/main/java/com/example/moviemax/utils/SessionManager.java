@@ -9,6 +9,7 @@ public class SessionManager {
     private static final String KEY_AUTH_TOKEN = "auth_token";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_ACCOUNT_ID = "account_id";
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
@@ -36,6 +37,12 @@ public class SessionManager {
         editor.apply();
     }
 
+    // 🔹 Lưu accountId
+    public void saveAccountId(int accountId) {
+        editor.putInt(KEY_ACCOUNT_ID, accountId);
+        editor.apply();
+    }
+
     // 🔹 Lấy token
     public String getAuthToken() {
         return prefs.getString(KEY_AUTH_TOKEN, null);
@@ -49,6 +56,11 @@ public class SessionManager {
     // 🔹 Lấy email
     public String getUserEmail() {
         return prefs.getString(KEY_USER_EMAIL, "");
+    }
+
+    // 🔹 Lấy accountId
+    public int getAccountId() {
+        return prefs.getInt(KEY_ACCOUNT_ID, -1);
     }
 
     // 🔹 Xóa dữ liệu khi logout

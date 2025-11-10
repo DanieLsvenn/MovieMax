@@ -19,6 +19,9 @@ public class BookingResponse {
     @SerializedName("startTime")
     private String startTime;
 
+    @SerializedName("bookingDate")
+    private String bookingDate;
+
     @SerializedName("seats")
     private List<String> seats;
 
@@ -73,6 +76,14 @@ public class BookingResponse {
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public String getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(String bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
     public List<String> getSeats() {

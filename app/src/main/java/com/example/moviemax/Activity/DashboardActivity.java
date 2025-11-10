@@ -1,5 +1,6 @@
 package com.example.moviemax.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
@@ -74,6 +75,12 @@ public class DashboardActivity extends AppCompatActivity implements SidebarFragm
             case "Rooms":
                 fragmentToLoad = new RoomFragment();
                 break;
+            case "Profile":
+                // Navigate to ProfileActivity
+                Intent profileIntent = new Intent(DashboardActivity.this, ProfileActivity.class);
+                startActivity(profileIntent);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return; // Don't load fragment, just start activity
         }
 
         if (fragmentToLoad != null) {
@@ -82,5 +89,8 @@ public class DashboardActivity extends AppCompatActivity implements SidebarFragm
                     .addToBackStack(null)
                     .commit();
         }
+        
+        // Close drawer after selection
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 }
