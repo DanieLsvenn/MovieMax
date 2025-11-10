@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moviemax.Adapter.Dashboard.MovieAdapter;
 import com.example.moviemax.Adapter.Dashboard.ShowTimeAdapter;
 import com.example.moviemax.Api.ApiService;
+import com.example.moviemax.Api.CinemaApi;
 import com.example.moviemax.Api.MovieApi;
 import com.example.moviemax.Helper.KeyboardInsetsHelper;
 import com.example.moviemax.Model.CinemaDto.CinemaResponse;
@@ -47,7 +48,7 @@ public class MovieFragment extends Fragment {
     private EditText etTitle, etGenre, etDuration, etLanguage, etDirector,
             etCast, etDescription, etPosterUrl, etReleaseDate, etRating,
             etShowtimeStart, etShowtimePrice;
-    private Spinner spinnerCinema, spinnerRoom;
+    private AutoCompleteTextView spinnerCinema, spinnerRoom;
 
     private boolean listVisible = true;
     private String mode = "";
@@ -59,13 +60,10 @@ public class MovieFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
 
-        // Views
-//        listContainer = view.findViewById(R.id.listContainer);
         detailsContainer = view.findViewById(R.id.detailsContainer);
         recyclerViewMovies = view.findViewById(R.id.recyclerViewMovies);
         recyclerViewShowtimes = view.findViewById(R.id.recyclerViewShowtimes);
         arrowBtn = view.findViewById(R.id.arrowBtn);
-//        btnDetails = view.findViewById(R.id.btnDetails);
         btnAdd = view.findViewById(R.id.btnAdd);
         btnEdit = view.findViewById(R.id.btnEdit);
         btnDelete = view.findViewById(R.id.btnDelete);
@@ -84,6 +82,9 @@ public class MovieFragment extends Fragment {
         etShowtimeStart = view.findViewById(R.id.etShowtimeStart);
         etShowtimePrice = view.findViewById(R.id.etShowtimePrice);
 
+        spinnerCinema = view.findViewById(R.id.spinnerCinema);
+//        spinnerRoom = view.findViewById(R.id.spinnerRoom);
+
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewShowtimes.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -91,6 +92,7 @@ public class MovieFragment extends Fragment {
             selectedMovie = movie;
             adapter.setSelectedMovie(movie);
             displayDetails();
+            reloadCinemaList();
         });
         recyclerViewMovies.setAdapter(adapter);
 
@@ -140,9 +142,48 @@ public class MovieFragment extends Fragment {
         });
     }
 
+    private void reloadCinemaList(){
+        CinemaApi api = ApiService.getClient().create(CinemaApi.class);
+        api.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
+            @Override
+            public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
+                Log.d("API_RESPONSE", "Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    cinemaList.clear();
+                    cinemaList.addAll(response.body());
+
+                    // Extract cinema names
+                    List<String> cinemaNames = new ArrayList<>();
+                    for (CinemaResponse cinema : cinemaList) {
+                        cinemaNames.add(cinema.getName());
+                    }
+
+                    // Create ArrayAdapter for the AutoCompleteTextView
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            cinemaNames
+                    );
+
+                    spinnerCinema.setAdapter(adapter);
+
+                    // Optional: enable dropdown behavior
+//                    spinnerCinema.setOnClickListener(v -> spinnerCinema.performClick());
+                } else {
+                    Toast.makeText(requireActivity(), "Failed to load cinemas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CinemaResponse>> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage(), t);
+                Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void toggleList() {
         listVisible = !listVisible;
-//        listContainer.setVisibility(listVisible ? View.VISIBLE : View.GONE);
         recyclerViewMovies.setVisibility(listVisible ? View.VISIBLE : View.GONE);
         arrowBtn.setImageResource(listVisible ? R.drawable.ic_arrow_down : R.drawable.ic_arrow_up);
     }
@@ -177,10 +218,8 @@ public class MovieFragment extends Fragment {
         etDirector.setText(selectedMovie.getDirector());
         etCast.setText(selectedMovie.getCast());
         etDescription.setText(selectedMovie.getDescription());
-//        etPosterUrl.setText(selectedMovie.getPosterUrl());
         etReleaseDate.setText(selectedMovie.getReleaseDate());
         etRating.setText(String.valueOf(selectedMovie.getRating()));
-//        etShowtimeIds.setText(selectedMovie.getShowtimeIds());
 
         // fetch all showtimes and populate the spinner
         fetchAllShowTime();
