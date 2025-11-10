@@ -113,10 +113,6 @@
             android:name=".Activity.DashboardActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!-- Profile -->
@@ -133,8 +129,9 @@
         <!-- Testing -->
         <activity
             android:name=".Activity.ImageUploadTestActivity"
-            android:exported="false"
-            android:label="Test Image Upload" />
+            android:exported="true"
+            android:label="Test Image Upload">
+        </activity>
 
     </application>
 </manifest>
