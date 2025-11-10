@@ -1,12 +1,15 @@
 package com.example.moviemax.Api;
 
+import com.example.moviemax.Model.ShowTimeDto.ShowTimeRequest;
 import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -21,4 +24,9 @@ public interface ShowTimeApi {
     // API lấy showtime theo ID
     @GET("/api/showtimes/{id}")
     Call<ShowTimeResponse> getShowTimeById(@Path("id") long id);
+
+    @POST("/api/showtimes")
+    Call<ShowTimeResponse> createShowTime(@Body ShowTimeRequest showTimeRequest);
+
+
 }
