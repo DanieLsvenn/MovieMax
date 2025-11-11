@@ -1,11 +1,11 @@
 package com.example.moviemax.Model.LoginDto;
 
 public class LoginRequest {
-    private String username;
+    private String phone;
     private String password;
 
-    public LoginRequest(String username, String password) {
-        this.username = username;
+    public LoginRequest(String phone, String password) {
+        this.phone = phone;
         this.password = password;
     }
 }

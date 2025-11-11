@@ -5,7 +5,7 @@ public class LoginResponse {
     private String fullName;
     private String email;
     private String gender;
-    private String passWord;
+    private String password;
     private String phone;
     private String token;
 
@@ -26,8 +26,8 @@ public class LoginResponse {
         return gender;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassword() {
+        return password;
     }
 
     public String getPhone() {

@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.moviemax.Adapter.ProfilePagerAdapter;
-import com.example.moviemax.LoginActivity;
 import com.example.moviemax.R;
 import com.example.moviemax.Utils.SessionManager;
 import com.google.android.material.tabs.TabLayout;

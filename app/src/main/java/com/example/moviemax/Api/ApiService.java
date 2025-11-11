@@ -9,7 +9,6 @@ public class ApiService {
     private static final String BASE_URL = "http://103.200.20.174:8081/api/";
 
     public static Retrofit getClient() {
-        // Chỉ khởi tạo khi instance chưa tồn tại
         if (retrofit == null) {
 
             // 1. Logging Interceptor (Giữ lại để debug API, rất hữu ích)
@@ -31,10 +30,6 @@ public class ApiService {
         }
 
         return retrofit;
-    }
-
-    public static MovieApi getMovieApiService() {
-        return getClient().create(MovieApi.class);
     }
 }
 

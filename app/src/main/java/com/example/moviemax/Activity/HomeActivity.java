@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moviemax.Adapter.BannerAdapter;
 import com.example.moviemax.Adapter.MovieAdapter;
 import com.example.moviemax.Api.ApiService;
+import com.example.moviemax.Api.MovieApi;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
 
@@ -233,8 +234,9 @@ public class HomeActivity extends AppCompatActivity {
         moviesContainer.setVisibility(View.GONE);
         tvError.setVisibility(View.GONE);
 
-        Call<List<MovieResponse>> call = ApiService.getMovieApiService().getMovies();
-        call.enqueue(new Callback<List<MovieResponse>>() {
+        MovieApi api = ApiService.getClient().create(MovieApi.class);
+
+        api.getMovies().enqueue(new Callback<List<MovieResponse>>() {
             @Override
             public void onResponse(Call<List<MovieResponse>> call, Response<List<MovieResponse>> response) {
                 progressBar.setVisibility(View.GONE);
@@ -303,8 +305,9 @@ public class HomeActivity extends AppCompatActivity {
     }
     
     private void searchMoviesFromAPI(String query) {
-        Call<List<MovieResponse>> call = ApiService.getMovieApiService().searchMovies(query);
-        call.enqueue(new Callback<List<MovieResponse>>() {
+        MovieApi api = ApiService.getClient().create(MovieApi.class);
+
+        api.searchMovies(query).enqueue(new Callback<List<MovieResponse>>() {
             @Override
             public void onResponse(Call<List<MovieResponse>> call, Response<List<MovieResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {

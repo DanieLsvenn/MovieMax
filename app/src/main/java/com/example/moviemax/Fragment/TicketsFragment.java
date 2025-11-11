@@ -25,8 +25,8 @@ import com.example.moviemax.Activity.TicketDetailActivity;
 import com.example.moviemax.Adapter.BookingAdapter;
 import com.example.moviemax.Model.BookingDto.BookingResponse;
 import com.example.moviemax.R;
-import com.example.moviemax.data.ApiClient;
-import com.example.moviemax.data.ApiService;
+import com.example.moviemax.Api.ApiService;
+import com.example.moviemax.Api.LoginApi;
 import com.example.moviemax.Utils.SessionManager;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class TicketsFragment extends Fragment implements BookingAdapter.OnBookin
     private TextView tvError;
     private Button btnRefresh, btnRetry, btnBrowseMovies;
     
-    private ApiService apiService;
+    private LoginApi apiService;
     private SessionManager sessionManager;
     private List<BookingResponse> bookingList;
     
@@ -80,7 +80,7 @@ public class TicketsFragment extends Fragment implements BookingAdapter.OnBookin
     }
 
     private void initServices() {
-        apiService = ApiClient.getClient().create(ApiService.class);
+        apiService = ApiService.getClient().create(LoginApi.class);
         sessionManager = new SessionManager(requireContext());
         bookingList = new ArrayList<>();
     }
