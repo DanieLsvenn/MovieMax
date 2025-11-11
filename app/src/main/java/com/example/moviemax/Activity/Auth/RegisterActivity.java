@@ -1,4 +1,4 @@
-package com.example.moviemax.Activity;
+package com.example.moviemax.Activity.Auth;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moviemax.Api.ApiService;
-import com.example.moviemax.Api.LoginApi;
+import com.example.moviemax.Api.AuthApi;
 import com.example.moviemax.Model.RegisterRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
 import com.example.moviemax.R;
@@ -26,7 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText etEmail, etFullName, etPassword, etPhone, etDateOfBirth;
     private RadioButton rbMale, rbFemale;
-    private LoginApi apiService;
+    private AuthApi apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         rbFemale = findViewById(R.id.rbFemale);
         Button btnRegister = findViewById(R.id.btnRegister);
 
-        apiService = ApiService.getClient().create(LoginApi.class);
+        apiService = ApiService.getClient(this).create(AuthApi.class);
 
         // 🔹 Gắn DatePickerDialog thay vì cho nhập tay
         etDateOfBirth.setFocusable(false);

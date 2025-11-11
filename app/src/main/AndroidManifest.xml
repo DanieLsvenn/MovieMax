@@ -24,7 +24,7 @@
             android:value="AIzaSyBdZjV_QHTMSlN92uPul3GGAce0ozxjSRc0" />
 
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".Activity.Auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.RegisterActivity"
+            android:name=".Activity.Auth.RegisterActivity"
             android:exported="false" />
 
         <activity

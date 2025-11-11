@@ -234,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
         moviesContainer.setVisibility(View.GONE);
         tvError.setVisibility(View.GONE);
 
-        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        MovieApi api = ApiService.getClient(this).create(MovieApi.class);
 
         api.getMovies().enqueue(new Callback<List<MovieResponse>>() {
             @Override
@@ -305,7 +305,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     
     private void searchMoviesFromAPI(String query) {
-        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        MovieApi api = ApiService.getClient(this).create(MovieApi.class);
 
         api.searchMovies(query).enqueue(new Callback<List<MovieResponse>>() {
             @Override

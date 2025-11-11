@@ -106,8 +106,8 @@ public class PaymentActivity extends AppCompatActivity {
      * Initialize API services
      */
     private void initApis() {
-        bookingApi = ApiService.getClient().create(BookingApi.class);
-        seatApi = ApiService.getClient().create(SeatApi.class);
+        bookingApi = ApiService.getClient(this).create(BookingApi.class);
+        seatApi = ApiService.getClient(this).create(SeatApi.class);
     }
 
     /**

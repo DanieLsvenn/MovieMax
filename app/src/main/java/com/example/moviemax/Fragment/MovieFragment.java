@@ -238,7 +238,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void reloadList() {
-        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        MovieApi api = ApiService.getClient(requireActivity()).create(MovieApi.class);
         api.getMovies().enqueue(new Callback<List<MovieResponse>>() {
             @Override
             public void onResponse(Call<List<MovieResponse>> call, Response<List<MovieResponse>> response) {
@@ -323,7 +323,7 @@ public class MovieFragment extends Fragment {
         showTimeRequest.setMovieId(selectedMovie.getId());
         showTimeRequest.setRoomId(selectedRoom.getId());
 
-        ShowTimeApi api = ApiService.getClient().create(ShowTimeApi.class);
+        ShowTimeApi api = ApiService.getClient(requireActivity()).create(ShowTimeApi.class);
         api.createShowTime(showTimeRequest).enqueue(new Callback<ShowTimeResponse>() {
             @Override
             public void onResponse(Call<ShowTimeResponse> call, Response<ShowTimeResponse> response) {
@@ -348,7 +348,7 @@ public class MovieFragment extends Fragment {
 
 
     private void reloadCinemaList(){
-        CinemaApi api = ApiService.getClient().create(CinemaApi.class);
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
         api.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
             public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
@@ -416,7 +416,7 @@ public class MovieFragment extends Fragment {
         spinnerRoom.setText("", false);
         selectedRoom = null;
 
-        CinemaApi api = ApiService.getClient().create(CinemaApi.class);
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
         api.getRoomsByCinema(selectedCinema.getId()).enqueue(new Callback<List<RoomResponse>>() {
             @Override
             public void onResponse(Call<List<RoomResponse>> call, Response<List<RoomResponse>> response) {
@@ -556,7 +556,7 @@ public class MovieFragment extends Fragment {
 
         recyclerViewShowtimes.setAdapter(showTimeAdapter);
 
-        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        MovieApi api = ApiService.getClient(requireActivity()).create(MovieApi.class);
         api.getShowtimesByMovie(selectedMovie.getId()).enqueue(new Callback<List<ShowTimeResponse>>() {
             @Override
             public void onResponse(Call<List<ShowTimeResponse>> call, Response<List<ShowTimeResponse>> response) {
@@ -662,7 +662,7 @@ public class MovieFragment extends Fragment {
         movieReq.setReleaseDate(etReleaseDate.getText().toString());
         movieReq.setRating(Double.parseDouble(etRating.getText().toString()));
 
-        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        MovieApi api = ApiService.getClient(requireActivity()).create(MovieApi.class);
 
         if ("Edit".equals(mode) && selectedMovie != null) {
             api.updateMovie(selectedMovie.getId(), movieReq).enqueue(new Callback<MovieResponse>() {
@@ -719,7 +719,7 @@ public class MovieFragment extends Fragment {
 
         showConfirmDialog("Delete this movie?", confirmed -> {
             if (confirmed) {
-                MovieApi api = ApiService.getClient().create(MovieApi.class);
+                MovieApi api = ApiService.getClient(requireActivity()).create(MovieApi.class);
                 api.deleteMovie(selectedMovie.getId()).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {

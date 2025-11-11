@@ -32,7 +32,7 @@ public class MovieActivity extends AppCompatActivity {
     }
 
     private void loadMovieById(int movieId) {
-        MovieApi api = ApiService.getClient().create(MovieApi.class);
+        MovieApi api = ApiService.getClient(this).create(MovieApi.class);
 
         api.getMovieById(movieId).enqueue(new Callback<MovieResponse>() {
             @Override

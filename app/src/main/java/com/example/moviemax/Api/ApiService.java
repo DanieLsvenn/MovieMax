@@ -1,35 +1,41 @@
 package com.example.moviemax.Api;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
+import android.content.Context;
+
+import com.example.moviemax.Utils.SessionManager;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ApiService {
-    // Biến static để giữ instance duy nhất của Retrofit (Singleton Pattern)
     private static Retrofit retrofit = null;
     private static final String BASE_URL = "http://103.200.20.174:8081/api/";
 
-    public static Retrofit getClient() {
+    // Add context parameter
+    public static Retrofit getClient(Context context) {
         if (retrofit == null) {
-
-            // 1. Logging Interceptor (Giữ lại để debug API, rất hữu ích)
+            // Logging
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            // 2. Cấu hình OkHttpClient (ĐÃ BỎ AuthInterceptor)
+            // SessionManager for token
+            SessionManager sessionManager = new SessionManager(context);
+
+            // Add interceptors
             OkHttpClient client = new OkHttpClient.Builder()
-                    // Chỉ thêm Logging Interceptor
+                    .addInterceptor(new AuthInterceptor(sessionManager))
                     .addInterceptor(logging)
                     .build();
 
-            // 3. Tạo Retrofit instance
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(client) // Sử dụng OkHttpClient không cần token
+                    .client(client)
                     .build();
         }
 
         return retrofit;
     }
 }
-

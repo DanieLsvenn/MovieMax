@@ -16,7 +16,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-public interface LoginApi {
+public interface AuthApi {
     @POST("login")
     Call<LoginResponse> login(@Body LoginRequest request);
 

@@ -90,7 +90,7 @@ public class CinemaFragment extends Fragment {
 
     private void reloadList() {
         // Call Api
-        CinemaApi api = ApiService.getClient().create(CinemaApi.class);
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
 
         api.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
@@ -175,7 +175,7 @@ public class CinemaFragment extends Fragment {
         if (mode == "Edit") {
             CinemaRequest cinemaRequest = new CinemaRequest(inputName, inputAddress, inputPhone);
 
-            CinemaApi api = new ApiService().getClient().create(CinemaApi.class);
+            CinemaApi api = new ApiService().getClient(requireActivity()).create(CinemaApi.class);
             api.updateCinema(selectedCinema.getId(), cinemaRequest).enqueue(new Callback<CinemaResponse>() {
                 @Override
                 public void onResponse(Call<CinemaResponse> call, Response<CinemaResponse> response) {
@@ -198,7 +198,7 @@ public class CinemaFragment extends Fragment {
             enableList();
         } else if (mode == "Create") {
             CinemaRequest cinemaRequest = new CinemaRequest(inputName, inputAddress, inputPhone);
-            CinemaApi api = new ApiService().getClient().create(CinemaApi.class);
+            CinemaApi api = new ApiService().getClient(requireActivity()).create(CinemaApi.class);
             api.createCinema(cinemaRequest).enqueue(new Callback<CinemaResponse>() {
                 @Override
                 public void onResponse(Call<CinemaResponse> call, Response<CinemaResponse> response) {
@@ -247,7 +247,7 @@ public class CinemaFragment extends Fragment {
     }
 
     private void deleteCinema() {
-        CinemaApi api = new ApiService().getClient().create(CinemaApi.class);
+        CinemaApi api = new ApiService().getClient(requireActivity()).create(CinemaApi.class);
         api.deleteCinema(selectedCinema.getId()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

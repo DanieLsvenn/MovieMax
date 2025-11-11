@@ -18,7 +18,7 @@ import com.example.moviemax.Model.AccountDto.AccountResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.Utils.SessionManager;
 import com.example.moviemax.Api.ApiService;
-import com.example.moviemax.Api.LoginApi;
+import com.example.moviemax.Api.AuthApi;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -47,7 +47,7 @@ public class EditProfileActivity extends AppCompatActivity {
     
     // Data
     private AccountResponse currentAccount;
-    private LoginApi apiService;
+    private AuthApi apiService;
     private SessionManager sessionManager;
     private SimpleDateFormat dateFormatter;
     
@@ -88,7 +88,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
     
     private void initServices() {
-        apiService = ApiService.getClient().create(LoginApi.class);
+        apiService = ApiService.getClient(this).create(AuthApi.class);
         sessionManager = new SessionManager(this);
     }
     

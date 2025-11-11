@@ -81,7 +81,7 @@ public class TicketDetailActivity extends AppCompatActivity implements OnMapRead
         tvDistance = findViewById(R.id.tvDistance);
         btnGetDirections = findViewById(R.id.btnGetDirections);
 
-        bookingApi = ApiService.getClient().create(BookingApi.class);
+        bookingApi = ApiService.getClient(this).create(BookingApi.class);
         
         // Initialize location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);

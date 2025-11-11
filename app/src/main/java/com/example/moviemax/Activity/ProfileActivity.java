@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.moviemax.Activity.Auth.LoginActivity;
 import com.example.moviemax.Adapter.ProfilePagerAdapter;
 import com.example.moviemax.R;
 import com.example.moviemax.Utils.SessionManager;

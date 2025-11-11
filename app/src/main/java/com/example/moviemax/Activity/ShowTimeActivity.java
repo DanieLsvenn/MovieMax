@@ -157,7 +157,7 @@ public class ShowTimeActivity extends AppCompatActivity {
     }
 
     private void loadShowTimes() {
-        ShowTimeApi api = ApiService.getClient().create(ShowTimeApi.class);
+        ShowTimeApi api = ApiService.getClient(this).create(ShowTimeApi.class);
 
         api.getShowTimes().enqueue(new Callback<List<ShowTimeResponse>>() {
             @Override
@@ -179,7 +179,7 @@ public class ShowTimeActivity extends AppCompatActivity {
 
                     // Nếu có movieId, filter theo movie title
                     if (movieId != -1) {
-                        MovieApi movieApi = ApiService.getClient().create(MovieApi.class);
+                        MovieApi movieApi = ApiService.getClient(ShowTimeActivity.this).create(MovieApi.class);
 
                         movieApi.getMovieById(movieId).enqueue(new Callback<MovieResponse>() {
                             @Override

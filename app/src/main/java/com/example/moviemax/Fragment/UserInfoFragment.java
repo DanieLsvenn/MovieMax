@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.moviemax.Model.AccountDto.AccountResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.Api.ApiService;
-import com.example.moviemax.Api.LoginApi;
+import com.example.moviemax.Api.AuthApi;
 import com.example.moviemax.Utils.SessionManager;
 
 import java.text.SimpleDateFormat;
@@ -32,7 +32,7 @@ public class UserInfoFragment extends Fragment {
                      tvDateOfBirth, tvUsername, tvRole, tvMemberSince, tvError;
     private ProgressBar progressBar;
     
-    private LoginApi apiService;
+    private AuthApi apiService;
     private SessionManager sessionManager;
     
     private static final String TAG = "UserInfoFragment";
@@ -71,7 +71,7 @@ public class UserInfoFragment extends Fragment {
     }
 
     private void initServices() {
-        apiService = ApiService.getClient().create(LoginApi.class);
+        apiService = ApiService.getClient(requireActivity()).create(AuthApi.class);
         sessionManager = new SessionManager(requireContext());
     }
 

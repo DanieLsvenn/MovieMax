@@ -1,4 +1,4 @@
-package com.example.moviemax.Activity;
+package com.example.moviemax.Activity.Auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,12 +11,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.moviemax.Activity.HomeActivity;
 import com.example.moviemax.Model.LoginDto.LoginRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.Utils.SessionManager;
 import com.example.moviemax.Api.ApiService;
-import com.example.moviemax.Api.LoginApi;
+import com.example.moviemax.Api.AuthApi;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvRegister;
     private ProgressBar progressBar;
 
-    private LoginApi apiService;
+    private AuthApi apiService;
     private SessionManager sessionManager;
 
     @Override
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
         initListeners();
 
-        apiService = ApiService.getClient().create(LoginApi.class);
+        apiService = ApiService.getClient(this).create(AuthApi.class);
         sessionManager = new SessionManager(this);
     }
 

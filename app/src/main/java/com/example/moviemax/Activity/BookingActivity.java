@@ -126,7 +126,7 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void loadSeats() {
-        SeatApi api = ApiService.getClient().create(SeatApi.class);
+        SeatApi api = ApiService.getClient(this).create(SeatApi.class);
 
         api.getSeatsByShowtime(showtimeId).enqueue(new Callback<List<SeatResponse>>() {
             @Override

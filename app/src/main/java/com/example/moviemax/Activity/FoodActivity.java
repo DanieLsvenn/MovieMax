@@ -154,7 +154,7 @@ public class FoodActivity extends AppCompatActivity {
     }
 
     private void loadFoods() {
-        FoodApi api = ApiService.getClient().create(FoodApi.class);
+        FoodApi api = ApiService.getClient(this).create(FoodApi.class);
 
         api.getFoods().enqueue(new Callback<List<FoodItemsResponse>>() {
             @Override
@@ -280,7 +280,7 @@ public class FoodActivity extends AppCompatActivity {
         Log.d("PRICE_VERIFY", "=========================");
 
         // Gọi API
-        BookingApi api = ApiService.getClient().create(BookingApi.class);
+        BookingApi api = ApiService.getClient(this).create(BookingApi.class);
 
         api.createBooking(request).enqueue(new Callback<BookingResponse>() {
             @Override

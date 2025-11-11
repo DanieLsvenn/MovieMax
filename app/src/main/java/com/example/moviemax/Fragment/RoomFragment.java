@@ -105,7 +105,7 @@ public class RoomFragment extends Fragment {
     }
 
     private void reloadList() {
-        RoomApi api = ApiService.getClient().create(RoomApi.class);
+        RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
         api.getRooms().enqueue(new Callback<List<RoomResponse>>() {
             @Override
             public void onResponse(Call<List<RoomResponse>> call, Response<List<RoomResponse>> response) {
@@ -151,7 +151,7 @@ public class RoomFragment extends Fragment {
         listContainer.setVisibility(View.GONE);
 
         // Fetch all cinemas and set spinner properly
-        CinemaApi cinemaApi = ApiService.getClient().create(CinemaApi.class);
+        CinemaApi cinemaApi = ApiService.getClient(requireActivity()).create(CinemaApi.class);
         cinemaApi.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
             public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
@@ -228,7 +228,7 @@ public class RoomFragment extends Fragment {
         spinnerCinema.setAdapter(cinemaAdapter);
 
         // Fetch all cinemas from API
-        CinemaApi cinemaApi = ApiService.getClient().create(CinemaApi.class);
+        CinemaApi cinemaApi = ApiService.getClient(requireActivity()).create(CinemaApi.class);
         cinemaApi.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
             public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
@@ -302,7 +302,7 @@ public class RoomFragment extends Fragment {
 
         Log.d("RoomFragment", "Saving with cinemaId = " + selectedCinemaId);
 
-        RoomApi api = ApiService.getClient().create(RoomApi.class);
+        RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
 
         // Handle Edit vs Create
         if ("Edit".equals(mode) && selectedRoom != null) {
@@ -348,7 +348,7 @@ public class RoomFragment extends Fragment {
 
         showConfirmDialog("Delete this room?", confirmed -> {
             if (confirmed) {
-                RoomApi api = ApiService.getClient().create(RoomApi.class);
+                RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
                 api.deleteRoom(selectedRoom.getId()).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
