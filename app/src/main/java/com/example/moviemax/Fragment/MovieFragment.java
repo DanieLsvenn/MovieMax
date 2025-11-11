@@ -1,13 +1,18 @@
 package com.example.moviemax.Fragment;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -15,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.moviemax.Adapter.Dashboard.MovieAdapter;
 import com.example.moviemax.Adapter.Dashboard.ShowTimeAdapter;
 import com.example.moviemax.Api.ApiService;
@@ -29,6 +35,7 @@ import com.example.moviemax.Model.RoomDto.RoomResponse;
 import com.example.moviemax.Model.ShowTimeDto.ShowTimeRequest;
 import com.example.moviemax.Model.ShowTimeDto.ShowTimeResponse;
 import com.example.moviemax.R;
+import com.example.moviemax.Supabase.SupabaseStorageHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +57,7 @@ public class MovieFragment extends Fragment {
     private List<MovieResponse> movieList = new ArrayList<>();
     private List<CinemaResponse> cinemaList = new ArrayList<>();
 
-    private CardView  detailsContainer;
+    private CardView detailsContainer;
     private ImageButton arrowBtn;
     private Button btnDetails, btnEdit, btnDelete, btnAdd, btnSave, btnAddShowtime;
 
@@ -58,6 +65,15 @@ public class MovieFragment extends Fragment {
             etCast, etDescription, etPosterUrl, etReleaseDate, etRating,
             etShowtimeStart, etShowtimePrice;
     private AutoCompleteTextView spinnerCinema, spinnerRoom;
+
+    // Image upload components
+    private ImageView ivPosterPreview;
+    private Button btnSelectPoster;
+    private TextView tvPosterStatus;
+    private ProgressBar posterUploadProgress;
+    private Uri selectedPosterUri;
+    private String uploadedPosterFileName;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     private boolean listVisible = true;
     private String mode = "";
@@ -73,6 +89,24 @@ public class MovieFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
 
+        initViews(view);
+        setupImagePicker();
+        setupRecyclerViews();
+        setupClickListeners();
+
+        reloadList();
+        disableDetails();
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        KeyboardInsetsHelper.applyKeyboardInsets(view);
+    }
+
+    private void initViews(View view) {
         detailsContainer = view.findViewById(R.id.detailsContainer);
         recyclerViewMovies = view.findViewById(R.id.recyclerViewMovies);
         recyclerViewShowtimes = view.findViewById(R.id.recyclerViewShowtimes);
@@ -103,6 +137,27 @@ public class MovieFragment extends Fragment {
         spinnerCinema = view.findViewById(R.id.spinnerCinema);
         spinnerRoom = view.findViewById(R.id.spinnerRoom);
 
+        // Image upload views
+        ivPosterPreview = view.findViewById(R.id.ivPosterPreview);
+        btnSelectPoster = view.findViewById(R.id.btnSelectPoster);
+        tvPosterStatus = view.findViewById(R.id.tvPosterStatus);
+        posterUploadProgress = view.findViewById(R.id.posterUploadProgress);
+    }
+
+    private void setupImagePicker() {
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == requireActivity().RESULT_OK
+                            && result.getData() != null) {
+                        selectedPosterUri = result.getData().getData();
+                        displaySelectedPoster();
+                    }
+                }
+        );
+    }
+
+    private void setupRecyclerViews() {
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewShowtimes.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -113,15 +168,15 @@ public class MovieFragment extends Fragment {
             reloadCinemaList();
         });
         recyclerViewMovies.setAdapter(adapter);
+    }
 
-        reloadList();
-
-        // Events
+    private void setupClickListeners() {
         arrowBtn.setOnClickListener(v -> toggleList());
         btnEdit.setOnClickListener(v -> onEditBtnClick());
         btnAdd.setOnClickListener(v -> onCreateBtnClick());
         btnDelete.setOnClickListener(v -> onDelete());
         btnSave.setOnClickListener(v -> onConfirm());
+        btnSelectPoster.setOnClickListener(v -> openImagePicker());
         btnAddShowtime.setOnClickListener(v -> onAddShowTime());
 
         disableDetails();
@@ -129,12 +184,59 @@ public class MovieFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        imagePickerLauncher.launch(intent);
+    }
 
-        // Apply keyboard insets to make layout move when keyboard shows up
-        KeyboardInsetsHelper.applyKeyboardInsets(view);
+    private void displaySelectedPoster() {
+        if (selectedPosterUri != null) {
+            Glide.with(this)
+                    .load(selectedPosterUri)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(ivPosterPreview);
+
+            tvPosterStatus.setText("✓ Image selected. Will upload when saving.");
+            tvPosterStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        }
+    }
+
+    private void uploadPosterImage(OnUploadCompleteListener listener) {
+        if (selectedPosterUri == null) {
+            listener.onComplete(null);
+            return;
+        }
+
+        posterUploadProgress.setVisibility(View.VISIBLE);
+        tvPosterStatus.setText("Uploading poster...");
+        tvPosterStatus.setTextColor(getResources().getColor(android.R.color.black));
+
+        SupabaseStorageHelper.uploadImage(requireContext(), selectedPosterUri,
+                new SupabaseStorageHelper.UploadCallback() {
+                    @Override
+                    public void onSuccess(String fileName) {
+                        requireActivity().runOnUiThread(() -> {
+                            posterUploadProgress.setVisibility(View.GONE);
+                            uploadedPosterFileName = fileName;
+                            tvPosterStatus.setText("✓ Poster uploaded successfully!");
+                            tvPosterStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                            listener.onComplete(fileName);
+                        });
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        requireActivity().runOnUiThread(() -> {
+                            posterUploadProgress.setVisibility(View.GONE);
+                            tvPosterStatus.setText("✗ Upload failed: " + error);
+                            tvPosterStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            Toast.makeText(requireContext(), "Poster upload failed: " + error,
+                                    Toast.LENGTH_LONG).show();
+                            listener.onComplete(null);
+                        });
+                    }
+                });
     }
 
     private void reloadList() {
@@ -257,19 +359,16 @@ public class MovieFragment extends Fragment {
                     cinemaList.clear();
                     cinemaList.addAll(response.body());
 
-                    // Extract cinema names
                     List<String> cinemaNames = new ArrayList<>();
                     for (CinemaResponse cinema : cinemaList) {
                         cinemaNames.add(cinema.getName());
                     }
 
-                    // Create ArrayAdapter for the AutoCompleteTextView
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(
                             requireContext(),
                             android.R.layout.simple_dropdown_item_1line,
                             cinemaNames
                     );
-
                     spinnerCinema.setAdapter(adapter);
 
                     // Set click listener for the AutoCompleteTextView
@@ -384,11 +483,11 @@ public class MovieFragment extends Fragment {
         arrowBtn.setImageResource(R.drawable.ic_arrow_down);
     }
 
-    private void disableDetails(){
+    private void disableDetails() {
         detailsContainer.setVisibility(View.GONE);
     }
 
-    private void enableDetails(){
+    private void enableDetails() {
         detailsContainer.setVisibility(View.VISIBLE);
     }
 
@@ -404,33 +503,61 @@ public class MovieFragment extends Fragment {
         etDescription.setText(selectedMovie.getDescription());
         etReleaseDate.setText(selectedMovie.getReleaseDate());
         etRating.setText(String.valueOf(selectedMovie.getRating()));
+        etPosterUrl.setText(selectedMovie.getPosterUrl());
 
-        // fetch all showtimes and populate the spinner
+        // Load existing poster
+        loadExistingPoster(selectedMovie.getPosterUrl());
+
         fetchAllShowTime();
-
         enableEditing(false);
         enableDetails();
         disableList();
     }
 
+    private void loadExistingPoster(String posterUrl) {
+        if (posterUrl != null && !posterUrl.isEmpty()) {
+            String fullUrl = getFullPosterUrl(posterUrl);
+            Glide.with(this)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(ivPosterPreview);
+
+            tvPosterStatus.setText("Current poster loaded");
+            tvPosterStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        } else {
+            ivPosterPreview.setImageResource(R.drawable.ic_launcher_background);
+            tvPosterStatus.setText("No poster set");
+            tvPosterStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        }
+    }
+
+    private String getFullPosterUrl(String posterUrl) {
+        if (posterUrl.startsWith("http")) {
+            return posterUrl;
+        } else {
+            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
+        }
+    }
+
     private void fetchAllShowTime() {
         List<ShowTimeResponse> showTimeList = new ArrayList<>();
 
-        showTimeAdapter = new ShowTimeAdapter(getContext(), showTimeList, new ShowTimeAdapter.OnShowTimeActionListener() {
-            @Override
-            public void onEdit(ShowTimeResponse showTime) {
-                // TODO: handle edit logic
-            }
+        showTimeAdapter = new ShowTimeAdapter(getContext(), showTimeList,
+                new ShowTimeAdapter.OnShowTimeActionListener() {
+                    @Override
+                    public void onEdit(ShowTimeResponse showTime) {
+                        // TODO: handle edit logic
+                    }
 
-            @Override
-            public void onDelete(ShowTimeResponse showTime) {
-                // TODO: handle delete logic
-            }
-        });
+                    @Override
+                    public void onDelete(ShowTimeResponse showTime) {
+                        // TODO: handle delete logic
+                    }
+                });
 
         recyclerViewShowtimes.setAdapter(showTimeAdapter);
 
-        // API call
         MovieApi api = ApiService.getClient().create(MovieApi.class);
         api.getShowtimesByMovie(selectedMovie.getId()).enqueue(new Callback<List<ShowTimeResponse>>() {
             @Override
@@ -441,14 +568,16 @@ public class MovieFragment extends Fragment {
                     showTimeList.addAll(response.body());
                     showTimeAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(requireActivity(), "Failed to load movie's showtimes", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Failed to load movie's showtimes",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<ShowTimeResponse>> call, Throwable t) {
                 Log.e("API_ERROR", t.getMessage(), t);
-                Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), "API error: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -461,11 +590,11 @@ public class MovieFragment extends Fragment {
         etDirector.setEnabled(enabled);
         etCast.setEnabled(enabled);
         etDescription.setEnabled(enabled);
-        etPosterUrl.setEnabled(enabled);
+        etPosterUrl.setEnabled(false); // Always disabled - use image picker instead
         etReleaseDate.setEnabled(enabled);
         etRating.setEnabled(enabled);
-//        etShowtimeIds.setEnabled(enabled);
         btnSave.setEnabled(enabled);
+        btnSelectPoster.setEnabled(enabled);
 
         enableDetails();
     }
@@ -495,10 +624,29 @@ public class MovieFragment extends Fragment {
         etPosterUrl.setText("");
         etReleaseDate.setText("");
         etRating.setText("");
-//        etShowtimeIds.setText("");
+
+        // Clear image selection
+        selectedPosterUri = null;
+        uploadedPosterFileName = null;
+        ivPosterPreview.setImageResource(R.drawable.ic_launcher_background);
+        tvPosterStatus.setText("No poster selected");
+        tvPosterStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
     }
 
     private void saveChanges() {
+        // First upload poster if one was selected
+        if (selectedPosterUri != null) {
+            uploadPosterImage(posterFileName -> {
+                proceedWithSave(posterFileName);
+            });
+        } else {
+            // Use existing poster URL if no new image selected
+            String existingPosterUrl = etPosterUrl.getText().toString();
+            proceedWithSave(existingPosterUrl.isEmpty() ? null : existingPosterUrl);
+        }
+    }
+
+    private void proceedWithSave(String posterFileName) {
         MovieRequest movieReq = new MovieRequest();
         movieReq.setTitle(etTitle.getText().toString());
         movieReq.setGenre(etGenre.getText().toString());
@@ -507,10 +655,14 @@ public class MovieFragment extends Fragment {
         movieReq.setDirector(etDirector.getText().toString());
         movieReq.setCast(etCast.getText().toString());
         movieReq.setDescription(etDescription.getText().toString());
-        movieReq.setPosterUrl(etPosterUrl.getText().toString());
+
+        // Set poster URL - use uploaded filename or existing URL
+        if (posterFileName != null) {
+            movieReq.setPosterUrl(posterFileName);
+        }
+
         movieReq.setReleaseDate(etReleaseDate.getText().toString());
         movieReq.setRating(Double.parseDouble(etRating.getText().toString()));
-//        movieReq.setShowtimeIds(etShowtimeIds.getText().toString());
 
         MovieApi api = ApiService.getClient().create(MovieApi.class);
 
@@ -521,13 +673,15 @@ public class MovieFragment extends Fragment {
                     Toast.makeText(requireContext(),
                             response.isSuccessful() ? "Movie updated!" : "Update failed",
                             Toast.LENGTH_SHORT).show();
-                    reloadList();
-                    enableList();
+                    if (response.isSuccessful()) {
+                        resetAfterSave();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieResponse> call, Throwable t) {
-                    Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         } else if ("Create".equals(mode)) {
@@ -537,20 +691,29 @@ public class MovieFragment extends Fragment {
                     Toast.makeText(requireContext(),
                             response.isSuccessful() ? "Movie created!" : "Create failed",
                             Toast.LENGTH_SHORT).show();
-                    reloadList();
-                    enableList();
+                    if (response.isSuccessful()) {
+                        resetAfterSave();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieResponse> call, Throwable t) {
-                    Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         }
+    }
 
+    private void resetAfterSave() {
+        reloadList();
+        enableList();
         enableEditing(false);
         disableDetails();
-        enableList();
+
+        // Clear image selection
+        selectedPosterUri = null;
+        uploadedPosterFileName = null;
     }
 
     private void onDelete() {
@@ -572,7 +735,8 @@ public class MovieFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -595,5 +759,9 @@ public class MovieFragment extends Fragment {
 
     public interface ConfirmListener {
         void onConfirm(boolean confirmed);
+    }
+
+    public interface OnUploadCompleteListener {
+        void onComplete(String fileName);
     }
 }

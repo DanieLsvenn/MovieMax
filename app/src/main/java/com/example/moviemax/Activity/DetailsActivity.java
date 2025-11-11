@@ -7,29 +7,21 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.moviemax.R;
 import com.example.moviemax.Supabase.SupabaseStorageHelper;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-//import com.example.moviemax.Supabase.SupabaseStorageHelper;
-
-// import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class DetailsActivity extends AppCompatActivity {
+    private static final String TAG = "DetailsActivity";
+
     private ImageView ivMoviePoster, ivMovieBackdrop;
     private TextView tvMovieTitle, tvMovieGenre, tvMovieDuration, tvMovieLanguage;
     private TextView tvMovieDirector, tvMovieCast, tvMovieReleaseDate, tvMovieDescription, tvMovieRating;
     private TextView tvMovieGenreAndDuration;
     private ImageButton btnBack;
-    private FloatingActionButton fabUploadTest; // For FAB option
-    // private Button btnTestUpload; // For Button option - uncomment if using Option B
     private Button btnBookTickets;
 
     @Override
@@ -61,32 +53,13 @@ public class DetailsActivity extends AppCompatActivity {
 
         // Buttons
         btnBack = findViewById(R.id.btnBack);
-
-        // Initialize upload test button (FAB option)
-        fabUploadTest = findViewById(R.id.fabUploadTest);
-
-        // OR for Button option, uncomment this:
-        // btnTestUpload = findViewById(R.id.btnTestUpload);
         btnBookTickets = findViewById(R.id.btnBookTickets);
     }
 
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
 
-        // FAB click listener
-        fabUploadTest.setOnClickListener(v -> {
-            Intent intent = new Intent(DetailsActivity.this, ImageUploadTestActivity.class);
-            startActivity(intent);
-        });
-
-        // OR for Button option, uncomment this:
-        // btnTestUpload.setOnClickListener(v -> {
-        //     Intent intent = new Intent(DetailsActivity.this, ImageUploadTestActivity.class);
-        //     startActivity(intent);
-        // });
-
         btnBookTickets.setOnClickListener(v -> {
-            // Navigate to ShowTimeActivity with movie ID
             Intent bookingIntent = new Intent(DetailsActivity.this, ShowTimeActivity.class);
             int movieId = getIntent().getIntExtra("movie_id", -1);
             if (movieId != -1) {
@@ -99,7 +72,6 @@ public class DetailsActivity extends AppCompatActivity {
     private void loadMovieDetails() {
         Intent intent = getIntent();
 
-        int movieId = intent.getIntExtra("movie_id", -1);
         String title = intent.getStringExtra("movie_title");
         String genre = intent.getStringExtra("movie_genre");
         int duration = intent.getIntExtra("movie_duration", 0);
@@ -111,15 +83,14 @@ public class DetailsActivity extends AppCompatActivity {
         String posterUrl = intent.getStringExtra("movie_poster_url");
         double rating = intent.getDoubleExtra("movie_rating", 0.0);
 
-        // Set the data to hero section views
+        // Set hero section data
         tvMovieTitle.setText(title != null ? title : "Unknown Title");
         tvMovieRating.setText(String.valueOf(rating));
 
-        // Combine genre and duration for hero section
         String genreAndDuration = (genre != null ? genre : "Unknown Genre") + " • " + duration + " min";
         tvMovieGenreAndDuration.setText(genreAndDuration);
 
-        // Set the data to details section views
+        // Set details section data
         tvMovieGenre.setText(genre != null ? genre : "Unknown Genre");
         tvMovieDuration.setText(duration + " minutes");
         tvMovieLanguage.setText(language != null ? language : "Unknown Language");
@@ -128,36 +99,34 @@ public class DetailsActivity extends AppCompatActivity {
         tvMovieReleaseDate.setText(releaseDate != null ? releaseDate : "Unknown Date");
         tvMovieDescription.setText(description != null ? description : "No description available");
 
-        // Load poster image - UPDATED TO SUPPORT SUPABASE
-       if (posterUrl != null && !posterUrl.isEmpty()) {
-           String fullPosterUrl = getFullPosterUrl(posterUrl);
-
-           // Load main poster
-           Glide.with(this)
-                   .load(fullPosterUrl)
-                   .placeholder(R.drawable.ic_launcher_background)
-                   .error(R.drawable.ic_launcher_background)
-                   .into(ivMoviePoster);
-
-           // Load backdrop (same image but with reduced opacity handled by layout)
-           Glide.with(this)
-                   .load(fullPosterUrl)
-                   .placeholder(R.drawable.ic_launcher_background)
-                   .error(R.drawable.ic_launcher_background)
-                   .into(ivMovieBackdrop);
-       }
+        // Load poster images
+        loadPosterImage(posterUrl);
     }
 
-    private String getFullPosterUrl(String posterUrl) {
-        Log.d("getFullPosterUrl", posterUrl);
-        if (posterUrl.startsWith("http")) {
-            // Already a full URL (Supabase full URL)
-            return posterUrl;
-        } else {
-            // Supabase storage filename pattern
-            return SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
+    private void loadPosterImage(String posterUrl) {
+        if (posterUrl == null || posterUrl.isEmpty()) {
+            Log.w(TAG, "Poster URL is empty");
+            return;
         }
+
+        // Load main poster
+        Glide.with(this)
+                .load(posterUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_background)
+                .into(ivMoviePoster);
+
+        // Load backdrop (same image with reduced opacity handled by layout)
+        Glide.with(this)
+                .load(posterUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_background)
+                .into(ivMovieBackdrop);
     }
 
-
+    /**
+     * Convert poster URL to full Supabase URL if needed
+     * @param posterUrl Either a filename or full URL
+     * @return Full public URL
+     */
 }
