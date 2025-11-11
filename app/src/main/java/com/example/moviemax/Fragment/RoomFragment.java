@@ -37,11 +37,12 @@ public class RoomFragment extends Fragment {
     private CinemaAdapter cinemaAdapter;
     private List<RoomResponse> roomList = new ArrayList<>();
     private List<CinemaResponse> cinemaList = new ArrayList<>();
+
     private CardView listContainer, detailsContainer;
     private ImageButton arrowBtn;
     private Button btnDetails, btnEdit, btnDelete, btnAdd, btnSave;
 
-    private EditText etName, etSeats, etType, etCinemaId;
+    private EditText etName, etSeats, etType;
     private boolean listVisible = true;
     private String mode = "";
     private RoomResponse selectedRoom;
@@ -56,20 +57,20 @@ public class RoomFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_room, container, false);
 
-        listContainer = view.findViewById(R.id.listContainer);
-        detailsContainer = view.findViewById(R.id.detailsContainer);
+//        listContainer = view.findViewById(R.id.listContainer);
+
+//        detailsContainer = view.findViewById(R.id.detailsContainer);
         recyclerView = view.findViewById(R.id.recyclerViewRooms);
-        arrowBtn = view.findViewById(R.id.arrowBtn);
-        btnDetails = view.findViewById(R.id.btnDetails);
-        btnAdd = view.findViewById(R.id.btnAdd);
-        btnEdit = view.findViewById(R.id.btnEdit);
-        btnDelete = view.findViewById(R.id.btnDelete);
+//        arrowBtn = view.findViewById(R.id.arrowBtn);
+//        btnDetails = view.findViewById(R.id.btnDetails);
+//        btnAdd = view.findViewById(R.id.btnAdd);
+//        btnEdit = view.findViewById(R.id.btnEdit);
+//        btnDelete = view.findViewById(R.id.btnDelete);
         btnSave = view.findViewById(R.id.btnSave);
 
         etName = view.findViewById(R.id.etName);
         etSeats = view.findViewById(R.id.etSeats);
         etType = view.findViewById(R.id.etType);
-//        etCinemaId = view.findViewById(R.id.etCinemaId);
         spinnerCinema = view.findViewById(R.id.spinnerCinema);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -83,12 +84,12 @@ public class RoomFragment extends Fragment {
 
         reloadList();
 
-        arrowBtn.setOnClickListener(v -> toggleList());
-        btnDetails.setOnClickListener(v -> toggleList());
-        btnEdit.setOnClickListener(v -> onEditBtnClick());
-        btnAdd.setOnClickListener(v -> onCreateBtnClick());
-        btnDelete.setOnClickListener(v -> onDelete());
-        btnSave.setOnClickListener(v -> onConfirm());
+//        arrowBtn.setOnClickListener(v -> toggleList());
+//        btnDetails.setOnClickListener(v -> toggleList());
+//        btnEdit.setOnClickListener(v -> onEditBtnClick());
+//        btnAdd.setOnClickListener(v -> onCreateBtnClick());
+//        btnDelete.setOnClickListener(v -> onDelete());
+//        btnSave.setOnClickListener(v -> onConfirm());
 
         disableDetails();
         setupSpinnerListener();
@@ -131,7 +132,7 @@ public class RoomFragment extends Fragment {
     }
 
     private void disableDetails() {
-        detailsContainer.setVisibility(View.GONE);
+//        detailsContainer.setVisibility(View.GONE);
     }
 
     private void enableDetails() {
