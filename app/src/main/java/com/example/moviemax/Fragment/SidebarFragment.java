@@ -38,27 +38,18 @@ public class SidebarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sidebar, container, false);
 
-        LinearLayout btnDashboard = view.findViewById(R.id.btnDashboard);
         LinearLayout btnMovies = view.findViewById(R.id.btnMovies);
-        LinearLayout btnSchedules = view.findViewById(R.id.btnSchedules);
-        LinearLayout btnStaff = view.findViewById(R.id.btnStaff);
-        LinearLayout btnSettings = view.findViewById(R.id.btnSettings);
         LinearLayout btnProfile = view.findViewById(R.id.btnProfile);
         LinearLayout btnCinemas = view.findViewById(R.id.btnCinemas);
         LinearLayout btnRooms = view.findViewById(R.id.btnRooms);
 
 
-        btnDashboard.setOnClickListener(v -> showToast("Dashboard"));
         btnMovies.setOnClickListener(v -> {
             if (listener != null) listener.onSidebarItemSelected("Movies");
         });
-        btnSchedules.setOnClickListener(v -> showToast("Schedules"));
-        btnStaff.setOnClickListener(v -> showToast("Staff"));
-        btnSettings.setOnClickListener(v -> showToast("Settings"));
         btnProfile.setOnClickListener(v -> {
             if (listener != null) listener.onSidebarItemSelected("Profile");
         });
-
         btnCinemas.setOnClickListener(v -> {
             if (listener != null) listener.onSidebarItemSelected("Cinemas");
         });
@@ -67,9 +58,5 @@ public class SidebarFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(getActivity(), msg + " clicked!", Toast.LENGTH_SHORT).show();
     }
 }

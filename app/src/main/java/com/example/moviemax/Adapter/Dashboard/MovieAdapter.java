@@ -12,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
+import com.example.moviemax.Supabase.SupabaseStorageHelper;
 
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private Context context;
-    private List<MovieResponse> movieList;
-    private OnItemClickListener listener;
+    private final Context context;
+    private final List<MovieResponse> movieList;
+    private final OnItemClickListener listener;
     private int selectedPosition = RecyclerView.NO_POSITION;
 
     public interface OnItemClickListener {
@@ -42,16 +43,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         MovieResponse movie = movieList.get(position);
-        holder.bind(movie, listener);
+        holder.bind(movie, context);
 
+        // Highlight selected item
         holder.itemView.setBackgroundColor(position == selectedPosition
                 ? ContextCompat.getColor(context, com.google.android.material.R.color.design_default_color_secondary)
                 : ContextCompat.getColor(context, android.R.color.transparent));
 
         holder.itemView.setOnClickListener(v -> {
-            int prev = selectedPosition;
+            int previousPosition = selectedPosition;
             selectedPosition = holder.getAbsoluteAdapterPosition();
-            notifyItemChanged(prev);
+            notifyItemChanged(previousPosition);
             notifyItemChanged(selectedPosition);
             listener.onItemClick(movie);
         });
@@ -65,39 +67,54 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void setSelectedMovie(MovieResponse movie) {
         int index = movieList.indexOf(movie);
         if (index != -1) {
-            int prev = selectedPosition;
+            int previousPosition = selectedPosition;
             selectedPosition = index;
-            notifyItemChanged(prev);
+            notifyItemChanged(previousPosition);
             notifyItemChanged(selectedPosition);
         }
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvGenre, tvReleaseDate, tvRating;
-        ImageView imgPoster;
+        private final TextView tvTitle;
+        private final TextView tvGenre;
+        private final TextView tvDuration;
+        private final TextView tvReleaseDate;
+        private final TextView tvRating;
+        private final ImageView imgPoster;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvGenre = itemView.findViewById(R.id.tvGenre);
+            tvDuration = itemView.findViewById(R.id.tvDuration);
             tvReleaseDate = itemView.findViewById(R.id.tvReleaseDate);
             tvRating = itemView.findViewById(R.id.tvRating);
             imgPoster = itemView.findViewById(R.id.imgPoster);
         }
 
-        public void bind(MovieResponse movie, OnItemClickListener listener) {
+        public void bind(MovieResponse movie, Context context) {
             tvTitle.setText(movie.getTitle());
-            tvGenre.setText(movie.getGenre());
+            tvGenre.setText("Genre: " + movie.getGenre());
+            tvDuration.setText("Duration: " + movie.getDuration() + " min");
             tvReleaseDate.setText("Release: " + movie.getReleaseDate());
             tvRating.setText("⭐ " + movie.getRating());
 
-//            // Use Glide or fallback image
-//            Glide.with(itemView.getContext())
-//                    .load(movie.getPosterUrl())
-//                    .placeholder(R.drawable.ic_movie_placeholder)
-//                    .into(imgPoster);
+            // Load poster image using Supabase
+            String posterUrl = movie.getPosterUrl();
+            String fullPosterUrl = getFullPosterUrl(posterUrl);
 
-            itemView.setOnClickListener(v -> listener.onItemClick(movie));
+            Glide.with(context)
+                    .load(fullPosterUrl)
+                    .placeholder(R.drawable.cinema)
+                    .error(R.drawable.cinema)
+                    .into(imgPoster);
+        }
+
+        private String getFullPosterUrl(String posterUrl) {
+            if (posterUrl == null || posterUrl.isEmpty()) {
+                return "";
+            }
+            return posterUrl.startsWith("http") ? posterUrl : SupabaseStorageHelper.getSupabaseImageUrl(posterUrl);
         }
     }
 }

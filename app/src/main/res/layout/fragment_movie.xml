@@ -112,6 +112,7 @@
                             android:backgroundTint="#5E35B1"
                             android:textColor="@android:color/white"
                             app:cornerRadius="8dp"
+                            android:visibility="gone"
                             android:layout_weight="2"/>
 
                         <Button
@@ -222,13 +223,15 @@
                                 android:layout_marginBottom="8dp" />
 
                             <TextView
-                                android:id="@+id/tvPosterStatus"
+                                android:id="@+id/tvPosterUrl"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="No poster selected"
-                                android:textSize="12sp"
-                                android:textColor="@android:color/darker_gray"
-                                android:textAlignment="center" />
+                                android:textSize="11sp"
+                                android:textColor="#757575"
+                                android:textAlignment="center"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -248,8 +251,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Movie Title"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxStrokeColor="@color/textinput_stroke_colors"
-                        app:hintTextColor="@color/textinput_hint_colors"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -259,7 +262,6 @@
                             android:id="@+id/etTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:enabled="false"
                             android:textColor="#212121"
                             android:textColorHint="#9E9E9E"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -276,8 +278,8 @@
                             android:layout_weight="1"
                             android:hint="Genre"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/textinput_stroke_colors"
-                            app:hintTextColor="@color/textinput_hint_colors"
+                            app:boxStrokeColor="#5E35B1"
+                            app:hintTextColor="#757575"
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
@@ -287,7 +289,6 @@
                                 android:id="@+id/etGenre"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:enabled="false"
                                 android:textColor="#212121"
                                 android:textColorHint="#9E9E9E"/>
                         </com.google.android.material.textfield.TextInputLayout>
@@ -299,8 +300,8 @@
                             android:layout_marginStart="8dp"
                             android:hint="Duration (min)"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/textinput_stroke_colors"
-                            app:hintTextColor="@color/textinput_hint_colors"
+                            app:boxStrokeColor="#5E35B1"
+                            app:hintTextColor="#757575"
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
@@ -311,7 +312,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
-                                android:enabled="false"
                                 android:textColor="#212121"
                                 android:textColorHint="#9E9E9E"/>
                         </com.google.android.material.textfield.TextInputLayout>
@@ -329,8 +329,8 @@
                             android:layout_weight="1"
                             android:hint="Language"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/textinput_stroke_colors"
-                            app:hintTextColor="@color/textinput_hint_colors"
+                            app:boxStrokeColor="#5E35B1"
+                            app:hintTextColor="#757575"
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
@@ -340,7 +340,6 @@
                                 android:id="@+id/etLanguage"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:enabled="false"
                                 android:textColor="#212121"
                                 android:textColorHint="#9E9E9E"/>
                         </com.google.android.material.textfield.TextInputLayout>
@@ -352,8 +351,8 @@
                             android:layout_marginStart="8dp"
                             android:hint="Rating (0-10)"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/textinput_stroke_colors"
-                            app:hintTextColor="@color/textinput_hint_colors"
+                            app:boxStrokeColor="#5E35B1"
+                            app:hintTextColor="#757575"
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
@@ -364,7 +363,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal"
-                                android:enabled="false" />
+                                android:textColor="#212121"
+                                android:textColorHint="#9E9E9E"/>
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
@@ -374,8 +374,8 @@
                         android:layout_marginTop="8dp"
                         android:hint="Release Date (yyyy-MM-dd)"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxStrokeColor="@color/textinput_stroke_colors"
-                        app:hintTextColor="@color/textinput_hint_colors"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -385,7 +385,6 @@
                             android:id="@+id/etReleaseDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:enabled="false"
                             android:textColor="#212121"
                             android:textColorHint="#9E9E9E"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -406,8 +405,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Director"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxStrokeColor="@color/textinput_stroke_colors"
-                        app:hintTextColor="@color/textinput_hint_colors"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -417,7 +416,6 @@
                             android:id="@+id/etDirector"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:enabled="false"
                             android:textColor="#212121"
                             android:textColorHint="#9E9E9E"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -428,8 +426,8 @@
                         android:layout_marginTop="8dp"
                         android:hint="Cast"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxStrokeColor="@color/textinput_stroke_colors"
-                        app:hintTextColor="@color/textinput_hint_colors"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -439,7 +437,6 @@
                             android:id="@+id/etCast"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:enabled="false"
                             android:textColor="#212121"
                             android:textColorHint="#9E9E9E"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -450,8 +447,8 @@
                         android:layout_marginTop="8dp"
                         android:hint="Description"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxStrokeColor="@color/textinput_stroke_colors"
-                        app:hintTextColor="@color/textinput_hint_colors"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -464,33 +461,8 @@
                             android:inputType="textMultiLine"
                             android:minLines="3"
                             android:gravity="top"
-                            android:enabled="false"
                             android:textColor="#212121"
                             android:textColorHint="#9E9E9E"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Hidden Poster URL field (auto-filled) -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Poster URL (Auto-filled)"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxStrokeColor="@color/textinput_stroke_colors"
-                        app:hintTextColor="@color/textinput_hint_colors"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPosterUrl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:enabled="false"
-                            android:textColor="#757575"
-                            android:textColorHint="#9E9E9E"
-                            android:textSize="12sp"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <Button
@@ -500,7 +472,6 @@
                         android:text="Save Movie"
                         android:textAllCaps="false"
                         android:textSize="16sp"
-                        android:enabled="false"
                         android:textColor="@android:color/white"
                         android:backgroundTint="#43A047"
                         android:layout_marginTop="20dp"
@@ -561,6 +532,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Start Time (yyyy-MM-dd HH:mm)"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:boxStrokeColor="#FF6F00"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -582,6 +555,8 @@
                         android:layout_marginTop="8dp"
                         android:hint="Ticket Price"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:boxStrokeColor="#FF6F00"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -614,6 +589,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Select Cinema"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        app:boxStrokeColor="#FF6F00"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -634,6 +611,8 @@
                         android:layout_marginTop="8dp"
                         android:hint="Select Room"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        app:boxStrokeColor="#FF6F00"
+                        app:hintTextColor="#757575"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"

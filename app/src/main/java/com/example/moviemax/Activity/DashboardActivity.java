@@ -54,10 +54,6 @@ public class DashboardActivity extends AppCompatActivity implements SidebarFragm
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.sidebarFragmentContainer, new SidebarFragment())
                     .commit();
-
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.contentFrame, new PlaceholderFragment()) // maybe a home dashboard fragment
-//                    .commit();
         }
     }
 

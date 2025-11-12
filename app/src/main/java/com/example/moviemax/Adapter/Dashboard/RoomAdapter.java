@@ -15,9 +15,9 @@ import java.util.List;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
-    private Context context;
-    private List<RoomResponse> roomList;
-    private OnItemClickListener listener;
+    private final Context context;
+    private final List<RoomResponse> roomList;
+    private final OnItemClickListener listener;
     private int selectedPosition = RecyclerView.NO_POSITION;
 
     public interface OnItemClickListener {
@@ -40,16 +40,17 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     @Override
     public void onBindViewHolder(@NonNull RoomViewHolder holder, int position) {
         RoomResponse room = roomList.get(position);
-        holder.bind(room, listener);
+        holder.bind(room, context);
 
+        // Highlight selected item
         holder.itemView.setBackgroundColor(position == selectedPosition
-                ? ContextCompat.getColor(context, android.R.color.holo_blue_light)
+                ? ContextCompat.getColor(context, com.google.android.material.R.color.design_default_color_secondary)
                 : ContextCompat.getColor(context, android.R.color.transparent));
 
         holder.itemView.setOnClickListener(v -> {
-            int prev = selectedPosition;
+            int previousPosition = selectedPosition;
             selectedPosition = holder.getAbsoluteAdapterPosition();
-            notifyItemChanged(prev);
+            notifyItemChanged(previousPosition);
             notifyItemChanged(selectedPosition);
             listener.onItemClick(room);
         });
@@ -63,15 +64,18 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public void setSelectedRoom(RoomResponse room) {
         int index = roomList.indexOf(room);
         if (index != -1) {
-            int prev = selectedPosition;
+            int previousPosition = selectedPosition;
             selectedPosition = index;
-            notifyItemChanged(prev);
+            notifyItemChanged(previousPosition);
             notifyItemChanged(selectedPosition);
         }
     }
 
     public static class RoomViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvType, tvSeats, tvCinema;
+        private final TextView tvName;
+        private final TextView tvType;
+        private final TextView tvSeats;
+        private final TextView tvCinema;
 
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,13 +85,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             tvCinema = itemView.findViewById(R.id.tvCinemaName);
         }
 
-        public void bind(RoomResponse room, OnItemClickListener listener) {
+        public void bind(RoomResponse room, Context context) {
             tvName.setText(room.getName());
-            tvType.setText("Type: " + room.getRoomType());
-            tvSeats.setText("Seats: " + room.getTotalSeats());
-            tvCinema.setText("Cinema: " + room.getCinemaName());
-
-            itemView.setOnClickListener(v -> listener.onItemClick(room));
+            tvType.setText(room.getRoomType());
+            tvSeats.setText(String.valueOf(room.getTotalSeats()) + " seats");
+            tvCinema.setText(room.getCinemaName());
         }
     }
 }
