@@ -19,7 +19,7 @@ import com.example.moviemax.Api.FoodApi;
 import com.example.moviemax.Model.BookingDto.BookingRequest;
 import com.example.moviemax.Model.BookingDto.BookingResponse;
 import com.example.moviemax.Model.FoodDto.FoodItemRequest;
-import com.example.moviemax.Model.FoodDto.FoodItemsResponse;
+import com.example.moviemax.Model.FoodDto.FoodItemResponse;
 import com.example.moviemax.R;
 import com.example.moviemax.Utils.SessionManager;
 
@@ -41,7 +41,7 @@ public class FoodActivity extends AppCompatActivity {
     private ImageButton btnBack;
 
     private FoodAdapter foodAdapter;
-    private List<FoodItemsResponse> foodList = new ArrayList<>();
+    private List<FoodItemResponse> foodList = new ArrayList<>();
     private SessionManager sessionManager;
 
     // Dữ liệu từ ShowTimeActivity (new flow) hoặc BookingActivity (old flow)
@@ -156,9 +156,9 @@ public class FoodActivity extends AppCompatActivity {
     private void loadFoods() {
         FoodApi api = ApiService.getClient(this).create(FoodApi.class);
 
-        api.getFoods().enqueue(new Callback<List<FoodItemsResponse>>() {
+        api.getFoods().enqueue(new Callback<List<FoodItemResponse>>() {
             @Override
-            public void onResponse(Call<List<FoodItemsResponse>> call, Response<List<FoodItemsResponse>> response) {
+            public void onResponse(Call<List<FoodItemResponse>> call, Response<List<FoodItemResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     foodList.clear();
                     foodList.addAll(response.body());
@@ -178,7 +178,7 @@ public class FoodActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<FoodItemsResponse>> call, Throwable t) {
+            public void onFailure(Call<List<FoodItemResponse>> call, Throwable t) {
                 Log.e("FoodActivity", "Load foods failed: " + t.getMessage(), t);
                 Toast.makeText(FoodActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -242,11 +242,10 @@ public class FoodActivity extends AppCompatActivity {
             if (entry.getValue() != null && entry.getValue() > 0) {
                 FoodItemRequest item = new FoodItemRequest();
                 item.setFoodId(entry.getKey());
-                item.setQuantity(entry.getValue());
                 foodItems.add(item);
 
                 // Tính tổng tiền food để verify
-                for (FoodItemsResponse food : foodList) {
+                for (FoodItemResponse food : foodList) {
                     if (food.getId() == entry.getKey()) {
                         double itemTotal = food.getPrice() * entry.getValue();
                         calculatedFoodTotal += itemTotal;
@@ -404,7 +403,6 @@ public class FoodActivity extends AppCompatActivity {
             if (entry.getValue() != null && entry.getValue() > 0) {
                 FoodItemRequest item = new FoodItemRequest();
                 item.setFoodId(entry.getKey());
-                item.setQuantity(entry.getValue());
                 selectedFoodItems.add(item);
             }
         }
@@ -458,7 +456,6 @@ public class FoodActivity extends AppCompatActivity {
             if (entry.getValue() != null && entry.getValue() > 0) {
                 FoodItemRequest item = new FoodItemRequest();
                 item.setFoodId(entry.getKey());
-                item.setQuantity(entry.getValue());
                 foodItems.add(item);
             }
         }

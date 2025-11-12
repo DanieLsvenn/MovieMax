@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.moviemax.Model.FoodDto.FoodItemsResponse;
+import com.example.moviemax.Model.FoodDto.FoodItemResponse;
 import com.example.moviemax.R;
 
 import java.util.HashMap;
@@ -27,11 +27,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         void onTotalChange(int total);
     }
 
-    private List<FoodItemsResponse> foodList;
+    private List<FoodItemResponse> foodList;
     private Map<Integer, Integer> selectedQuantities = new HashMap<>();
     private OnTotalChangeListener totalChangeListener;
 
-    public FoodAdapter(List<FoodItemsResponse> foodList, OnTotalChangeListener listener) {
+    public FoodAdapter(List<FoodItemResponse> foodList, OnTotalChangeListener listener) {
         this.foodList = foodList;
         this.totalChangeListener = listener;
         if (this.selectedQuantities == null) {
@@ -52,7 +52,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-        final FoodItemsResponse food = foodList.get(position);
+        final FoodItemResponse food = foodList.get(position);
 
         // Set tên món ăn
         holder.tvName.setText(food.getName());
@@ -117,7 +117,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         double total = 0;
         if (foodList != null) {
             for (int i = 0; i < foodList.size(); i++) {
-                FoodItemsResponse food = foodList.get(i);
+                FoodItemResponse food = foodList.get(i);
                 int qty = selectedQuantities.getOrDefault(food.getId(), 0);
                 total += food.getPrice() * qty;
             }

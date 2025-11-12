@@ -87,7 +87,7 @@ public class ShowTimeAdapter extends RecyclerView.Adapter<ShowTimeAdapter.ShowTi
             tvEndTime.setText(showTime.getEndTime());
             tvCinemaName.setText(showTime.getCinemaName());
             tvRoomName.setText(showTime.getRoomName());
-            tvPrice.setText(String.format("$%.2f", showTime.getPrice()));
+            tvPrice.setText(String.format("%.0f VND", showTime.getPrice()));
 
             // Toggle action layout on long press
             cardView.setOnLongClickListener(v -> {

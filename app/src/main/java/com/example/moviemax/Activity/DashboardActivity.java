@@ -12,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.example.moviemax.Fragment.FoodFragment;
 import com.example.moviemax.Fragment.MovieFragment;
 import com.example.moviemax.Fragment.RoomFragment;
 import com.example.moviemax.R;
@@ -70,6 +71,9 @@ public class DashboardActivity extends AppCompatActivity implements SidebarFragm
                 break;
             case "Rooms":
                 fragmentToLoad = new RoomFragment();
+                break;
+            case "Food":
+                fragmentToLoad = new FoodFragment();
                 break;
             case "Profile":
                 // Navigate to ProfileActivity
