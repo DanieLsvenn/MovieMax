@@ -10,6 +10,7 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moviemax.Adapter.Dashboard.CinemaAdapter;
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.CinemaApi;
+import com.example.moviemax.Helper.KeyboardInsetsHelper;
 import com.example.moviemax.Model.CinemaDto.CinemaRequest;
 import com.example.moviemax.Model.CinemaDto.CinemaResponse;
 import com.example.moviemax.R;
@@ -29,275 +31,257 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CinemaFragment extends Fragment {
+    private static final String TAG = "CinemaFragment";
 
-    private RecyclerView recyclerView;
+    // UI Components
+    private RecyclerView recyclerViewCinemas;
     private CinemaAdapter adapter;
-    private List<CinemaResponse> cinemaList = new ArrayList<CinemaResponse>();
-    private LinearLayout listContainer;
+    private CardView detailsContainer;
     private ImageButton arrowBtn;
-    private Button btnDetails, btnEdit, btnDelete, btnCreate, btnSave;
+    private Button btnAdd, btnDelete, btnSave;
     private EditText etName, etAddress, etPhone;
+    private TextView tvTotalCinemas;
 
-    private boolean listVisible = true;
-
-    private String mode = "";
+    // Data
+    private List<CinemaResponse> cinemaList = new ArrayList<>();
     private CinemaResponse selectedCinema;
+    private String mode = "";
+    private boolean listVisible = true;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cinema, container, false);
+        initViews(view);
+        setupRecyclerView();
+        setupClickListeners();
+        reloadCinemaList();
+        disableDetails();
+        return view;
+    }
 
-        // Views
-        listContainer = view.findViewById(R.id.listContainer);
-        recyclerView = view.findViewById(R.id.recyclerViewCinemas);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        KeyboardInsetsHelper.applyKeyboardInsets(view);
+    }
+
+    private void initViews(View view) {
+        // RecyclerView
+        recyclerViewCinemas = view.findViewById(R.id.recyclerViewCinemas);
+
+        // Containers and buttons
+        detailsContainer = view.findViewById(R.id.detailsContainer);
         arrowBtn = view.findViewById(R.id.arrowBtn);
-        btnDetails = view.findViewById(R.id.btnDetails);
-        btnCreate = view.findViewById(R.id.btnCreate);
-        btnEdit = view.findViewById(R.id.btnEdit);
+        btnAdd = view.findViewById(R.id.btnAdd);
         btnDelete = view.findViewById(R.id.btnDelete);
         btnSave = view.findViewById(R.id.btnSave);
+
+        // Detail fields
         etName = view.findViewById(R.id.etName);
         etAddress = view.findViewById(R.id.etAddress);
         etPhone = view.findViewById(R.id.etPhone);
 
-        // Attach LayoutManager first
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        reloadList();
-
-        // Initialize adapter
-        adapter = new CinemaAdapter(requireContext(), cinemaList, cinema -> {
-            // Handle item click
-            selectedCinema = cinema;
-
-            // Highlight the selected cinema
-            adapter.setSelectedCinema(cinema);
-        });
-
-        recyclerView.setAdapter(adapter);
-
-        arrowBtn.setOnClickListener(v -> toggleList());
-        btnDetails.setOnClickListener(v -> displayDetails());
-        btnEdit.setOnClickListener(v -> onEditBtnClick());
-        btnSave.setOnClickListener(v -> onConfirm());
-        btnDelete.setOnClickListener(v -> onDelete());
-        btnCreate.setOnClickListener(v -> onCreateBtnClick());
-
-        return view;
+        // Stats
+        tvTotalCinemas = view.findViewById(R.id.tvTotalCinemas);
     }
 
-    private void reloadList() {
-        // Call Api
-        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
+    private void setupRecyclerView() {
+        recyclerViewCinemas.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new CinemaAdapter(requireContext(), cinemaList, cinema -> {
+            selectedCinema = cinema;
+            adapter.setSelectedCinema(cinema);
+            displayCinemaDetails();
+        });
+        recyclerViewCinemas.setAdapter(adapter);
+    }
 
+    private void setupClickListeners() {
+        arrowBtn.setOnClickListener(v -> toggleList());
+        btnAdd.setOnClickListener(v -> onCreateCinema());
+        btnDelete.setOnClickListener(v -> onDeleteCinema());
+        btnSave.setOnClickListener(v -> onSaveCinema());
+    }
+
+    // ============ Cinema List Operations ============
+
+    private void reloadCinemaList() {
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
         api.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
             public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
-                Log.d("API_RESPONSE", "Code: " + response.code());
-                if (!response.isSuccessful()) {
-                    try {
-                        Log.e("API_RESPONSE_ERROR", "Error body: " + response.errorBody().string());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
                 if (response.isSuccessful() && response.body() != null) {
                     cinemaList.clear();
                     cinemaList.addAll(response.body());
                     adapter.notifyDataSetChanged();
+                    updateStats();
                 } else {
-                    Toast.makeText(requireActivity(), "Unauthorized or empty data", Toast.LENGTH_SHORT).show();
+                    showToast("Failed to load cinemas");
                 }
             }
 
             @Override
             public void onFailure(Call<List<CinemaResponse>> call, Throwable t) {
-                t.printStackTrace();
-                Log.e("API_ERROR", t.getMessage(), t);
-                Toast.makeText(requireActivity(), "Failed to load data: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Error loading cinemas", t);
+                showToast("Error: " + t.getMessage());
             }
         });
+    }
+
+    private void updateStats() {
+        tvTotalCinemas.setText(String.valueOf(cinemaList.size()));
     }
 
     private void toggleList() {
         listVisible = !listVisible;
-        listContainer.setVisibility(listVisible ? View.VISIBLE : View.GONE);
+        recyclerViewCinemas.setVisibility(listVisible ? View.VISIBLE : View.GONE);
         arrowBtn.setImageResource(listVisible ? R.drawable.ic_arrow_down : R.drawable.ic_arrow_up);
     }
 
-    private void disableList() {
-        listVisible = false;
-        listContainer.setVisibility(View.GONE);
-        arrowBtn.setImageResource(R.drawable.ic_arrow_up);
-    }
+    // ============ Cinema Details Display ============
 
-    private void enableList() {
-        listVisible = true;
-        listContainer.setVisibility(View.VISIBLE);
-        arrowBtn.setImageResource(R.drawable.ic_arrow_down);
-    }
-
-    private void displayDetails() {
+    private void displayCinemaDetails() {
         if (selectedCinema == null) return;
 
+        mode = "Edit";
         etName.setText(selectedCinema.getName());
         etAddress.setText(selectedCinema.getAddress());
         etPhone.setText(selectedCinema.getPhone());
 
-        // Disable editing by default
-        enableEditing(false);
+        enableDetails();
+        hideList();
+    }
 
-        // Toggle the list
-        disableList();
+    // ============ Cinema CRUD Operations ============
 
-        // Scroll to the details view
-        etName.post(() -> {
-            assert getView() != null;
-            ((ScrollView) getView()).smoothScrollTo(0, etName.getTop());
+    private void onCreateCinema() {
+        mode = "Create";
+        clearFields();
+        enableDetails();
+        hideList();
+    }
+
+    private void onSaveCinema() {
+        showConfirmDialog("Save changes?", confirmed -> {
+            if (confirmed) saveCinemaChanges();
         });
     }
 
-    private void enableEditing(boolean enabled) {
-        etName.setEnabled(enabled);
-        etAddress.setEnabled(enabled);
-        etPhone.setEnabled(enabled);
-        btnSave.setEnabled(enabled);
-    }
+    private void saveCinemaChanges() {
+        String name = etName.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
 
-    private void saveChanges() {
-        String inputName = etName.getText().toString();
-        String inputAddress = etAddress.getText().toString();
-        String inputPhone = etPhone.getText().toString();
+        if (name.isEmpty() || address.isEmpty() || phone.isEmpty()) {
+            showToast("Please fill all fields");
+            return;
+        }
 
-        if (mode == "Edit") {
-            CinemaRequest cinemaRequest = new CinemaRequest(inputName, inputAddress, inputPhone);
+        CinemaRequest cinemaReq = new CinemaRequest(name, address, phone);
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
 
-            CinemaApi api = new ApiService().getClient(requireActivity()).create(CinemaApi.class);
-            api.updateCinema(selectedCinema.getId(), cinemaRequest).enqueue(new Callback<CinemaResponse>() {
+        if ("Edit".equals(mode) && selectedCinema != null) {
+            api.updateCinema(selectedCinema.getId(), cinemaReq).enqueue(new Callback<CinemaResponse>() {
                 @Override
                 public void onResponse(Call<CinemaResponse> call, Response<CinemaResponse> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(requireContext(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to save changes", Toast.LENGTH_SHORT).show();
-                    }
+                    showToast(response.isSuccessful() ? "Cinema updated!" : "Update failed");
+                    if (response.isSuccessful()) resetAfterSave();
                 }
 
                 @Override
                 public void onFailure(Call<CinemaResponse> call, Throwable t) {
-                    t.printStackTrace();
-                    Log.e("API_ERROR", t.getMessage(), t);
-                    Toast.makeText(requireContext(), "Failed to save changes: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("Error: " + t.getMessage());
                 }
             });
-            enableEditing(false);
-            reloadList();
-            enableList();
-        } else if (mode == "Create") {
-            CinemaRequest cinemaRequest = new CinemaRequest(inputName, inputAddress, inputPhone);
-            CinemaApi api = new ApiService().getClient(requireActivity()).create(CinemaApi.class);
-            api.createCinema(cinemaRequest).enqueue(new Callback<CinemaResponse>() {
+        } else if ("Create".equals(mode)) {
+            api.createCinema(cinemaReq).enqueue(new Callback<CinemaResponse>() {
                 @Override
                 public void onResponse(Call<CinemaResponse> call, Response<CinemaResponse> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(requireContext(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to save changes", Toast.LENGTH_SHORT).show();
-                    }
+                    showToast(response.isSuccessful() ? "Cinema created!" : "Create failed");
+                    if (response.isSuccessful()) resetAfterSave();
                 }
 
                 @Override
                 public void onFailure(Call<CinemaResponse> call, Throwable t) {
-                    t.printStackTrace();
-                    Log.e("API_ERROR", t.getMessage(), t);
-                    Toast.makeText(requireContext(), "Failed to save changes: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("Error: " + t.getMessage());
                 }
             });
-            enableEditing(false);
-            reloadList();
-            enableList();
         }
     }
 
-    private void onConfirm() {
-        showConfirmDialog("Save changes?", confirmed -> {
-            if (confirmed) {
-                // user pressed Yes
-                saveChanges();
-                reloadList();
-                Toast.makeText(requireContext(), "Changes saved!", Toast.LENGTH_SHORT).show();
-            } else {
-                // user pressed No
-                Toast.makeText(requireContext(), "Changes cancelled!", Toast.LENGTH_SHORT).show();
-            }
+    private void onDeleteCinema() {
+        if (selectedCinema == null) return;
+
+        showConfirmDialog("Delete this cinema?", confirmed -> {
+            if (confirmed) deleteCinema();
         });
     }
 
-    private void onCreateBtnClick() {
-        enableEditing(true);
-        mode = "Create";
-    }
-
-    private void onEditBtnClick() {
-        enableEditing(true);
-        mode = "Edit";
-    }
-
     private void deleteCinema() {
-        CinemaApi api = new ApiService().getClient(requireActivity()).create(CinemaApi.class);
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
         api.deleteCinema(selectedCinema.getId()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(requireContext(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "Failed to save changes", Toast.LENGTH_SHORT).show();
-                }
+                showToast(response.isSuccessful() ? "Cinema deleted!" : "Delete failed");
+                if (response.isSuccessful()) resetAfterSave();
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                t.printStackTrace();
-                Log.e("API_ERROR", t.getMessage(), t);
-                Toast.makeText(requireContext(), "Failed to save changes: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                showToast("Error: " + t.getMessage());
             }
         });
-        enableEditing(false);
-        reloadList();
-        enableList();
     }
 
-    private void onDelete() {
-        showConfirmDialog("Delete this cinema?", confirmed -> {
-            if (confirmed) {
-                // user pressed Yes
-                deleteCinema();
-                reloadList();
-                Toast.makeText(requireContext(), "Changes saved!", Toast.LENGTH_SHORT).show();
-            } else {
-                // user pressed No
-                Toast.makeText(requireContext(), "Changes cancelled!", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void resetAfterSave() {
+        reloadCinemaList();
+        showList();
+        disableDetails();
+    }
 
+    // ============ UI Helper Methods ============
+
+    private void clearFields() {
+        etName.setText("");
+        etAddress.setText("");
+        etPhone.setText("");
+    }
+
+    private void enableDetails() {
+        detailsContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void disableDetails() {
+        detailsContainer.setVisibility(View.GONE);
+    }
+
+    private void showList() {
+        listVisible = true;
+        recyclerViewCinemas.setVisibility(View.VISIBLE);
+        arrowBtn.setImageResource(R.drawable.ic_arrow_down);
+    }
+
+    private void hideList() {
+        listVisible = false;
+        recyclerViewCinemas.setVisibility(View.GONE);
+        arrowBtn.setImageResource(R.drawable.ic_arrow_up);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void showConfirmDialog(String message, ConfirmListener listener) {
         new AlertDialog.Builder(requireContext())
                 .setMessage(message)
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    listener.onConfirm(true);
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    listener.onConfirm(false);
-                })
+                .setPositiveButton("Yes", (d, w) -> listener.onConfirm(true))
+                .setNegativeButton("No", (d, w) -> listener.onConfirm(false))
                 .show();
     }
 
-    // Define an interface for callback
+    // ============ Interfaces ============
+
     public interface ConfirmListener {
         void onConfirm(boolean confirmed);
     }

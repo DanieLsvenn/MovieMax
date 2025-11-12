@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -12,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.moviemax.Adapter.Dashboard.CinemaAdapter;
 import com.example.moviemax.Adapter.Dashboard.RoomAdapter;
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.CinemaApi;
@@ -31,70 +31,36 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RoomFragment extends Fragment {
+    private static final String TAG = "RoomFragment";
 
-    private RecyclerView recyclerView;
+    // UI Components
+    private RecyclerView recyclerViewRooms;
     private RoomAdapter adapter;
-    private CinemaAdapter cinemaAdapter;
+    private CardView detailsContainer;
+    private ImageButton arrowBtn;
+    private Button btnAdd, btnDelete, btnSave;
+    private EditText etName, etSeats, etType;
+    private AutoCompleteTextView spinnerCinema;
+    private TextView tvTotalRooms, tvTotalSeats;
+
+    // Data
     private List<RoomResponse> roomList = new ArrayList<>();
     private List<CinemaResponse> cinemaList = new ArrayList<>();
-
-    private CardView listContainer, detailsContainer;
-    private ImageButton arrowBtn;
-    private Button btnDetails, btnEdit, btnDelete, btnAdd, btnSave;
-
-    private EditText etName, etSeats, etType;
-    private boolean listVisible = true;
-    private String mode = "";
     private RoomResponse selectedRoom;
-
-    private Spinner spinnerCinema;
-
-    private int selectedCinemaId = -1;
+    private CinemaResponse selectedCinema;
+    private String mode = "";
+    private boolean listVisible = true;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_room, container, false);
-
-//        listContainer = view.findViewById(R.id.listContainer);
-
-//        detailsContainer = view.findViewById(R.id.detailsContainer);
-        recyclerView = view.findViewById(R.id.recyclerViewRooms);
-//        arrowBtn = view.findViewById(R.id.arrowBtn);
-//        btnDetails = view.findViewById(R.id.btnDetails);
-//        btnAdd = view.findViewById(R.id.btnAdd);
-//        btnEdit = view.findViewById(R.id.btnEdit);
-//        btnDelete = view.findViewById(R.id.btnDelete);
-        btnSave = view.findViewById(R.id.btnSave);
-
-        etName = view.findViewById(R.id.etName);
-        etSeats = view.findViewById(R.id.etSeats);
-        etType = view.findViewById(R.id.etType);
-        spinnerCinema = view.findViewById(R.id.spinnerCinema);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        adapter = new RoomAdapter(requireContext(), roomList, room -> {
-            selectedRoom = room;
-            adapter.setSelectedRoom(room);
-            displayDetails();
-        });
-        recyclerView.setAdapter(adapter);
-
-        reloadList();
-
-//        arrowBtn.setOnClickListener(v -> toggleList());
-//        btnDetails.setOnClickListener(v -> toggleList());
-//        btnEdit.setOnClickListener(v -> onEditBtnClick());
-//        btnAdd.setOnClickListener(v -> onCreateBtnClick());
-//        btnDelete.setOnClickListener(v -> onDelete());
-//        btnSave.setOnClickListener(v -> onConfirm());
-
+        initViews(view);
+        setupRecyclerView();
+        setupClickListeners();
+        reloadRoomList();
         disableDetails();
-        setupSpinnerListener();
-
-
         return view;
     }
 
@@ -104,7 +70,48 @@ public class RoomFragment extends Fragment {
         KeyboardInsetsHelper.applyKeyboardInsets(view);
     }
 
-    private void reloadList() {
+    private void initViews(View view) {
+        // RecyclerView
+        recyclerViewRooms = view.findViewById(R.id.recyclerViewRooms);
+
+        // Containers and buttons
+        detailsContainer = view.findViewById(R.id.detailsContainer);
+        arrowBtn = view.findViewById(R.id.arrowBtn);
+        btnAdd = view.findViewById(R.id.btnAdd);
+        btnDelete = view.findViewById(R.id.btnDelete);
+        btnSave = view.findViewById(R.id.btnSave);
+
+        // Detail fields
+        etName = view.findViewById(R.id.etName);
+        etSeats = view.findViewById(R.id.etSeats);
+        etType = view.findViewById(R.id.etType);
+        spinnerCinema = view.findViewById(R.id.spinnerCinema);
+
+        // Stats
+        tvTotalRooms = view.findViewById(R.id.tvTotalRooms);
+        tvTotalSeats = view.findViewById(R.id.tvTotalSeats);
+    }
+
+    private void setupRecyclerView() {
+        recyclerViewRooms.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new RoomAdapter(requireContext(), roomList, room -> {
+            selectedRoom = room;
+            adapter.setSelectedRoom(room);
+            displayRoomDetails();
+        });
+        recyclerViewRooms.setAdapter(adapter);
+    }
+
+    private void setupClickListeners() {
+        arrowBtn.setOnClickListener(v -> toggleList());
+        btnAdd.setOnClickListener(v -> onCreateRoom());
+        btnDelete.setOnClickListener(v -> onDeleteRoom());
+        btnSave.setOnClickListener(v -> onSaveRoom());
+    }
+
+    // ============ Room List Operations ============
+
+    private void reloadRoomList() {
         RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
         api.getRooms().enqueue(new Callback<List<RoomResponse>>() {
             @Override
@@ -113,66 +120,69 @@ public class RoomFragment extends Fragment {
                     roomList.clear();
                     roomList.addAll(response.body());
                     adapter.notifyDataSetChanged();
+                    updateStats();
                 } else {
-                    Toast.makeText(requireActivity(), "Failed to load rooms", Toast.LENGTH_SHORT).show();
+                    showToast("Failed to load rooms");
                 }
             }
 
             @Override
             public void onFailure(Call<List<RoomResponse>> call, Throwable t) {
-                Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Error loading rooms", t);
+                showToast("Error: " + t.getMessage());
             }
         });
     }
 
+    private void updateStats() {
+        int totalRooms = roomList.size();
+        int totalSeats = 0;
+        for (RoomResponse room : roomList) {
+            totalSeats += room.getTotalSeats();
+        }
+        tvTotalRooms.setText(String.valueOf(totalRooms));
+        tvTotalSeats.setText(String.valueOf(totalSeats));
+    }
+
     private void toggleList() {
         listVisible = !listVisible;
-        listContainer.setVisibility(listVisible ? View.VISIBLE : View.GONE);
+        recyclerViewRooms.setVisibility(listVisible ? View.VISIBLE : View.GONE);
         arrowBtn.setImageResource(listVisible ? R.drawable.ic_arrow_down : R.drawable.ic_arrow_up);
     }
 
-    private void disableDetails() {
-//        detailsContainer.setVisibility(View.GONE);
-    }
+    // ============ Room Details Display ============
 
-    private void enableDetails() {
-        detailsContainer.setVisibility(View.VISIBLE);
-    }
-
-    private void displayDetails() {
+    private void displayRoomDetails() {
         if (selectedRoom == null) return;
 
+        mode = "Edit";
         etName.setText(selectedRoom.getName());
         etSeats.setText(String.valueOf(selectedRoom.getTotalSeats()));
         etType.setText(selectedRoom.getRoomType());
 
-        enableEditing(false);
+        loadCinemasAndSelectCurrent();
         enableDetails();
-        listContainer.setVisibility(View.GONE);
+        hideList();
+    }
 
-        // Fetch all cinemas and set spinner properly
-        CinemaApi cinemaApi = ApiService.getClient(requireActivity()).create(CinemaApi.class);
-        cinemaApi.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
+    private void loadCinemasAndSelectCurrent() {
+        CinemaApi api = ApiService.getClient(requireActivity()).create(CinemaApi.class);
+        api.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
             @Override
             public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     cinemaList.clear();
                     cinemaList.addAll(response.body());
+                    setupCinemaSpinner();
 
-                    ArrayAdapter<CinemaResponse> cinemaAdapter = new ArrayAdapter<>(
-                            requireContext(),
-                            android.R.layout.simple_spinner_item,
-                            cinemaList
-                    );
-                    cinemaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerCinema.setAdapter(cinemaAdapter);
-
-                    // Preselect the correct cinema
-                    for (int i = 0; i < cinemaList.size(); i++) {
-                        if (cinemaList.get(i).getName().equals(selectedRoom.getCinemaName())) {
-                            spinnerCinema.setSelection(i);
-                            selectedCinemaId = cinemaList.get(i).getId();
-                            break;
+                    // Preselect cinema if editing
+                    if (selectedRoom != null) {
+                        for (int i = 0; i < cinemaList.size(); i++) {
+                            if (cinemaList.get(i).getName().equals(selectedRoom.getCinemaName())) {
+                                spinnerCinema.setText(cinemaList.get(i).getName(), false);
+                                selectedCinema = cinemaList.get(i);
+                                break;
+                            }
                         }
                     }
                 }
@@ -180,108 +190,56 @@ public class RoomFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<CinemaResponse>> call, Throwable t) {
-                Toast.makeText(requireContext(), "Failed to load cinemas", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error loading cinemas", t);
             }
         });
     }
 
-    private void setupSpinnerListener() {
-        spinnerCinema.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                CinemaResponse selectedCinema = (CinemaResponse) parent.getItemAtPosition(position);
-                selectedCinemaId = selectedCinema.getId();
-                Log.d("RoomFragment", "Selected cinema: " + selectedCinema.getName() + " (ID: " + selectedCinemaId + ")");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedCinemaId = -1;
-            }
-        });
-    }
-
-    private void enableEditing(boolean enabled) {
-        etName.setEnabled(enabled);
-        etSeats.setEnabled(enabled);
-        etType.setEnabled(enabled);
-//        etCinemaId.setEnabled(enabled);
-        spinnerCinema.setEnabled(enabled);
-        btnSave.setEnabled(enabled);
-        enableDetails();
-    }
-
-    private void onCreateBtnClick() {
-        enableEditing(true);
-        mode = "Create";
-        clearFields();
-        listContainer.setVisibility(View.GONE);
-        enableDetails();
-
-        // Create adapter for spinner (before API call)
-        ArrayAdapter<CinemaResponse> cinemaAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                cinemaList
-        );
-        cinemaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCinema.setAdapter(cinemaAdapter);
-
-        // Fetch all cinemas from API
-        CinemaApi cinemaApi = ApiService.getClient(requireActivity()).create(CinemaApi.class);
-        cinemaApi.getCinemas().enqueue(new Callback<List<CinemaResponse>>() {
-            @Override
-            public void onResponse(Call<List<CinemaResponse>> call, Response<List<CinemaResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    cinemaList.clear();
-                    cinemaList.addAll(response.body());
-                    cinemaAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(requireActivity(), "Failed to load cinemas", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<CinemaResponse>> call, Throwable t) {
-                Toast.makeText(requireActivity(), "API error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-
-        setupSpinnerListener();
-    }
-
-    private void onEditBtnClick() {
-        if (selectedRoom == null) return;
-        enableEditing(true);
-        mode = "Edit";
-    }
-
-    private void clearFields() {
-        etName.setText("");
-        etSeats.setText("");
-        etType.setText("");
-//        etCinemaId.setText("");
-    }
-
-    private void saveChanges() {
-        // Always get the latest selected cinema from the spinner
-        if (spinnerCinema.getSelectedItem() != null) {
-            CinemaResponse selectedCinema = (CinemaResponse) spinnerCinema.getSelectedItem();
-            selectedCinemaId = selectedCinema.getId();
+    private void setupCinemaSpinner() {
+        List<String> cinemaNames = new ArrayList<>();
+        for (CinemaResponse cinema : cinemaList) {
+            cinemaNames.add(cinema.getName());
         }
 
-        // Validate fields
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, cinemaNames);
+        spinnerCinema.setAdapter(adapter);
+
+        spinnerCinema.setOnItemClickListener((parent, view, position, id) -> {
+            selectedCinema = cinemaList.get(position);
+        });
+
+        spinnerCinema.setOnClickListener(v -> spinnerCinema.showDropDown());
+    }
+
+    // ============ Room CRUD Operations ============
+
+    private void onCreateRoom() {
+        mode = "Create";
+        clearFields();
+        loadCinemasAndSelectCurrent();
+        enableDetails();
+        hideList();
+    }
+
+    private void onSaveRoom() {
+        showConfirmDialog("Save changes?", confirmed -> {
+            if (confirmed) saveRoomChanges();
+        });
+    }
+
+    private void saveRoomChanges() {
         String name = etName.getText().toString().trim();
         String seatsText = etSeats.getText().toString().trim();
         String type = etType.getText().toString().trim();
 
         if (name.isEmpty() || seatsText.isEmpty() || type.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+            showToast("Please fill all fields");
             return;
         }
 
-        if (selectedCinemaId == -1) {
-            Toast.makeText(requireContext(), "Please select a cinema", Toast.LENGTH_SHORT).show();
+        if (selectedCinema == null) {
+            showToast("Please select a cinema");
             return;
         }
 
@@ -289,89 +247,109 @@ public class RoomFragment extends Fragment {
         try {
             totalSeats = Integer.parseInt(seatsText);
         } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Seats must be a number", Toast.LENGTH_SHORT).show();
+            showToast("Seats must be a number");
             return;
         }
 
-        // Build request
         RoomRequest roomReq = new RoomRequest();
         roomReq.setName(name);
         roomReq.setTotalSeats(totalSeats);
         roomReq.setRoomType(type);
-        roomReq.setCinemaId((long) selectedCinemaId);
-
-        Log.d("RoomFragment", "Saving with cinemaId = " + selectedCinemaId);
+        roomReq.setCinemaId((long) selectedCinema.getId());
 
         RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
 
-        // Handle Edit vs Create
         if ("Edit".equals(mode) && selectedRoom != null) {
             api.updateRoom(selectedRoom.getId(), roomReq).enqueue(new Callback<RoomResponse>() {
                 @Override
                 public void onResponse(Call<RoomResponse> call, Response<RoomResponse> response) {
-                    Toast.makeText(requireContext(),
-                            response.isSuccessful() ? "Room updated!" : "Update failed",
-                            Toast.LENGTH_SHORT).show();
-                    reloadList();
+                    showToast(response.isSuccessful() ? "Room updated!" : "Update failed");
+                    if (response.isSuccessful()) resetAfterSave();
                 }
 
                 @Override
                 public void onFailure(Call<RoomResponse> call, Throwable t) {
-                    Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    showToast("Error: " + t.getMessage());
                 }
             });
         } else if ("Create".equals(mode)) {
             api.createRoom(roomReq).enqueue(new Callback<RoomResponse>() {
                 @Override
                 public void onResponse(Call<RoomResponse> call, Response<RoomResponse> response) {
-                    Toast.makeText(requireContext(),
-                            response.isSuccessful() ? "Room created!" : "Create failed",
-                            Toast.LENGTH_SHORT).show();
-                    reloadList();
+                    showToast(response.isSuccessful() ? "Room created!" : "Create failed");
+                    if (response.isSuccessful()) resetAfterSave();
                 }
 
                 @Override
                 public void onFailure(Call<RoomResponse> call, Throwable t) {
-                    Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    showToast("Error: " + t.getMessage());
                 }
             });
         }
-
-        // Reset UI
-        enableEditing(false);
-        disableDetails();
-        listContainer.setVisibility(View.VISIBLE);
     }
 
-    private void onDelete() {
+    private void onDeleteRoom() {
         if (selectedRoom == null) return;
 
         showConfirmDialog("Delete this room?", confirmed -> {
-            if (confirmed) {
-                RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
-                api.deleteRoom(selectedRoom.getId()).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        Toast.makeText(requireContext(),
-                                response.isSuccessful() ? "Room deleted!" : "Delete failed",
-                                Toast.LENGTH_SHORT).show();
-                        reloadList();
-                        disableDetails();
-                    }
+            if (confirmed) deleteRoom();
+        });
+    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void deleteRoom() {
+        RoomApi api = ApiService.getClient(requireActivity()).create(RoomApi.class);
+        api.deleteRoom(selectedRoom.getId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                showToast(response.isSuccessful() ? "Room deleted!" : "Delete failed");
+                if (response.isSuccessful()) resetAfterSave();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                showToast("Error: " + t.getMessage());
             }
         });
     }
 
-    private void onConfirm() {
-        showConfirmDialog("Save changes?", confirmed -> {
-            if (confirmed) saveChanges();
-        });
+    private void resetAfterSave() {
+        reloadRoomList();
+        showList();
+        disableDetails();
+    }
+
+    // ============ UI Helper Methods ============
+
+    private void clearFields() {
+        etName.setText("");
+        etSeats.setText("");
+        etType.setText("");
+        spinnerCinema.setText("", false);
+        selectedCinema = null;
+    }
+
+    private void enableDetails() {
+        detailsContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void disableDetails() {
+        detailsContainer.setVisibility(View.GONE);
+    }
+
+    private void showList() {
+        listVisible = true;
+        recyclerViewRooms.setVisibility(View.VISIBLE);
+        arrowBtn.setImageResource(R.drawable.ic_arrow_down);
+    }
+
+    private void hideList() {
+        listVisible = false;
+        recyclerViewRooms.setVisibility(View.GONE);
+        arrowBtn.setImageResource(R.drawable.ic_arrow_up);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void showConfirmDialog(String message, ConfirmListener listener) {
@@ -381,6 +359,8 @@ public class RoomFragment extends Fragment {
                 .setNegativeButton("No", (d, w) -> listener.onConfirm(false))
                 .show();
     }
+
+    // ============ Interfaces ============
 
     public interface ConfirmListener {
         void onConfirm(boolean confirmed);

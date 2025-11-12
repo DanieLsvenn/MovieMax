@@ -1,35 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollViewRooms"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F7">
+    android:fillViewport="true"
+    android:background="#F5F7FA">
 
-    <!-- App Bar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
-        app:elevation="4dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_700"
-            app:title="Room Management"
-            app:titleTextColor="@android:color/white"
-            app:navigationIcon="@drawable/ic_menu"
-            app:navigationIconTint="@android:color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Main Content -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,13 +18,13 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Stats Cards Row -->
+            <!-- STATS SECTION -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="16dp">
 
                 <!-- Total Rooms Card -->
                 <androidx.cardview.widget.CardView
@@ -78,7 +59,7 @@
                             android:text="0"
                             android:textSize="32sp"
                             android:textStyle="bold"
-                            android:textColor="@color/purple_700"
+                            android:textColor="#5E35B1"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -116,20 +97,119 @@
                             android:text="0"
                             android:textSize="32sp"
                             android:textStyle="bold"
-                            android:textColor="@color/teal_700"
+                            android:textColor="#43A047"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <!-- Room Form Card -->
+            <!-- ROOMS LIST SECTION -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardRoomForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:id="@+id/listHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:background="#FAFAFA">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="#5E35B1" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Rooms Library"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:layout_marginStart="12dp" />
+
+                        <ImageButton
+                            android:id="@+id/arrowBtn"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_arrow_down"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Toggle list"
+                            app:tint="#757575" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <!-- Rooms RecyclerView -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewRooms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:clipToPadding="false"
+                        android:scrollbars="vertical" />
+
+                    <!-- Action Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:background="#FAFAFA">
+
+                        <Button
+                            android:id="@+id/btnAdd"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:text="+ Add"
+                            android:textAllCaps="false"
+                            android:backgroundTint="#43A047"
+                            android:textColor="@android:color/white"
+                            app:cornerRadius="8dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"/>
+
+                        <Button
+                            android:id="@+id/btnDelete"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:text="Delete"
+                            android:textAllCaps="false"
+                            android:backgroundTint="#E53935"
+                            android:textColor="@android:color/white"
+                            app:cornerRadius="8dp"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ROOM DETAILS SECTION -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/detailsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
                 app:cardBackgroundColor="@android:color/white">
 
                 <LinearLayout
@@ -138,7 +218,6 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <!-- Form Header -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -146,261 +225,148 @@
                         android:gravity="center_vertical"
                         android:layout_marginBottom="20dp">
 
-                        <View
-                            android:layout_width="4dp"
+                        <ImageView
+                            android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:background="@color/purple_700"
-                            android:layout_marginEnd="12dp" />
+                            android:src="@drawable/ic_edit"
+                            app:tint="#5E35B1" />
 
                         <TextView
-                            android:id="@+id/tvFormTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Room Information"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:textSize="20sp"
+                            android:layout_marginStart="12dp" />
+                    </LinearLayout>
+
+                    <!-- Room Details -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Room Details"
+                        android:textColor="#5E35B1"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Room Name"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#212121"
+                            android:textColorHint="#9E9E9E"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Add New Room"
-                            android:textStyle="bold"
-                            android:textColor="#212121"
-                            android:textSize="20sp" />
-
-                        <ImageButton
-                            android:id="@+id/btnToggleForm"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_arrow_down"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="#424242" />
-                    </LinearLayout>
-
-                    <!-- Form Fields Container -->
-                    <LinearLayout
-                        android:id="@+id/layoutFormFields"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <!-- Room Name -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Room Name"
-                            app:boxBackgroundMode="outline"
-                            app:boxCornerRadiusTopStart="8dp"
-                            app:boxCornerRadiusTopEnd="8dp"
-                            app:boxCornerRadiusBottomStart="8dp"
-                            app:boxCornerRadiusBottomEnd="8dp"
-                            app:startIconDrawable="@drawable/ic_location"
-                            app:startIconTint="@color/purple_700"
-                            android:layout_marginBottom="12dp">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="textCapWords" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <!-- Total Seats -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:hint="Total Seats"
-                            app:boxBackgroundMode="outline"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="#5E35B1"
+                            app:hintTextColor="#757575"
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
-                            app:boxCornerRadiusBottomEnd="8dp"
-                            app:prefixText="🪑 "
-                            android:layout_marginBottom="12dp">
+                            app:boxCornerRadiusBottomEnd="8dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etSeats"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="number" />
+                                android:inputType="number"
+                                android:textColor="#212121"
+                                android:textColorHint="#9E9E9E"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Room Type -->
                         <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
                             android:hint="Room Type"
-                            app:boxBackgroundMode="outline"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="#5E35B1"
+                            app:hintTextColor="#757575"
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
-                            app:boxCornerRadiusBottomEnd="8dp"
-                            app:helperText="e.g., IMAX, 2D, 3D, 4DX"
-                            app:helperTextTextColor="#757575"
-                            android:layout_marginBottom="12dp">
+                            app:boxCornerRadiusBottomEnd="8dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etType"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="text" />
+                                android:textColor="#212121"
+                                android:textColorHint="#9E9E9E"/>
                         </com.google.android.material.textfield.TextInputLayout>
-
-                        <!-- Cinema Selection -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Select Cinema"
-                            android:textSize="12sp"
-                            android:textColor="#616161"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="6dp"
-                            android:textAllCaps="true"
-                            android:letterSpacing="0.05" />
-
-                        <Spinner
-                            android:id="@+id/spinnerCinema"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_spinner_outline"
-                            android:spinnerMode="dropdown"
-                            android:layout_marginBottom="20dp"
-                            android:padding="12dp" />
-
-                        <!-- Action Buttons -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="end">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnCancel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="56dp"
-                                android:text="Cancel"
-                                android:textColor="@color/purple_700"
-                                style="@style/Widget.Material3.Button.OutlinedButton"
-                                app:strokeColor="@color/purple_700"
-                                app:cornerRadius="8dp"
-                                android:layout_marginEnd="8dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnSave"
-                                android:layout_width="wrap_content"
-                                android:layout_height="56dp"
-                                android:text="Save Room"
-                                android:backgroundTint="@color/purple_700"
-                                android:textColor="@android:color/white"
-                                app:cornerRadius="8dp"
-                                app:icon="@drawable/ic_save"
-                                app:iconGravity="textStart" />
-                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Rooms List Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Section Header -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
+                    <!-- Cinema Selection -->
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Current Rooms"
-                        android:textStyle="bold"
-                        android:textColor="#212121"
-                        android:textSize="18sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnRefresh"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:text="Refresh"
-                        android:textSize="12sp"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        app:icon="@drawable/ic_refresh"
-                        app:iconSize="18dp"
-                        android:textColor="@color/purple_700" />
-                </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:text="Cinema Location"
+                        android:textColor="#5E35B1"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="12dp" />
 
-                <!-- Rooms RecyclerView Card -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:hint="Select Cinema"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        app:boxStrokeColor="#5E35B1"
+                        app:hintTextColor="#757575"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerViewRooms"
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerCinema"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="12dp"
-                            android:clipToPadding="false" />
+                            android:inputType="none"
+                            android:textColor="#212121"
+                            android:textColorHint="#9E9E9E"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Empty State -->
-                        <LinearLayout
-                            android:id="@+id/layoutEmptyState"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="32dp"
-                            android:gravity="center"
-                            android:visibility="gone">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🎬"
-                                android:textSize="48sp"
-                                android:layout_marginBottom="12dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="No Rooms Yet"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:textColor="#424242"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Add your first room to get started"
-                                android:textSize="14sp"
-                                android:textColor="#757575"
-                                android:gravity="center" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/btnSave"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Save Room"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="#43A047"
+                        android:layout_marginTop="20dp"
+                        app:cornerRadius="8dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabAddRoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:text="Add Room"
-        android:textColor="@android:color/white"
-        app:icon="@drawable/ic_add"
-        app:iconTint="@android:color/white"
-        app:backgroundTint="@color/purple_700"
-        app:elevation="6dp" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+</ScrollView>

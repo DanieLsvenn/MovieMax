@@ -14,41 +14,104 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvRoomName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Room A"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
+        <!-- Left Icon -->
+        <LinearLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_room_icon"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp">
 
-        <TextView
-            android:id="@+id/tvRoomType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Type: IMAX"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎬"
+                android:textSize="24sp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvRoomSeats"
-            android:layout_width="match_parent"
+        <!-- Room Info -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Seats: 150"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginTop="2dp" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvCinemaName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cinema: Galaxy Vincom"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginTop="2dp" />
+            <TextView
+                android:id="@+id/tvRoomName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Room A"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvRoomType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="IMAX"
+                    android:textColor="#757575"
+                    android:textSize="13sp"
+                    android:background="@drawable/bg_room_type_badge"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•"
+                    android:textSize="13sp"
+                    android:textColor="#BDBDBD"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tvRoomSeats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="150 seats"
+                    android:textColor="#757575"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_location"
+                    app:tint="#5E35B1" />
+
+                <TextView
+                    android:id="@+id/tvCinemaName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Galaxy Cinema"
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    android:layout_marginStart="4dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
