@@ -6,6 +6,7 @@ import com.example.moviemax.Model.LoginDto.LoginRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
 import com.example.moviemax.Model.RegisterDto.RegisterRequest;
 import com.example.moviemax.Model.RegisterDto.RegisterResponse;
+import com.example.moviemax.Model.UpdateProfileDto.UpdateProfileRequest;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface AuthApi {
     Call<AccountResponse> getAccount(@Path("id") long id);
     
     @PUT("/api/accounts/{id}")
-    Call<AccountResponse> updateAccount(@Path("id") long id, @Body AccountResponse account);
+    Call<AccountResponse> updateAccount(@Path("id") long id, @Body UpdateProfileRequest request);
     
     @DELETE("/api/accounts/{id}")
     Call<Void> deleteAccount(@Path("id") long id);

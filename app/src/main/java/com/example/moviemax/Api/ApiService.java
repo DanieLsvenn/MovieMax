@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.example.moviemax.Utils.SessionManager;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -23,10 +25,13 @@ public class ApiService {
             // SessionManager for token
             SessionManager sessionManager = new SessionManager(context);
 
-            // Add interceptors
+            // Add interceptors with timeout configuration
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(new AuthInterceptor(sessionManager))
                     .addInterceptor(logging)
+                    .connectTimeout(30, TimeUnit.SECONDS)    // Connection timeout
+                    .readTimeout(60, TimeUnit.SECONDS)       // Read timeout  
+                    .writeTimeout(30, TimeUnit.SECONDS)      // Write timeout
                     .build();
 
             retrofit = new Retrofit.Builder()

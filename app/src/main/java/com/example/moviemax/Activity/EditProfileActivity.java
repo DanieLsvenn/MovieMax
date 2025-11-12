@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moviemax.Model.AccountDto.AccountResponse;
+import com.example.moviemax.Model.UpdateProfileDto.UpdateProfileRequest;
 import com.example.moviemax.R;
 import com.example.moviemax.Utils.SessionManager;
 import com.example.moviemax.Api.ApiService;
@@ -42,8 +43,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView tvError, tvChangePhoto;
     private CircleImageView ivProfileImage;
     private TextInputEditText etFullName, etEmail, etPhone, etDateOfBirth, etUsername;
+    private TextInputEditText etOldPassword, etNewPassword, etConfirmPassword;
     private AutoCompleteTextView etGender;
-    private MaterialButton btnChangePassword;
     
     // Data
     private AccountResponse currentAccount;
@@ -81,7 +82,9 @@ public class EditProfileActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etGender = findViewById(R.id.etGender);
         
-        btnChangePassword = findViewById(R.id.btnChangePassword);
+        etOldPassword = findViewById(R.id.etOldPassword);
+        etNewPassword = findViewById(R.id.etNewPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
         
         selectedDate = Calendar.getInstance();
         dateFormatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
@@ -109,11 +112,6 @@ public class EditProfileActivity extends AppCompatActivity {
         tvChangePhoto.setOnClickListener(v -> {
             // TODO: Implement photo selection
             Toast.makeText(this, "Photo selection will be implemented soon", Toast.LENGTH_SHORT).show();
-        });
-        
-        btnChangePassword.setOnClickListener(v -> {
-            // TODO: Navigate to change password activity
-            Toast.makeText(this, "Password change will be implemented soon", Toast.LENGTH_SHORT).show();
         });
     }
     
@@ -191,29 +189,74 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
         
+        // Check authentication before making the request
+        String token = sessionManager.getAuthToken();
+        if (token == null || token.isEmpty()) {
+            showError("Authentication token is missing. Please login again.");
+            Log.e(TAG, "No auth token found");
+            return;
+        }
+        
+        // Verify we have valid account data
+        if (currentAccount == null || currentAccount.getId() <= 0) {
+            showError("Invalid account data. Please try reloading the page.");
+            Log.e(TAG, "Invalid account data: " + (currentAccount != null ? currentAccount.getId() : "null"));
+            return;
+        }
+        
+        // Check if the logged-in user ID matches the account being updated
+        int loggedInAccountId = sessionManager.getAccountId();
+        if (loggedInAccountId != currentAccount.getId()) {
+            showError("You can only update your own profile.");
+            Log.e(TAG, "Account ID mismatch. Logged in: " + loggedInAccountId + ", Trying to update: " + currentAccount.getId());
+            return;
+        }
+        
         showLoading(true);
         hideError();
         
-        // Create updated account object
-        AccountResponse updatedAccount = new AccountResponse();
-        updatedAccount.setId(currentAccount.getId());
-        updatedAccount.setFullName(etFullName.getText().toString().trim());
-        updatedAccount.setEmail(etEmail.getText().toString().trim());
-        updatedAccount.setPhone(etPhone.getText().toString().trim());
-        updatedAccount.setGender(etGender.getText().toString().trim());
-        updatedAccount.setDateOfBirth(selectedDate.getTime());
-        updatedAccount.setUsername(currentAccount.getUsername()); // Keep original username
-        updatedAccount.setPassword(currentAccount.getPassword()); // Keep original password
-        updatedAccount.setRole(currentAccount.getRole()); // Keep original role
-        updatedAccount.setAuthorities(currentAccount.getAuthorities()); // Keep original authorities
-        updatedAccount.setEnabled(currentAccount.isEnabled());
-        updatedAccount.setAccountNonExpired(currentAccount.isAccountNonExpired());
-        updatedAccount.setAccountNonLocked(currentAccount.isAccountNonLocked());
-        updatedAccount.setCredentialsNonExpired(currentAccount.isCredentialsNonExpired());
-        updatedAccount.setCreatedAt(currentAccount.getCreatedAt());
-        updatedAccount.setUpdatedAt(new Date()); // Set current timestamp
+        // Create update profile request with the new API format
+        UpdateProfileRequest request = new UpdateProfileRequest();
+        request.setFullName(etFullName.getText().toString().trim());
+        request.setGender(etGender.getText().toString().trim());
+        request.setDateOfBirth(selectedDate.getTime());
+        request.setPhone(etPhone.getText().toString().trim());
         
-        Call<AccountResponse> call = apiService.updateAccount(currentAccount.getId(), updatedAccount);
+        // Handle password change if provided
+        String oldPassword = etOldPassword.getText().toString().trim();
+        String newPassword = etNewPassword.getText().toString().trim();
+        
+        // Only set password fields if both are provided and not empty
+        if (!oldPassword.isEmpty() && !newPassword.isEmpty()) {
+            request.setOldPassword(oldPassword);
+            request.setNewPassword(newPassword);
+        }
+        // Password fields will be excluded from JSON if not set (handled by custom serializer)
+        
+        // Debug: Log what we're about to send
+        Log.d(TAG, "Sending update request:");
+        Log.d(TAG, "- Full Name: " + request.getFullName());
+        Log.d(TAG, "- Gender: " + request.getGender());  
+        Log.d(TAG, "- Phone: " + request.getPhone());
+        Log.d(TAG, "- Date of Birth: " + request.getDateOfBirth());
+        boolean hasPasswordChange = (request.getOldPassword() != null && !request.getOldPassword().isEmpty() &&
+                                   request.getNewPassword() != null && !request.getNewPassword().isEmpty());
+        Log.d(TAG, "- Password change requested: " + hasPasswordChange);
+        if (hasPasswordChange) {
+            Log.d(TAG, "- Password fields will be included in request");
+        } else {
+            Log.d(TAG, "- Password fields will be excluded from request (no change requested)");
+        }
+        
+        // Log the request details for debugging  
+        Log.d(TAG, "Updating profile for account ID: " + currentAccount.getId());
+        Log.d(TAG, "Auth token exists: " + (sessionManager.getAuthToken() != null));
+        Log.d(TAG, "Request data - FullName: " + request.getFullName() + 
+                   ", Gender: " + request.getGender() + 
+                   ", Phone: " + request.getPhone() +
+                   ", Has password change: " + (request.getOldPassword() != null));
+        
+        Call<AccountResponse> call = apiService.updateAccount(currentAccount.getId(), request);
         call.enqueue(new Callback<AccountResponse>() {
             @Override
             public void onResponse(Call<AccountResponse> call, Response<AccountResponse> response) {
@@ -227,8 +270,27 @@ public class EditProfileActivity extends AppCompatActivity {
                     setResult(RESULT_OK, resultIntent);
                     finish();
                 } else {
-                    showError("Failed to update profile: " + response.code());
+                    // Enhanced error logging
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading error body", e);
+                    }
+                    
+                    String errorMessage = "Failed to update profile (Error " + response.code() + ")";
+                    if (response.code() == 403) {
+                        errorMessage = "Access denied. Please check your login status.";
+                        // Log more details for 403 errors
+                        Log.e(TAG, "403 Forbidden error. Token: " + sessionManager.getAuthToken());
+                        Log.e(TAG, "Account ID: " + sessionManager.getAccountId());
+                    }
+                    
+                    showError(errorMessage);
                     Log.e(TAG, "Error updating profile: " + response.code() + " - " + response.message());
+                    Log.e(TAG, "Error body: " + errorBody);
                 }
             }
             
@@ -243,7 +305,9 @@ public class EditProfileActivity extends AppCompatActivity {
     
     private boolean validateInput() {
         String fullName = etFullName.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
+        String oldPassword = etOldPassword.getText().toString().trim();
+        String newPassword = etNewPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
         
         if (fullName.isEmpty()) {
             etFullName.setError("Full name is required");
@@ -251,16 +315,44 @@ public class EditProfileActivity extends AppCompatActivity {
             return false;
         }
         
-        if (email.isEmpty()) {
-            etEmail.setError("Email is required");
-            etEmail.requestFocus();
-            return false;
-        }
-        
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Please enter a valid email address");
-            etEmail.requestFocus();
-            return false;
+        // Validate password fields (optional)
+        if (!oldPassword.isEmpty() || !newPassword.isEmpty() || !confirmPassword.isEmpty()) {
+            // If any password field is filled, all must be filled
+            if (oldPassword.isEmpty()) {
+                etOldPassword.setError("Current password is required when changing password");
+                etOldPassword.requestFocus();
+                return false;
+            }
+            
+            if (newPassword.isEmpty()) {
+                etNewPassword.setError("New password is required");
+                etNewPassword.requestFocus();
+                return false;
+            }
+            
+            if (confirmPassword.isEmpty()) {
+                etConfirmPassword.setError("Please confirm your new password");
+                etConfirmPassword.requestFocus();
+                return false;
+            }
+            
+            if (newPassword.length() < 6) {
+                etNewPassword.setError("Password must be at least 6 characters");
+                etNewPassword.requestFocus();
+                return false;
+            }
+            
+            if (!newPassword.equals(confirmPassword)) {
+                etConfirmPassword.setError("Passwords do not match");
+                etConfirmPassword.requestFocus();
+                return false;
+            }
+            
+            if (oldPassword.equals(newPassword)) {
+                etNewPassword.setError("New password must be different from current password");
+                etNewPassword.requestFocus();
+                return false;
+            }
         }
         
         return true;

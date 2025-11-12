@@ -128,6 +128,9 @@ public class ShowTimeActivity extends AppCompatActivity {
         );
         dateRecyclerView.setLayoutManager(layoutManager);
         dateRecyclerView.setAdapter(dateAdapter);
+        
+        // Scroll to today's date (position 0)
+        dateRecyclerView.scrollToPosition(0);
 
         Log.d("ShowTimeActivity", "Date carousel setup completed");
     }
@@ -138,26 +141,41 @@ public class ShowTimeActivity extends AppCompatActivity {
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEE", new Locale("vi", "VN"));
         SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
+        Log.d("ShowTimeActivity", "=== GENERATING DATES ===");
+        Log.d("ShowTimeActivity", "Today is: " + fullDateFormat.format(calendar.getTime()));
+        
+        // Start from today (no past dates for booking system)
+        // Generate 14 days total (today + 13 future days)
         for (int i = 0; i < 14; i++) {
             String day = dayFormat.format(calendar.getTime());
             int date = calendar.get(Calendar.DAY_OF_MONTH);
             String fullDate = fullDateFormat.format(calendar.getTime());
 
+            Log.d("ShowTimeActivity", "Date " + i + ": " + fullDate + " (" + day + " " + date + ")");
+
             DateItem dateItem = new DateItem(day, date, fullDate);
+            
+            // Select today's date (index 0) as default
             if (i == 0) {
                 dateItem.setSelected(true);
                 selectedDate = fullDate;
+                Log.d("ShowTimeActivity", "Selected initial date (today): " + selectedDate);
             }
             datesList.add(dateItem);
 
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
+        Log.d("ShowTimeActivity", "=== DATES GENERATED ===");
         return datesList;
     }
 
     private void loadShowTimes() {
         ShowTimeApi api = ApiService.getClient(this).create(ShowTimeApi.class);
+
+        Log.d("ShowTimeActivity", "=== CALLING API ===");
+        Log.d("ShowTimeActivity", "Calling /api/showtimes endpoint...");
+        Log.d("ShowTimeActivity", "MovieId filter: " + (movieId != -1 ? movieId : "none"));
 
         api.getShowTimes().enqueue(new Callback<List<ShowTimeResponse>>() {
             @Override
@@ -176,6 +194,15 @@ public class ShowTimeActivity extends AppCompatActivity {
                 if (response.body() != null) {
                     allShowTimes.clear();
                     allShowTimes.addAll(response.body());
+                    
+                    Log.d("ShowTimeActivity", "=== API RESPONSE ===");
+                    Log.d("ShowTimeActivity", "Total showtimes received: " + response.body().size());
+                    for (ShowTimeResponse st : response.body()) {
+                        Log.d("ShowTimeActivity", "Showtime ID: " + st.getId() + 
+                              " - Movie: " + st.getMovieTitle() + 
+                              " - Date: " + st.getStartTime());
+                    }
+                    Log.d("ShowTimeActivity", "=== END API RESPONSE ===");
 
                     // Nếu có movieId, filter theo movie title
                     if (movieId != -1) {
@@ -235,6 +262,10 @@ public class ShowTimeActivity extends AppCompatActivity {
         }
 
         showTimeList.clear();
+        
+        Log.d("ShowTimeActivity", "=== FILTERING SHOWTIMES ===");
+        Log.d("ShowTimeActivity", "Selected date: " + date);
+        Log.d("ShowTimeActivity", "Total showtimes to check: " + allShowTimes.size());
 
         for (ShowTimeResponse showTime : allShowTimes) {
             try {
@@ -244,9 +275,16 @@ public class ShowTimeActivity extends AppCompatActivity {
                 // Extract date part from startTime
                 String showtimeDate = startTime.substring(0, 10); // Get "2025-10-19"
 
+                Log.d("ShowTimeActivity", "Checking showtime ID " + showTime.getId() + 
+                      " - Movie: " + showTime.getMovieTitle() + 
+                      " - Date: " + showtimeDate + 
+                      " - Selected: " + date + 
+                      " - Match: " + showtimeDate.equals(date));
+
                 // Compare with selected date
                 if (showtimeDate.equals(date)) {
                     showTimeList.add(showTime);
+                    Log.d("ShowTimeActivity", "Added showtime: " + showTime.getId());
                 }
 
             } catch (Exception e) {
@@ -256,13 +294,18 @@ public class ShowTimeActivity extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
 
+        Log.d("ShowTimeActivity", "=== FILTER COMPLETE ===");
         Log.d("ShowTimeActivity", "Filtered " + showTimeList.size() + " showtimes for date: " + date);
+
+        adapter.notifyDataSetChanged();
 
         // Show toast if no showtimes found
         if (showTimeList.isEmpty()) {
             Toast.makeText(this,
                     "Không có suất chiếu nào trong ngày này",
                     Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d("ShowTimeActivity", "Displaying " + showTimeList.size() + " showtimes");
         }
     }
 }

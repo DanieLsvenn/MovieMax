@@ -26,11 +26,16 @@
         <Button
             android:id="@+id/btnRefresh"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content"
             android:text="Refresh"
             android:textSize="12sp"
+            android:textColor="@color/text_primary"
             android:minWidth="0dp"
-            android:paddingHorizontal="16dp"
+            android:minHeight="36dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             style="@style/ButtonSecondary" />
 
     </LinearLayout>

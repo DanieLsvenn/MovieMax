@@ -126,16 +126,15 @@ public class ProfileActivity extends AppCompatActivity {
     }
     
     private void showLogoutDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
+        new AlertDialog.Builder(this, R.style.DarkDialogTheme)
+                .setMessage("Do you want to log out?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         performLogout();
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("No", null)
                 .show();
     }
     

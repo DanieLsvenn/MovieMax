@@ -177,27 +177,28 @@ public class BookingActivity extends AppCompatActivity {
 
             TextView seatView = new TextView(this);
 
-            // Display seat number
+            // Display full seat number (e.g., A1, A2, B1, B2, etc.)
             String displayText = seat.getSeatNumber();
-            if (displayText != null && displayText.length() > 1) {
-                displayText = displayText.substring(1);
+            if (displayText == null || displayText.isEmpty()) {
+                displayText = "?";
             }
 
             seatView.setText(displayText);
             seatView.setTextColor(Color.WHITE);
             seatView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            seatView.setPadding(12, 12, 12, 12);
-            seatView.setTextSize(12);
+            seatView.setPadding(8, 12, 8, 12);
+            seatView.setTextSize(10);
+            seatView.setTypeface(seatView.getTypeface(), android.graphics.Typeface.BOLD);
 
             // Set color by status - use TEMPORARY_SELECTED for local selection
             int bgColor = getSeatColor(seat.getStatus(), isSelectedLocally(seat));
             seatView.setBackgroundColor(bgColor);
 
-            // Set layout params
+            // Set layout params - slightly wider to accommodate seat codes
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = 80;
+            params.width = 90;  // Increased from 80 to fit seat codes like "A10"
             params.height = 80;
-            params.setMargins(4, 4, 4, 4);
+            params.setMargins(3, 4, 3, 4);  // Reduced horizontal margin slightly
             seatView.setLayoutParams(params);
 
             // Only allow click if seat is AVAILABLE

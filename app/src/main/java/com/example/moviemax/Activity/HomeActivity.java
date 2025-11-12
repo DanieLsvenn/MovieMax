@@ -28,8 +28,11 @@ import com.example.moviemax.Api.MovieApi;
 import com.example.moviemax.Model.MovieDto.MovieResponse;
 import com.example.moviemax.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,7 +116,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerViewBanners.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewBanners.setAdapter(bannerAdapter);
         
-        // Now Playing movies RecyclerView (horizontal)
+        // Movie Catalogue RecyclerView (horizontal)
         movieAdapter = new MovieAdapter(this, movieList);
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewMovies.setAdapter(movieAdapter);
@@ -192,7 +195,7 @@ public class HomeActivity extends AppCompatActivity {
         
         // See All buttons
         tvSeeAllNowPlaying.setOnClickListener(v -> {
-            Toast.makeText(this, "See all now playing movies", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "See all movies in catalogue", Toast.LENGTH_SHORT).show();
         });
         
         tvSeeAllComingSoon.setOnClickListener(v -> {
@@ -345,6 +348,10 @@ public class HomeActivity extends AppCompatActivity {
         List<MovieResponse> sortedByRating = new ArrayList<>(allMovies);
         sortedByRating.sort((m1, m2) -> Double.compare(m2.getRating(), m1.getRating()));
         
+        // Get current date for comparison
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date currentDate = new Date();
+        
         // Populate sections
         for (int i = 0; i < allMovies.size(); i++) {
             MovieResponse movie = allMovies.get(i);
@@ -354,12 +361,19 @@ public class HomeActivity extends AppCompatActivity {
                 featuredList.add(movie);
             }
             
-            // Now Playing (all movies)
+            // Movie Catalogue (all movies)
             movieList.add(movie);
             
-            // Coming Soon (simulate with some movies - in real app, you'd have a release date check)
-            if (i % 3 == 0) {
-                comingSoonList.add(movie);
+            // Coming Soon (movies with future release dates)
+            try {
+                if (movie.getReleaseDate() != null && !movie.getReleaseDate().isEmpty()) {
+                    Date releaseDate = dateFormat.parse(movie.getReleaseDate());
+                    if (releaseDate != null && releaseDate.after(currentDate)) {
+                        comingSoonList.add(movie);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("DATE_PARSE", "Error parsing release date for movie: " + movie.getTitle() + ", date: " + movie.getReleaseDate(), e);
             }
             
             // Premium Movies (high-rated movies)
@@ -375,7 +389,7 @@ public class HomeActivity extends AppCompatActivity {
         premiumAdapter.updateMovies(premiumList);
         
         Log.d("MOVIE_SECTIONS", String.format(
-            "Populated sections - Featured: %d, Now Playing: %d, Coming Soon: %d, Premium: %d",
+            "Populated sections - Featured: %d, Movie Catalogue: %d, Coming Soon: %d, Premium: %d",
             featuredList.size(), movieList.size(), comingSoonList.size(), premiumList.size()
         ));
     }

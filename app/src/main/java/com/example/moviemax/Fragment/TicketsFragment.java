@@ -2,6 +2,8 @@ package com.example.moviemax.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,9 @@ public class TicketsFragment extends Fragment implements BookingAdapter.OnBookin
     private List<BookingResponse> bookingList;
     
     private static final String TAG = "TicketsFragment";
+    private static final int MAX_RETRY_ATTEMPTS = 3;
+    private int currentRetryAttempt = 0;
+    private final Handler retryHandler = new Handler(Looper.getMainLooper());
 
     @Nullable
     @Override
@@ -106,6 +111,11 @@ public class TicketsFragment extends Fragment implements BookingAdapter.OnBookin
     }
 
     private void loadTickets() {
+        currentRetryAttempt = 0;
+        loadTicketsWithRetry();
+    }
+    
+    private void loadTicketsWithRetry() {
         showLoading(true);
         hideAllLayouts();
         
@@ -116,6 +126,7 @@ public class TicketsFragment extends Fragment implements BookingAdapter.OnBookin
             return;
         }
 
+        Log.d(TAG, "Loading tickets for account ID: " + accountId + " (Attempt " + (currentRetryAttempt + 1) + "/" + MAX_RETRY_ATTEMPTS + ")");
         Call<List<BookingResponse>> call = apiService.getUserBookings(accountId);
         call.enqueue(new Callback<List<BookingResponse>>() {
             @Override
@@ -133,10 +144,42 @@ public class TicketsFragment extends Fragment implements BookingAdapter.OnBookin
 
             @Override
             public void onFailure(Call<List<BookingResponse>> call, Throwable t) {
-                showLoading(false);
+                // Determine if error is transient
+                boolean isTransient = (t instanceof java.net.SocketTimeoutException) ||
+                        (t instanceof java.net.ConnectException) ||
+                        (t instanceof java.net.UnknownHostException);
+
                 swipeRefreshLayout.setRefreshing(false);
-                showError("Network error: " + t.getMessage());
-                Log.e(TAG, "Network error loading tickets", t);
+
+                if (isTransient && currentRetryAttempt < MAX_RETRY_ATTEMPTS) {
+                    currentRetryAttempt++;
+                    long delayMs = (long) Math.pow(2, currentRetryAttempt - 1) * 1000L; // exponential backoff: 1s,2s,4s
+                    Log.w(TAG, "Transient network error, scheduling retry " + currentRetryAttempt + " in " + delayMs + "ms", t);
+                    // keep the loading indicator visible while retrying
+                    retryHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadTicketsWithRetry();
+                        }
+                    }, delayMs);
+                    return;
+                }
+
+                showLoading(false);
+
+                String errorMessage;
+                if (t instanceof java.net.SocketTimeoutException) {
+                    errorMessage = "Request timeout. Please check your connection and try again.";
+                } else if (t instanceof java.net.ConnectException) {
+                    errorMessage = "Unable to connect to server. Please check your internet connection.";
+                } else if (t instanceof java.net.UnknownHostException) {
+                    errorMessage = "Server not found. Please check your internet connection.";
+                } else {
+                    errorMessage = "Network error: " + t.getMessage();
+                }
+
+                showError(errorMessage);
+                Log.e(TAG, "Network error loading tickets: " + errorMessage, t);
             }
         });
     }
