@@ -11,8 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moviemax.Api.ApiService;
 import com.example.moviemax.Api.AuthApi;
-import com.example.moviemax.Model.RegisterRequest;
+import com.example.moviemax.Model.RegisterDto.RegisterRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
+import com.example.moviemax.Model.RegisterDto.RegisterResponse;
 import com.example.moviemax.R;
 
 import java.util.Calendar;
@@ -88,9 +89,9 @@ public class RegisterActivity extends AppCompatActivity {
         String isoDate = date + "T00:00:00.000Z";
         RegisterRequest req = new RegisterRequest(email, fullName, password, phone, gender, isoDate);
 
-        apiService.register(req).enqueue(new Callback<LoginResponse>() {
+        apiService.register(req).enqueue(new Callback<RegisterResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(RegisterActivity.this, "🎉 Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                     finish(); // Quay về LoginActivity
@@ -105,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "⚠️ Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

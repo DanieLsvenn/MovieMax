@@ -2,6 +2,7 @@ package com.example.moviemax.Activity.Auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.moviemax.Activity.DashboardActivity;
 import com.example.moviemax.Activity.HomeActivity;
 import com.example.moviemax.Model.LoginDto.LoginRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
@@ -110,17 +112,26 @@ public class LoginActivity extends AppCompatActivity {
         sessionManager.saveUserName(response.getFullName());
         sessionManager.saveUserEmail(response.getEmail());
         sessionManager.saveAccountId(response.getId());
+        sessionManager.saveRole(response.getRole());
 
-        showToast("Đăng nhập thành công!");
-        navigateToHome(response);
+        if (response.getRole() == null /*&& response.getRole().equals("ADMIN")*/) {
+            showToast("Đăng nhập admin thành công!");
+            navigateToDashboard(response);
+        } else {
+            showToast("Đăng nhập thành công!");
+            navigateToHome(response);
+        }
     }
 
     private void navigateToHome(LoginResponse response) {
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra("fullName", response.getFullName());
-        intent.putExtra("email", response.getEmail());
         startActivity(intent);
         finish();
+    }
+
+    private void navigateToDashboard(LoginResponse response) {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
     }
 
     private void showLoading(boolean isLoading) {

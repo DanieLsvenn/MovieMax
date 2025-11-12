@@ -4,7 +4,8 @@ import com.example.moviemax.Model.AccountDto.AccountResponse;
 import com.example.moviemax.Model.BookingDto.BookingResponse;
 import com.example.moviemax.Model.LoginDto.LoginRequest;
 import com.example.moviemax.Model.LoginDto.LoginResponse;
-import com.example.moviemax.Model.RegisterRequest;
+import com.example.moviemax.Model.RegisterDto.RegisterRequest;
+import com.example.moviemax.Model.RegisterDto.RegisterResponse;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface AuthApi {
     Call<LoginResponse> login(@Body LoginRequest request);
 
     @POST("register")
-    Call<LoginResponse> register(@Body RegisterRequest request);
+    Call<RegisterResponse> register(@Body RegisterRequest request);
     
     // Account endpoints
     @GET("/api/accounts/{id}")

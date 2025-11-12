@@ -1,5 +1,4 @@
 package com.example.moviemax.Model.LoginDto;
-
 public class LoginResponse {
     private int id;
     private String fullName;
@@ -8,20 +7,15 @@ public class LoginResponse {
     private String password;
     private String phone;
     private String token;
+    public String role;
 
-    // Getters
-    public int getId() {
-        return id;
-    }
-
+    public int getId() { return id; }
     public String getFullName() {
         return fullName;
     }
-
     public String getEmail() {
         return email;
     }
-
     public String getGender() {
         return gender;
     }
@@ -37,4 +31,6 @@ public class LoginResponse {
     public String getToken() {
         return token;
     }
+    public String getRole() { return role; }
 }
+

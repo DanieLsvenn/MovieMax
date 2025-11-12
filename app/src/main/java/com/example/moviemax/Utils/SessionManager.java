@@ -10,6 +10,7 @@ public class SessionManager {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_ACCOUNT_ID = "account_id";
+    private static final String KEY_ROLE = "role";
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
@@ -40,6 +41,12 @@ public class SessionManager {
     // 🔹 Lưu accountId
     public void saveAccountId(int accountId) {
         editor.putInt(KEY_ACCOUNT_ID, accountId);
+        editor.apply();
+    }
+
+    // 🔹 Lưu accountId
+    public void saveRole(String role) {
+        editor.putString(KEY_ROLE, role);
         editor.apply();
     }
 
