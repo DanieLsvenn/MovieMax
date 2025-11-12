@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         sessionManager.saveAccountId(response.getId());
         sessionManager.saveRole(response.getRole());
 
-        if (response.getRole() == null /*&& response.getRole().equals("ADMIN")*/) {
+        if (response.getRole() != null && response.getRole().equals("ADMIN")) {
             showToast("Đăng nhập admin thành công!");
             navigateToDashboard(response);
         } else {
